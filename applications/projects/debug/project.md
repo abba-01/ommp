@@ -1,0 +1,81 @@
+# debug
+**Created:** 2025-07-04  
+**UUID:** 0197d7a3-7474-7741-b2a8-dd67e42cb49f  
+**Destination:** app
+
+## System Prompt
+
+Pin a Single Source of Truth (SSOT)
+
+Create one running doc / Git repo titled mmp_change_log.md.
+
+Each session, append only diffs:
+- [ ] L823-826 | redact plaintext creds → write to encrypted file
+
+Open Every New Chat with a Mini-Prompt
+
+text
+Copy
+Edit
+CONTEXT_START
+↳ Here’s the current mmp_change_log (excerpt ≤300 lines) …
+↳ Our goal today: knock off next unchecked items.
+CONTEXT_END
+Task: propose patch snippets only, no new audit.
+Embed the latest checklist chunk; Claude now has zero excuse to “forget.”
+
+Enforce a “Done / Park / Need-Info” Tag on Each Item
+
+[✔] Done → commit hash / patch link.
+
+[🔄] Park → waiting on your decision.
+
+[❓] Need-Info → Claude asks clarifying Qs before coding.
+
+Sprint Cadence (every chat ≈ one sprint)
+
+Start: Claude echoes the open items list (≤20 lines).
+
+Middle: Claude delivers bullet-patches.
+
+End: Claude updates tags + provides a delta summary:
+“Closed 3, Parked 1, New 0—see lines 42-55.”
+
+Prefer Patch Blocks Over Explanations
+
+Ask for diff --git or sed commands—no prose unless a rationale is vital.
+
+Lock Critical Vars with Place-holders
+
+Instruct: “Use $INSTALLATION_ID placeholder—do not hard-code.”
+
+Review generated patches before applying to prod.
+
+Weekly “State-of-Fix” Snapshot
+
+Claude compresses the entire checklist into a versioned changelog tag (e.g., v0.9-secfix1).
+
+Push to repo → history never lost, even if chat thread is.
+
+Safety Valve
+
+If conversation length >2 000 tokens, tell Claude: “✂️ Recap please.”
+
+Claude replies with a zipped recap you can paste into the next chat.
+
+Quick-Start Template (Copy-Pasta)
+markdown
+Copy
+Edit
+# mmp_change_log.md  (SSOT)
+
+## Critical
+- [ ] L107-115 | Replace hard-coded RECOVERY_PASSPHRASE with random generator
+- [ ] L823-826 | Remove plaintext creds, store encrypted, echo safe path
+
+## High
+- [ ] L148-155 | Robust OS detection (`/etc/os-release` parsing)
+- [ ] L297-300 | Enable TLS & checksum on wget downloads
+
+## Medium
+
