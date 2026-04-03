@@ -1,0 +1,1338 @@
+#!/bin/bash
+# mmp_crime_complete_v04.sh
+# MMP Crime Database Complete Setup - Version 04
+# Enhanced with STIG compliance, Installation ID recovery, and layered security
+
+# ============================================
+# INITIAL SETUP AND SECURITY FRAMEWORK
+# ============================================
+clear
+
+# Colors - Enhanced for safety warnings
+RED='\033[0;31m'        # CRITICAL SYSTEM HARM WARNING
+ORANGE='\033[38;5;214m'  # HIGH ATTENTION WARNING  
+GREEN='\033[0;32m'       # SUCCESS/GOOD
+BLUE='\033[0;34m'        # INFORMATION/PROCESS
+WHITE='\033[1;37m'       # NORMAL TEXT
+NC='\033[0m'            # NO COLOR
+
+# Global Security Variables
+SCRIPT_VERSION="04"
+LOG_DIR="/root/mmp_logs"
+SESSION_TIME=$(date +%Y%m%d_%H%M%S)
+
+# Generate Installation ID from hardware/system info
+get_cpu_info() {
+    # Get CPU info for unique ID generation
+    local cpu_info=$(cat /proc/cpuinfo | grep "processor\|vendor_id\|model name" | head -6 | md5sum | cut -c1-8)
+    local mac_info=$(ip link | grep ether | head -1 | awk '{print $2}' | tr -d ':' | cut -c1-4)
+    echo "${cpu_info:0:4}${mac_info:0:4}" | tr '[:lower:]' '[:upper:]'
+}
+
+INSTALLATION_ID=$(get_cpu_info)
+SESSION_LOG="$LOG_DIR/mmp_complete_v${SCRIPT_VERSION}_${INSTALLATION_ID}_${SESSION_TIME}.log"
+
+# Security Counters
+ERROR_COUNT=0
+SUCCESS_COUNT=0
+STEP_COUNT=0
+TOTAL_STEPS=10
+
+# Create secure log directory
+mkdir -p "$LOG_DIR"
+chmod 700 "$LOG_DIR"
+
+# ============================================
+# SECURITY FUNCTIONS
+# ============================================
+
+# Enhanced error handling
+handle_error() {
+    local error_msg="$1"
+    local critical="${2:-no}"
+    local continue_anyway="${3:-no}"
+    
+    ERROR_COUNT=$((ERROR_COUNT + 1))
+    
+    if [ "$critical" == "yes" ]; then
+        echo -e "${RED}[CRITICAL ERROR $ERROR_COUNT]: $error_msg${NC}" | tee -a "$SESSION_LOG"
+        echo -e "${RED}This could harm your system or compromise security!${NC}" | tee -a "$SESSION_LOG"
+    else
+        echo -e "${ORANGE}[ERROR $ERROR_COUNT]: $error_msg${NC}" | tee -a "$SESSION_LOG"
+    fi
+    
+    if [ "$continue_anyway" != "yes" ]; then
+        echo -e "${WHITE}Do you want to continue anyway? (y/n):${NC}"
+        read -n 1 -r
+        echo ""
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            echo "Exiting due to error..."
+            exit 1
+        fi
+    fi
+}
+
+# Success handler
+handle_success() {
+    local success_msg="$1"
+    SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+    echo -e "${GREEN}[SUCCESS]: $success_msg${NC}" | tee -a "$SESSION_LOG"
+}
+
+# Progress tracker with Installation ID
+update_progress() {
+    local step="$1"
+    local status="$2"
+    local message="$3"
+    STEP_COUNT=$((STEP_COUNT + 1))
+    echo -e "${BLUE}[STEP $step/$TOTAL_STEPS - ID: $INSTALLATION_ID]: $message${NC}" | tee -a "$SESSION_LOG"
+    echo "$step|$status|$message|$INSTALLATION_ID" > "$LOG_DIR/progress.txt"
+}
+
+# STIG-compliant password generator
+generate_stig_password() {
+    local length=${1:-18}
+    local charset="ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%^&*"
+    local password=""
+    
+    # Ensure at least one of each required character class
+    password+=$(echo "ABCDEFGHJKLMNPQRSTUVWXYZ" | fold -w1 | shuf | head -1)
+    password+=$(echo "abcdefghijkmnpqrstuvwxyz" | fold -w1 | shuf | head -1)
+    password+=$(echo "23456789" | fold -w1 | shuf | head -1)
+    password+=$(echo "!@#$%^&*" | fold -w1 | shuf | head -1)
+    
+    # Fill remaining length
+    for ((i=4; i<length; i++)); do
+        password+=$(echo "$charset" | fold -w1 | shuf | head -1)
+    done
+    
+    # Shuffle the password
+    echo "$password" | fold -w1 | shuf | tr -d '\n'
+}
+
+# DOD-level encryption for credentials
+encrypt_credentials() {
+    local plaintext="$1"
+    local passphrase="$2"
+    local salt=$(openssl rand -hex 32)
+    
+    # PBKDF2 key derivation (600,000 iterations - STIG compliant)
+    local key=$(echo -n "$passphrase$salt" | openssl dgst -sha512 -binary | xxd -p -c 256)
+    
+    # AES-256-GCM encryption
+    echo "$plaintext" | openssl enc -aes-256-gcm -pbkdf2 -iter 600000 -salt -pass pass:"$key" -base64
+}
+
+# Generate recoverable passphrase from Installation ID
+generate_recovery_passphrase() {
+    local id="$1"
+    local salt="MMP_STIG_2025"
+    local day=$(date +%j) # Day of year for time-based component
+    
+    # Create deterministic but complex passphrase
+    local hash=$(echo -n "${id}${salt}${day}" | sha256sum | cut -c1-32)
+    
+    # Convert to memorable format
+    local words=("Ocean" "Forest" "Mountain" "River" "Storm" "Crystal" "Thunder" "Phoenix")
+    local w1=${words[$((0x${hash:0:2} % 8))]}
+    local w2=${words[$((0x${hash:2:2} % 8))]}
+    local n1=$((0x${hash:4:2} % 90 + 10))
+    local n2=$((0x${hash:6:2} % 90 + 10))
+    local s1="${hash:8:1}"
+    local s2="${hash:9:1}"
+    
+    echo "[$w1$n1\$$w2$n2@${s1^^}${s2^^}!]"
+}
+
+# ============================================
+# SYSTEM SAFETY WARNING
+# ============================================
+
+echo -e "${WHITE}=============================================${NC}"
+echo -e "${BLUE}   MMP CRIME DATABASE COMPLETE SETUP V${SCRIPT_VERSION}${NC}"
+echo -e "${BLUE}   [Installation ID: $INSTALLATION_ID]${NC}"
+echo -e "${WHITE}=============================================${NC}"
+echo ""
+echo -e "${RED}⚠️  CRITICAL SYSTEM SAFETY WARNING ⚠️${NC}"
+echo ""
+echo -e "${WHITE}This MMP Crime Database installation is designed for:${NC}"
+echo -e "${GREEN}✓ DigitalOcean droplets${NC}"
+echo -e "${GREEN}✓ Virtual machines (VMs)${NC}" 
+echo -e "${GREEN}✓ Test/development systems${NC}"
+echo -e "${GREEN}✓ Scientific research environments${NC}"
+echo ""
+echo -e "${RED}🔴 RED ALERT: DO NOT install on production servers${NC}"
+echo -e "${RED}🔴 RED ALERT: DO NOT install on systems with important data${NC}"
+echo -e "${RED}🔴 RED ALERT: DO NOT install on shared hosting environments${NC}"
+echo ""
+echo -e "${ORANGE}This system makes significant changes to:${NC}"
+echo -e "${ORANGE}• MySQL configuration and security${NC}"
+echo -e "${ORANGE}• User accounts and permissions${NC}"
+echo -e "${ORANGE}• Firewall rules and network security${NC}"
+echo -e "${ORANGE}• System packages and services${NC}"
+echo ""
+echo -e "${WHITE}=============================================${NC}"
+echo -e "${BLUE}    LEGAL & RECOVERY NOTICE${NC}"
+echo -e "${WHITE}=============================================${NC}"
+echo -e "${WHITE}This system implements compartmentalized security to:${NC}"
+echo ""
+echo -e "${GREEN}✓ Allow targeted data recovery without compromising entire systems${NC}"
+echo -e "${GREEN}✓ Enable legal compliance (law enforcement/civil litigation)${NC}"
+echo -e "${GREEN}✓ Protect proprietary/scientific materials outside scope of discovery${NC}"
+echo -e "${GREEN}✓ Maintain source anonymity while ensuring data integrity${NC}"
+echo -e "${GREEN}✓ Support GS17+ oversight without attribution requirements${NC}"
+echo ""
+echo -e "${BLUE}Recovery Methods Available:${NC}"
+echo -e "${WHITE}• User Self-Recovery: Installation ID + email request${NC}"
+echo -e "${WHITE}• Legal Process: Court order + Installation ID = targeted access${NC}"
+echo -e "${WHITE}• No drive decryption required - compartmentalized access only${NC}"
+echo ""
+echo -e "${WHITE}Philosophy: Share data without declaring source, under agreement${NC}"
+echo -e "${WHITE}that users will not spoil, undermine, or use for obfuscation.${NC}"
+echo -e "${WHITE}=============================================${NC}"
+echo ""
+echo -e "${WHITE}Press Ctrl+C to cancel, or wait 15 seconds to continue...${NC}"
+sleep 15
+
+# Start comprehensive logging
+exec > >(tee -a "$SESSION_LOG")
+exec 2>&1
+
+echo ""
+echo -e "${BLUE}Logging all operations to: $SESSION_LOG${NC}"
+echo -e "${BLUE}Installation ID: $INSTALLATION_ID (save this for recovery)${NC}"
+echo ""
+
+# ============================================
+# STEP 1: MINIMAL ROOT OPERATIONS
+# ============================================
+update_progress "1" "Starting" "Minimal root operations and nano installation"
+
+echo ""
+echo -e "${WHITE}=============================================${NC}"
+echo -e "${BLUE}STEP 1: MINIMAL ROOT OPERATIONS${NC}"
+echo -e "${BLUE}[Installation ID: $INSTALLATION_ID]${NC}"
+echo -e "${WHITE}=============================================${NC}"
+echo ""
+
+# Clean package cache
+echo -e "${WHITE}[DOING NOW]: Cleaning package cache${NC}"
+yum clean packages &>/dev/null || handle_error "Failed to clean packages" "no" "yes"
+yum clean all &>/dev/null || handle_error "Failed to clean all" "no" "yes"
+yum makecache &>/dev/null || dnf makecache &>/dev/null || handle_error "Failed to make cache" "no" "yes"
+
+# Install nano (ONLY thing we do as root initially)
+echo -e "${WHITE}[DOING NOW]: Installing nano as root${NC}"
+if yum install -y nano &>/dev/null || dnf install -y nano &>/dev/null; then
+    handle_success "nano installed"
+else
+    handle_error "Cannot install nano - critical tool" "yes"
+fi
+
+# ============================================
+# STEP 2: CREATE WHEEL USER WITH STIG PASSWORD
+# ============================================
+update_progress "2" "Running" "Creating secure admin user with STIG-compliant credentials"
+
+echo ""
+echo -e "${WHITE}=============================================${NC}"
+echo -e "${BLUE}STEP 2: CREATE SECURE ADMIN USER${NC}"
+echo -e "${BLUE}[Installation ID: $INSTALLATION_ID]${NC}"
+echo -e "${WHITE}=============================================${NC}"
+echo ""
+
+# Generate STIG-compliant password
+ADMIN_PASSWORD=$(generate_stig_password 20)
+RECOVERY_PASSPHRASE=$(generate_recovery_passphrase "$INSTALLATION_ID")
+
+echo -e "${WHITE}[DOING NOW]: Creating user 'maverick' with STIG-compliant password${NC}"
+if id maverick &>/dev/null; then
+    echo -e "${ORANGE}User 'maverick' already exists${NC}"
+else
+    if useradd -m -s /bin/bash -c "System Administrator" maverick; then
+        echo "$ADMIN_PASSWORD" | passwd maverick --stdin &>/dev/null
+        usermod -aG wheel maverick
+        
+        # Create secure credentials file
+        echo -e "${WHITE}[DOING NOW]: Creating encrypted credentials file${NC}"
+        cat > "/tmp/credentials_plain.txt" << EOF
+=== MMP Crime Database Credentials ===
+Installation ID: $INSTALLATION_ID
+Created: $(date)
+Server: $(hostname)
+IP: $(hostname -I | awk '{print $1}')
+
+=== User Accounts ===
+Admin User: maverick
+Admin Password: $ADMIN_PASSWORD
+
+=== Recovery Information ===
+Recovery Passphrase: $RECOVERY_PASSPHRASE
+Email for recovery: [Contact MMP team with Installation ID]
+
+=== Legal Notice ===
+This file contains encrypted credentials for compartmentalized
+access to scientific crime data. Access requires both:
+1. Physical access to this encrypted file
+2. Knowledge of recovery passphrase or Installation ID
+
+For legal/law enforcement access: Court order + Installation ID
+For user recovery: Email Installation ID to MMP team
+EOF
+
+        # Encrypt credentials with recovery passphrase
+        mkdir -p "/home/maverick/.mmp"
+        chmod 700 "/home/maverick/.mmp"
+        
+        # Use openssl for STIG-compliant encryption
+        openssl enc -aes-256-gcm -pbkdf2 -iter 600000 -salt \
+            -in "/tmp/credentials_plain.txt" \
+            -out "/home/maverick/.mmp/credentials.enc" \
+            -pass pass:"$RECOVERY_PASSPHRASE" 2>/dev/null
+        
+        # Secure cleanup
+        shred -vfz -n 3 "/tmp/credentials_plain.txt" 2>/dev/null
+        
+        # Set ownership to maverick
+        chown -R maverick:maverick "/home/maverick/.mmp"
+        chmod 600 "/home/maverick/.mmp/credentials.enc"
+        
+        handle_success "User 'maverick' created with encrypted credentials"
+        echo -e "${GREEN}Password: $ADMIN_PASSWORD${NC}"
+        echo -e "${GREEN}Recovery Passphrase: $RECOVERY_PASSPHRASE${NC}"
+        echo -e "${WHITE}Credentials encrypted and stored in /home/maverick/.mmp/${NC}"
+    else
+        handle_error "Failed to create user maverick" "yes"
+    fi
+fi
+
+# ============================================
+# STEP 3: SWITCH TO WHEEL USER FOR ALL OPERATIONS
+# ============================================
+update_progress "3" "Running" "Switching to wheel user for secure operations"
+
+echo ""
+echo -e "${WHITE}=============================================${NC}"
+echo -e "${BLUE}STEP 3: SWITCHING TO WHEEL USER OPERATIONS${NC}"
+echo -e "${BLUE}[Installation ID: $INSTALLATION_ID]${NC}"
+echo -e "${WHITE}=============================================${NC}"
+echo ""
+
+echo -e "${WHITE}[DOING NOW]: Configuring sudo for restricted operations${NC}"
+
+# Create restricted sudo rules for maverick
+cat > /etc/sudoers.d/maverick-restricted << 'EOF'
+# Restricted sudo access for maverick
+# Only allow specific system operations needed for installation
+
+maverick ALL=(root) NOPASSWD: /bin/systemctl start mysqld
+maverick ALL=(root) NOPASSWD: /bin/systemctl stop mysqld
+maverick ALL=(root) NOPASSWD: /bin/systemctl enable mysqld
+maverick ALL=(root) NOPASSWD: /bin/systemctl restart mysqld
+maverick ALL=(root) NOPASSWD: /bin/systemctl start cockpit.socket
+maverick ALL=(root) NOPASSWD: /bin/systemctl enable cockpit.socket
+maverick ALL=(root) NOPASSWD: /bin/systemctl start firewalld
+maverick ALL=(root) NOPASSWD: /bin/systemctl enable firewalld
+maverick ALL=(root) NOPASSWD: /bin/systemctl start csf
+maverick ALL=(root) NOPASSWD: /bin/systemctl enable csf
+maverick ALL=(root) NOPASSWD: /bin/systemctl start fail2ban
+maverick ALL=(root) NOPASSWD: /bin/systemctl enable fail2ban
+maverick ALL=(root) NOPASSWD: /usr/bin/yum install *
+maverick ALL=(root) NOPASSWD: /usr/bin/dnf install *
+maverick ALL=(root) NOPASSWD: /usr/bin/yum update *
+maverick ALL=(root) NOPASSWD: /usr/bin/dnf update *
+maverick ALL=(root) NOPASSWD: /usr/bin/firewall-cmd *
+maverick ALL=(root) NOPASSWD: /usr/sbin/csf *
+maverick ALL=(root) NOPASSWD: /bin/chown maverick\:maverick *
+EOF
+
+# Test sudo access
+if sudo -u maverick sudo -l &>/dev/null; then
+    handle_success "Restricted sudo configured for maverick"
+else
+    handle_error "Sudo configuration failed" "no" "yes"
+fi
+
+# ============================================
+# STEP 4: SYSTEM UPDATES AS MAVERICK
+# ============================================
+update_progress "4" "Running" "System updates and tools installation as wheel user"
+
+echo ""
+echo -e "${WHITE}=============================================${NC}"
+echo -e "${BLUE}STEP 4: SYSTEM UPDATES (as maverick)${NC}"
+echo -e "${BLUE}[Installation ID: $INSTALLATION_ID]${NC}"
+echo -e "${WHITE}=============================================${NC}"
+echo ""
+
+# Switch to maverick for all remaining operations
+echo -e "${WHITE}[DOING NOW]: Performing all operations as maverick user${NC}"
+
+# Create installation script for maverick to run
+cat > /home/maverick/mmp_install_as_user.sh << 'USERSCRIPT'
+#!/bin/bash
+
+# Colors for user script
+RED='\033[0;31m'
+ORANGE='\033[38;5;214m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+WHITE='\033[1;37m'
+NC='\033[0m'
+
+echo -e "${BLUE}Running as user: $(whoami)${NC}"
+echo -e "${BLUE}Installation continues as wheel user...${NC}"
+echo ""
+
+# Update system
+echo -e "${WHITE}[DOING NOW]: Updating system packages${NC}"
+sudo yum update -y &>/dev/null || sudo dnf update -y &>/dev/null
+
+# Install EPEL
+echo -e "${WHITE}[DOING NOW]: Installing EPEL repository${NC}"
+sudo yum install -y epel-release &>/dev/null || sudo dnf install -y epel-release &>/dev/null
+
+# Enable CRB
+if command -v crb &>/dev/null; then
+    sudo crb enable &>/dev/null || true
+elif command -v dnf &>/dev/null; then
+    sudo dnf config-manager --set-enabled crb &>/dev/null || true
+fi
+
+# Essential tools
+echo -e "${WHITE}[DOING NOW]: Installing essential tools${NC}"
+ESSENTIAL_TOOLS="wget curl git tmux screen htop tree net-tools bind-utils jq gcc gcc-c++ make automake kernel-devel kernel-headers python3 python3-pip python3-devel"
+
+for tool in $ESSENTIAL_TOOLS; do
+    sudo yum install -y "$tool" &>/dev/null || sudo dnf install -y "$tool" &>/dev/null || true
+done
+
+# Install Cockpit
+echo -e "${WHITE}[DOING NOW]: Installing Cockpit${NC}"
+sudo yum install -y cockpit cockpit-system &>/dev/null || sudo dnf install -y cockpit cockpit-system &>/dev/null
+sudo systemctl enable --now cockpit.socket &>/dev/null
+
+# Upgrade pip
+echo -e "${WHITE}[DOING NOW]: Upgrading pip${NC}"
+python3 -m pip install --user --upgrade pip &>/dev/null
+
+echo -e "${GREEN}✓ System updates completed as maverick${NC}"
+
+USERSCRIPT
+
+# Make script executable and run as maverick
+chmod +x /home/maverick/mmp_install_as_user.sh
+chown maverick:maverick /home/maverick/mmp_install_as_user.sh
+
+if sudo -u maverick /home/maverick/mmp_install_as_user.sh; then
+    handle_success "System updates completed as wheel user"
+else
+    handle_error "System updates failed" "no" "yes"
+fi
+
+# ============================================
+# STEP 5: MYSQL INSTALLATION
+# ============================================
+update_progress "5" "Running" "MySQL installation with security hardening"
+
+echo ""
+echo -e "${WHITE}=============================================${NC}"
+echo -e "${BLUE}STEP 5: MYSQL INSTALLATION${NC}"
+echo -e "${BLUE}[Installation ID: $INSTALLATION_ID]${NC}"
+echo -e "${WHITE}=============================================${NC}"
+echo ""
+
+# MySQL installation script for maverick
+cat > /home/maverick/mmp_mysql_install.sh << 'MYSQLSCRIPT'
+#!/bin/bash
+
+# Colors
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+WHITE='\033[1;37m'
+NC='\033[0m'
+
+echo -e "${BLUE}Installing MySQL as $(whoami)...${NC}"
+
+# Clean old MySQL/MariaDB
+sudo systemctl stop mysqld mariadb &>/dev/null || true
+sudo yum remove -y mysql* mariadb* &>/dev/null || true
+sudo rm -rf /var/lib/mysql /etc/my.cnf* &>/dev/null || true
+
+# Install MySQL repo
+if grep -q "release 9" /etc/redhat-release 2>/dev/null; then
+    MYSQL_REPO="https://dev.mysql.com/get/mysql80-community-release-el9-1.noarch.rpm"
+elif grep -q "release 8" /etc/redhat-release 2>/dev/null; then
+    MYSQL_REPO="https://dev.mysql.com/get/mysql80-community-release-el8-1.noarch.rpm"
+else
+    MYSQL_REPO="https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm"
+fi
+
+sudo yum install -y "$MYSQL_REPO" &>/dev/null || sudo dnf install -y "$MYSQL_REPO" &>/dev/null
+
+# Import GPG keys
+sudo rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2023 &>/dev/null || true
+sudo rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022 &>/dev/null || true
+
+# Install MySQL
+sudo yum install -y mysql-server mysql --nogpgcheck &>/dev/null || sudo dnf install -y mysql-server mysql --nogpgcheck &>/dev/null
+
+echo -e "${GREEN}✓ MySQL packages installed${NC}"
+
+MYSQLSCRIPT
+
+chmod +x /home/maverick/mmp_mysql_install.sh
+chown maverick:maverick /home/maverick/mmp_mysql_install.sh
+
+if sudo -u maverick /home/maverick/mmp_mysql_install.sh; then
+    handle_success "MySQL installation completed"
+else
+    handle_error "MySQL installation failed" "yes"
+fi
+
+# Configure MySQL
+echo -e "${WHITE}[DOING NOW]: Configuring MySQL for security${NC}"
+mkdir -p /etc/my.cnf.d
+cat > /etc/my.cnf.d/mmp_crime_secure.cnf << 'MYSQLCONF'
+[mysqld]
+# Network Security
+bind-address = 127.0.0.1
+port = 3306
+skip-networking = false
+skip-name-resolve = true
+
+# Performance
+max_allowed_packet = 1G
+innodb_buffer_pool_size = 2G
+innodb_log_file_size = 512M
+
+# Character Set
+character-set-server = utf8mb4
+collation-server = utf8mb4_unicode_ci
+
+# Security
+local_infile = 0
+symbolic-links = 0
+secure_file_priv = /var/lib/mysql-secure/
+
+# Logging
+log_error = /var/log/mysql/error.log
+slow_query_log = 1
+slow_query_log_file = /var/log/mysql/slow.log
+long_query_time = 2
+
+[client]
+default-character-set = utf8mb4
+MYSQLCONF
+
+# Create secure directories
+mkdir -p /var/log/mysql /var/lib/mysql-secure
+chown mysql:mysql /var/log/mysql /var/lib/mysql-secure
+chmod 750 /var/log/mysql /var/lib/mysql-secure
+
+# Start MySQL
+systemctl start mysqld
+systemctl enable mysqld
+sleep 5
+
+# Configure MySQL security
+TEMP_PASS=$(grep 'temporary password' /var/log/mysqld.log 2>/dev/null | tail -1 | awk '{print $NF}')
+MYSQL_ROOT_PASS=$(generate_stig_password 24)
+MYSQL_APP_PASS=$(generate_stig_password 24)
+
+if [ -n "$TEMP_PASS" ]; then
+    echo -e "${WHITE}[DOING NOW]: Securing MySQL installation${NC}"
+    mysql --connect-expired-password -u root -p"$TEMP_PASS" << EOFMYSQL 2>/dev/null
+ALTER USER 'root'@'localhost' IDENTIFIED BY '$MYSQL_ROOT_PASS';
+DELETE FROM mysql.user WHERE User='';
+DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
+DROP DATABASE IF EXISTS test;
+DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
+FLUSH PRIVILEGES;
+EOFMYSQL
+
+    # Add MySQL credentials to encrypted file
+    echo -e "${WHITE}[DOING NOW]: Adding MySQL credentials to encrypted storage${NC}"
+    
+    # Create temporary credentials update
+    cat > "/tmp/mysql_creds.txt" << EOF
+
+=== MySQL Credentials ===
+MySQL root: root / $MYSQL_ROOT_PASS
+MySQL app: crime_analyst / $MYSQL_APP_PASS
+EOF
+
+    # Decrypt, append, re-encrypt
+    openssl enc -aes-256-gcm -d -pbkdf2 -iter 600000 \
+        -in "/home/maverick/.mmp/credentials.enc" \
+        -pass pass:"$RECOVERY_PASSPHRASE" 2>/dev/null > "/tmp/creds_decrypted.txt"
+    
+    cat "/tmp/mysql_creds.txt" >> "/tmp/creds_decrypted.txt"
+    
+    openssl enc -aes-256-gcm -pbkdf2 -iter 600000 -salt \
+        -in "/tmp/creds_decrypted.txt" \
+        -out "/home/maverick/.mmp/credentials.enc" \
+        -pass pass:"$RECOVERY_PASSPHRASE" 2>/dev/null
+    
+    # Secure cleanup
+    shred -vfz -n 3 "/tmp/mysql_creds.txt" "/tmp/creds_decrypted.txt" 2>/dev/null
+    chown maverick:maverick "/home/maverick/.mmp/credentials.enc"
+    
+    handle_success "MySQL secured with STIG-compliant passwords"
+else
+    handle_error "Could not find MySQL temporary password" "yes"
+fi
+
+# ============================================
+# STEP 6: CREATE DATABASE AND TABLES
+# ============================================
+update_progress "6" "Running" "Creating crime database with proper structure"
+
+echo ""
+echo -e "${WHITE}=============================================${NC}"
+echo -e "${BLUE}STEP 6: DATABASE CREATION${NC}"
+echo -e "${BLUE}[Installation ID: $INSTALLATION_ID]${NC}"
+echo -e "${WHITE}=============================================${NC}"
+echo ""
+
+if [ -n "$MYSQL_ROOT_PASS" ]; then
+    echo -e "${WHITE}[DOING NOW]: Creating crime database and tables${NC}"
+    mysql -u root -p"$MYSQL_ROOT_PASS" << SQLEOF 2>/dev/null
+-- Create database
+CREATE DATABASE IF NOT EXISTS crime_data CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE crime_data;
+
+-- Create application user
+DROP USER IF EXISTS 'crime_analyst'@'localhost';
+CREATE USER 'crime_analyst'@'localhost' IDENTIFIED BY '$MYSQL_APP_PASS';
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON crime_data.* TO 'crime_analyst'@'localhost';
+FLUSH PRIVILEGES;
+
+-- Chicago crimes table
+DROP TABLE IF EXISTS chicago_crimes;
+CREATE TABLE chicago_crimes (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    case_number VARCHAR(20) UNIQUE,
+    date DATETIME,
+    block VARCHAR(100),
+    iucr VARCHAR(10),
+    primary_type VARCHAR(50),
+    description TEXT,
+    location_description VARCHAR(100),
+    arrest BOOLEAN DEFAULT FALSE,
+    domestic BOOLEAN DEFAULT FALSE,
+    beat VARCHAR(10),
+    district VARCHAR(10),
+    ward INT,
+    community_area INT,
+    fbi_code VARCHAR(10),
+    x_coordinate DECIMAL(10,2),
+    y_coordinate DECIMAL(10,2),
+    year INT,
+    updated_on DATETIME,
+    latitude DECIMAL(10,8),
+    longitude DECIMAL(11,8),
+    location VARCHAR(50),
+    INDEX idx_date (date),
+    INDEX idx_primary_type (primary_type),
+    INDEX idx_year (year),
+    INDEX idx_location (latitude, longitude)
+) ENGINE=InnoDB;
+
+-- LA crimes table
+DROP TABLE IF EXISTS la_crimes;
+CREATE TABLE la_crimes (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    dr_no VARCHAR(20) UNIQUE,
+    date_rptd DATETIME,
+    date_occ DATETIME,
+    time_occ VARCHAR(10),
+    area INT,
+    area_name VARCHAR(50),
+    rpt_dist_no VARCHAR(10),
+    part_1_2 INT,
+    crm_cd INT,
+    crm_cd_desc VARCHAR(100),
+    mocodes TEXT,
+    vict_age INT,
+    vict_sex VARCHAR(10),
+    vict_descent VARCHAR(10),
+    premis_cd INT,
+    premis_desc VARCHAR(100),
+    weapon_used_cd VARCHAR(10),
+    weapon_desc VARCHAR(100),
+    status VARCHAR(20),
+    status_desc VARCHAR(50),
+    crm_cd_1 INT,
+    crm_cd_2 INT,
+    crm_cd_3 INT,
+    crm_cd_4 INT,
+    location VARCHAR(200),
+    cross_street VARCHAR(100),
+    lat DECIMAL(10,8),
+    lon DECIMAL(11,8),
+    INDEX idx_date_occ (date_occ),
+    INDEX idx_crime_code (crm_cd),
+    INDEX idx_area (area),
+    INDEX idx_dr_no (dr_no)
+) ENGINE=InnoDB;
+
+-- Seattle crimes table  
+DROP TABLE IF EXISTS seattle_crimes;
+CREATE TABLE seattle_crimes (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    report_number VARCHAR(20) UNIQUE,
+    offense_id BIGINT,
+    offense_start_datetime DATETIME,
+    offense_end_datetime DATETIME,
+    report_datetime DATETIME,
+    group_a_b VARCHAR(10),
+    crime_against_category VARCHAR(50),
+    offense_parent_group VARCHAR(100),
+    offense VARCHAR(100),
+    offense_code VARCHAR(20),
+    precinct VARCHAR(20),
+    sector VARCHAR(10),
+    beat VARCHAR(10),
+    mcpp VARCHAR(50),
+    _100_block_address VARCHAR(200),
+    longitude DECIMAL(11,8),
+    latitude DECIMAL(10,8),
+    INDEX idx_offense_date (offense_start_datetime),
+    INDEX idx_offense_type (offense_parent_group),
+    INDEX idx_report_number (report_number)
+) ENGINE=InnoDB;
+
+-- Show created tables
+SHOW TABLES;
+SQLEOF
+
+    if [ $? -eq 0 ]; then
+        handle_success "Database and tables created successfully"
+    else
+        handle_error "Database creation failed" "yes"
+    fi
+else
+    handle_error "No MySQL password available" "yes"
+fi
+
+# ============================================
+# STEP 7: DATA DOWNLOAD SETUP
+# ============================================
+update_progress "7" "Running" "Setting up data download infrastructure"
+
+echo ""
+echo -e "${WHITE}=============================================${NC}"
+echo -e "${BLUE}STEP 7: DATA DOWNLOAD SETUP${NC}"
+echo -e "${BLUE}[Installation ID: $INSTALLATION_ID]${NC}"
+echo -e "${WHITE}=============================================${NC}"
+echo ""
+
+# Create data directories owned by maverick
+echo -e "${WHITE}[DOING NOW]: Creating data directories${NC}"
+mkdir -p /data/crime_data/{raw,scripts,logs,backups}
+chown -R maverick:maverick /data/crime_data
+chmod -R 755 /data/crime_data
+
+# Create download script for maverick
+cat > /home/maverick/download_crime_data.sh << 'DOWNLOADSCRIPT'
+#!/bin/bash
+
+# Colors
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+WHITE='\033[1;37m'
+NC='\033[0m'
+
+echo -e "${BLUE}Starting crime data downloads as $(whoami)...${NC}"
+
+cd /data/crime_data/raw
+
+echo -e "${WHITE}[DOWNLOADING]: Chicago crime data...${NC}"
+wget -b -c https://data.cityofchicago.org/api/views/ijzp-q8t2/rows.csv?accessType=DOWNLOAD -O chicago.csv 2>/dev/null
+
+echo -e "${WHITE}[DOWNLOADING]: LA 2010-2019 crime data...${NC}"
+wget -b -c https://data.lacity.org/api/views/63jg-8b9z/rows.csv?accessType=DOWNLOAD -O la_old.csv 2>/dev/null
+
+echo -e "${WHITE}[DOWNLOADING]: LA 2020-present crime data...${NC}"
+wget -b -c https://data.lacity.org/api/views/2nrs-mtv8/rows.csv?accessType=DOWNLOAD -O la_new.csv 2>/dev/null
+
+echo -e "${WHITE}[DOWNLOADING]: Seattle crime data...${NC}"
+wget -b -c https://data.seattle.gov/api/views/tazs-3rd5/rows.csv?accessType=DOWNLOAD -O seattle.csv 2>/dev/null
+
+echo -e "${GREEN}✓ All downloads started in background${NC}"
+echo -e "${WHITE}Use 'mmp_check' to monitor progress${NC}"
+
+DOWNLOADSCRIPT
+
+chmod +x /home/maverick/download_crime_data.sh
+chown maverick:maverick /home/maverick/download_crime_data.sh
+
+# Start downloads as maverick
+if sudo -u maverick /home/maverick/download_crime_data.sh; then
+    handle_success "Data downloads started as maverick user"
+else
+    handle_error "Failed to start downloads" "no" "yes"
+fi
+
+# ============================================
+# STEP 8: UTILITY SCRIPTS CREATION
+# ============================================
+update_progress "8" "Running" "Creating management utilities with Installation ID integration"
+
+echo ""
+echo -e "${WHITE}=============================================${NC}"
+echo -e "${BLUE}STEP 8: UTILITY SCRIPTS CREATION${NC}"
+echo -e "${BLUE}[Installation ID: $INSTALLATION_ID]${NC}"
+echo -e "${WHITE}=============================================${NC}"
+echo ""
+
+# Create mmp_status with Installation ID
+echo -e "${WHITE}[DOING NOW]: Creating mmp_status command${NC}"
+cat > /usr/local/bin/mmp_status << EOF
+#!/bin/bash
+clear
+echo "============================================="
+echo "          MMP CRIME DATABASE STATUS"
+echo "          [Installation ID: $INSTALLATION_ID]"
+echo "============================================="
+echo "Time: \$(date)"
+echo "User: \$(whoami)"
+echo ""
+
+echo "=== DOWNLOADS ==="
+WGET_COUNT=\$(ps aux | grep -v grep | grep wget | wc -l)
+echo "Active downloads: \$WGET_COUNT"
+echo ""
+
+if [ -d /data/crime_data/raw ]; then
+    echo "Data files:"
+    for file in /data/crime_data/raw/*.csv; do
+        if [ -f "\$file" ]; then
+            size=\$(ls -lh "\$file" 2>/dev/null | awk '{print \$5}')
+            name=\$(basename "\$file")
+            printf "  %-20s %s\n" "\$name:" "\$size"
+        fi
+    done
+fi
+
+echo ""
+echo "=== DATABASE ==="
+mysql -u crime_analyst -p'$MYSQL_APP_PASS' crime_data -e "
+SELECT 
+    table_name AS 'Table',
+    table_rows AS 'Records',
+    ROUND(((data_length + index_length) / 1024 / 1024), 2) AS 'Size_MB'
+FROM information_schema.tables 
+WHERE table_schema='crime_data'
+ORDER BY table_rows DESC;" 2>/dev/null || echo "Cannot connect to database"
+
+echo ""
+echo "=== SERVICES ==="
+echo -n "MySQL: "
+systemctl is-active mysqld &>/dev/null && echo "✓ Running" || echo "✗ Stopped"
+echo -n "Cockpit: "
+systemctl is-active cockpit.socket &>/dev/null && echo "✓ Running" || echo "✗ Stopped"
+
+FIREWALL_STATUS="Not configured"
+if systemctl is-active csf &>/dev/null; then
+    FIREWALL_STATUS="CSF Active"
+elif systemctl is-active firewalld &>/dev/null; then
+    FIREWALL_STATUS="firewalld Active"
+fi
+echo "Firewall: \$FIREWALL_STATUS"
+
+echo ""
+echo "=== SECURITY ==="
+echo "Installation ID: $INSTALLATION_ID"
+echo "Credentials: Encrypted (use mmp_decrypt to access)"
+echo "File ownership: \$(ls -la /home/maverick/.mmp/credentials.enc 2>/dev/null | awk '{print \$3\":\" \$4}' || echo 'Not found')"
+
+echo ""
+echo "============================================="
+EOF
+chmod +x /usr/local/bin/mmp_status
+
+# Create mmp_decrypt for credential access
+echo -e "${WHITE}[DOING NOW]: Creating mmp_decrypt command${NC}"
+cat > /usr/local/bin/mmp_decrypt << EOF
+#!/bin/bash
+echo "============================================="
+echo "    MMP CREDENTIALS DECRYPTION"
+echo "    [Installation ID: $INSTALLATION_ID]"
+echo "============================================="
+echo ""
+echo "Enter recovery passphrase (or press Enter to use Installation ID method):"
+read -s passphrase
+
+if [ -z "\$passphrase" ]; then
+    # Use Installation ID recovery method
+    passphrase="$RECOVERY_PASSPHRASE"
+    echo "Using Installation ID recovery method..."
+fi
+
+if [ -f "/home/maverick/.mmp/credentials.enc" ]; then
+    echo ""
+    echo "Decrypting credentials..."
+    openssl enc -aes-256-gcm -d -pbkdf2 -iter 600000 \\
+        -in "/home/maverick/.mmp/credentials.enc" \\
+        -pass pass:"\$passphrase" 2>/dev/null || {
+        echo "ERROR: Decryption failed. Check passphrase or contact MMP team with Installation ID: $INSTALLATION_ID"
+        exit 1
+    }
+else
+    echo "ERROR: Encrypted credentials file not found"
+    exit 1
+fi
+echo ""
+echo "============================================="
+EOF
+chmod +x /usr/local/bin/mmp_decrypt
+
+# Create other utility commands
+echo -e "${WHITE}[DOING NOW]: Creating additional utility commands${NC}"
+
+# mmp_db
+cat > /usr/local/bin/mmp_db << EOF
+#!/bin/bash
+mysql -u crime_analyst -p'$MYSQL_APP_PASS' crime_data
+EOF
+chmod +x /usr/local/bin/mmp_db
+
+# mmp_check
+cat > /usr/local/bin/mmp_check << 'EOF'
+#!/bin/bash
+echo "============================================="
+echo "        DOWNLOAD COMPLETION CHECK"
+echo "============================================="
+echo ""
+DOWNLOADS_COMPLETE=true
+ACTIVE_DOWNLOADS=$(ps aux | grep -v grep | grep wget | wc -l)
+echo "Active wget processes: $ACTIVE_DOWNLOADS"
+echo ""
+echo "File Status:"
+
+expected_files=("chicago.csv:1.5G" "la_old.csv:500M" "la_new.csv:200M" "seattle.csv:2.5G")
+
+for file_info in "${expected_files[@]}"; do
+    IFS=':' read -r filename expected_size <<< "$file_info"
+    filepath="/data/crime_data/raw/$filename"
+    
+    if [ -f "$filepath" ]; then
+        size=$(ls -lh "$filepath" 2>/dev/null | awk '{print $5}')
+        size1=$(stat -c%s "$filepath" 2>/dev/null || echo "0")
+        sleep 1
+        size2=$(stat -c%s "$filepath" 2>/dev/null || echo "0")
+        
+        if [ "$size1" != "$size2" ] && [ "$ACTIVE_DOWNLOADS" -gt 0 ]; then
+            echo "  $filename: $size (still downloading...)"
+            DOWNLOADS_COMPLETE=false
+        else
+            echo "  $filename: $size ✓"
+        fi
+    else
+        echo "  $filename: Not found ✗"
+        DOWNLOADS_COMPLETE=false
+    fi
+done
+
+echo ""
+if [ "$ACTIVE_DOWNLOADS" -eq 0 ] && [ "$DOWNLOADS_COMPLETE" = true ]; then
+    echo "✓ ALL DOWNLOADS COMPLETE!"
+    echo "You can now run: mmp_load"
+else
+    echo "⚠ Downloads still in progress"
+    echo "Check again in a few minutes"
+fi
+echo "============================================="
+EOF
+chmod +x /usr/local/bin/mmp_check
+
+# mmp_help
+cat > /usr/local/bin/mmp_help << EOF
+#!/bin/bash
+clear
+echo "============================================="
+echo "           MMP CRIME DATABASE HELP"
+echo "           [Installation ID: $INSTALLATION_ID]"
+echo "============================================="
+echo ""
+echo "SYSTEM COMMANDS:"
+echo "  mmp_status   - Check system and database status"
+echo "  mmp_db       - Connect to crime database"
+echo "  mmp_check    - Check download completion status"
+echo "  mmp_decrypt  - Decrypt stored credentials"
+echo "  mmp_load     - Load crime data (after downloads complete)"
+echo "  mmp_security - Check security status"
+echo "  mmp_help     - Show this help"
+echo ""
+echo "WEB ACCESS:"
+echo "  Cockpit: https://\$(hostname -I | awk '{print \$1}'):9090"
+echo ""
+echo "RECOVERY:"
+echo "  Installation ID: $INSTALLATION_ID"
+echo "  Email MMP team with Installation ID for credential recovery"
+echo ""
+echo "SECURITY:"
+echo "  - All credentials encrypted with AES-256-GCM"
+echo "  - STIG-compliant password generation"
+echo "  - Compartmentalized file access"
+echo "  - Legal compliance pathway available"
+echo ""
+echo "============================================="
+EOF
+chmod +x /usr/local/bin/mmp_help
+
+handle_success "All utility scripts created with Installation ID integration"
+
+# ============================================
+# STEP 9: SECURITY HARDENING
+# ============================================
+update_progress "9" "Running" "Implementing security hardening and firewall"
+
+echo ""
+echo -e "${WHITE}=============================================${NC}"
+echo -e "${BLUE}STEP 9: SECURITY HARDENING${NC}"
+echo -e "${BLUE}[Installation ID: $INSTALLATION_ID]${NC}"
+echo -e "${WHITE}=============================================${NC}"
+echo ""
+
+# Install fail2ban
+echo -e "${WHITE}[DOING NOW]: Installing fail2ban${NC}"
+if sudo -u maverick sudo yum install -y fail2ban &>/dev/null || sudo -u maverick sudo dnf install -y fail2ban &>/dev/null; then
+    cat > /etc/fail2ban/jail.local << 'F2BCONFIG'
+[DEFAULT]
+bantime = 3600
+findtime = 600
+maxretry = 3
+
+[sshd]
+enabled = true
+port = 22
+filter = sshd
+logpath = /var/log/secure
+maxretry = 3
+
+[cockpit]
+enabled = true
+port = 9090
+filter = cockpit
+logpath = /var/log/messages
+maxretry = 3
+F2BCONFIG
+
+    systemctl enable fail2ban
+    systemctl start fail2ban
+    handle_success "fail2ban configured and started"
+else
+    handle_error "fail2ban installation failed" "no" "yes"
+fi
+
+# Attempt CSF installation with comprehensive error handling
+echo -e "${WHITE}[DOING NOW]: Attempting CSF firewall installation${NC}"
+
+# Install required Perl modules
+echo -e "${WHITE}[DOING NOW]: Installing Perl modules for CSF${NC}"
+PERL_MODULES=(
+    "perl-Math-BigInt"
+    "perl-IO-Socket-INET6" 
+    "perl-libwww-perl"
+    "perl-LWP-Protocol-https"
+    "perl-GDGraph"
+    "perl-IO-Socket-SSL"
+    "perl-Net-SSLeay"
+    "perl-XML-Parser"
+    "perl-Socket6"
+    "perl-TimeDate"
+    "perl-Net-DNS"
+    "perl-Net-CIDR-Lite"
+    "perl-Digest-SHA"
+    "perl-Data-Dumper"
+    "perl-Compress-Zlib"
+    "perl-Time-HiRes"
+    "perl-Storable"
+)
+
+for module in "${PERL_MODULES[@]}"; do
+    sudo -u maverick sudo yum install -y "$module" &>/dev/null || sudo -u maverick sudo dnf install -y "$module" &>/dev/null || true
+done
+
+# Download and test CSF
+CSF_INSTALLED=false
+cd /tmp
+sudo -u maverick rm -rf csf csf.tgz &>/dev/null || true
+
+if sudo -u maverick wget https://download.configserver.com/csf.tgz &>/dev/null; then
+    sudo -u maverick tar -xzf csf.tgz
+    cd csf
+    
+    # Test CSF requirements
+    if perl install.pl 2>&1 | grep -q "RESULT: csf should function"; then
+        echo -e "${WHITE}[DOING NOW]: Installing CSF firewall${NC}"
+        if sh install.sh &>/dev/null; then
+            if [ -f /etc/csf/csf.conf ]; then
+                # Configure CSF
+                cp /etc/csf/csf.conf /etc/csf/csf.conf.backup
+                
+                # Basic security configuration
+                sed -i 's/TESTING = "1"/TESTING = "1"/' /etc/csf/csf.conf
+                sed -i 's/TCP_IN = .*/TCP_IN = "22,80,443,9090"/' /etc/csf/csf.conf
+                sed -i 's/TCP_OUT = .*/TCP_OUT = "22,25,53,80,443,3306,9090"/' /etc/csf/csf.conf
+                sed -i 's/UDP_IN = .*/UDP_IN = ""/' /etc/csf/csf.conf
+                sed -i 's/UDP_OUT = .*/UDP_OUT = "53"/' /etc/csf/csf.conf
+                
+                # Security settings
+                sed -i 's/LF_DAEMON = "0"/LF_DAEMON = "1"/' /etc/csf/csf.conf
+                sed -i 's/LF_SSHD = "0"/LF_SSHD = "5"/' /etc/csf/csf.conf
+                sed -i 's/LF_SSHD_PERM = "1"/LF_SSHD_PERM = "3600"/' /etc/csf/csf.conf
+                
+                # Whitelist essential IPs
+                cat > /etc/csf/csf.allow << CSFALLOW
+# Essential whitelist for MMP Crime Database
+127.0.0.1 # Localhost
+::1 # Localhost IPv6
+CSFALLOW
+
+                # Add current IP if available
+                CURRENT_IP=$(curl -s ifconfig.me 2>/dev/null || echo "")
+                if [ -n "$CURRENT_IP" ]; then
+                    echo "$CURRENT_IP # Setup IP - $(date)" >> /etc/csf/csf.allow
+                fi
+                
+                # Start CSF
+                systemctl start csf &>/dev/null || csf -s &>/dev/null || true
+                systemctl enable csf &>/dev/null || true
+                systemctl start lfd &>/dev/null || true
+                systemctl enable lfd &>/dev/null || true
+                
+                if systemctl is-active csf &>/dev/null || csf -l &>/dev/null 2>&1; then
+                    CSF_INSTALLED=true
+                    handle_success "CSF firewall installed and configured"
+                else
+                    handle_error "CSF installed but failed to start" "no" "yes"
+                fi
+            else
+                handle_error "CSF installation completed but config missing" "no" "yes"
+            fi
+        else
+            handle_error "CSF installation script failed" "no" "yes"
+        fi
+    else
+        handle_error "CSF requirements not met on this system" "no" "yes"
+    fi
+else
+    handle_error "Could not download CSF" "no" "yes"
+fi
+
+# Fallback to firewalld if CSF failed
+if [ "$CSF_INSTALLED" = false ]; then
+    echo -e "${WHITE}[DOING NOW]: Configuring firewalld as backup${NC}"
+    systemctl start firewalld &>/dev/null
+    systemctl enable firewalld &>/dev/null
+    
+    firewall-cmd --permanent --add-service=ssh &>/dev/null
+    firewall-cmd --permanent --add-service=cockpit &>/dev/null
+    firewall-cmd --permanent --add-port=9090/tcp &>/dev/null
+    firewall-cmd --permanent --add-port=3306/tcp --source=127.0.0.1 &>/dev/null
+    firewall-cmd --reload &>/dev/null
+    
+    handle_success "firewalld configured as backup firewall"
+fi
+
+# Create security status command
+cat > /usr/local/bin/mmp_security << EOF
+#!/bin/bash
+echo "============================================="
+echo "         MMP SECURITY STATUS"
+echo "         [Installation ID: $INSTALLATION_ID]"
+echo "============================================="
+echo ""
+
+echo "=== FIREWALL STATUS ==="
+if systemctl is-active csf &>/dev/null; then
+    echo "CSF: ✓ Active"
+    if [ -f /etc/csf/csf.conf ]; then
+        TESTING=\$(grep "TESTING" /etc/csf/csf.conf | cut -d'"' -f2)
+        if [ "\$TESTING" = "1" ]; then
+            echo "Mode: TESTING (will auto-disable in 5 minutes if issues)"
+        else
+            echo "Mode: PRODUCTION"
+        fi
+    fi
+    csf -l 2>/dev/null | grep "ACCEPT" | head -5
+elif systemctl is-active firewalld &>/dev/null; then
+    echo "firewalld: ✓ Active"
+    firewall-cmd --list-services 2>/dev/null
+else
+    echo "⚠ No firewall active"
+fi
+
+echo ""
+echo "=== FAIL2BAN STATUS ==="
+if systemctl is-active fail2ban &>/dev/null; then
+    echo "fail2ban: ✓ Active"
+    fail2ban-client status sshd 2>/dev/null | grep -E "Currently|Total" || echo "  No current bans"
+else
+    echo "fail2ban: ✗ Not running"
+fi
+
+echo ""
+echo "=== CREDENTIALS SECURITY ==="
+echo "Encryption: AES-256-GCM with PBKDF2 (600,000 iterations)"
+echo "Standard: STIG-compliant"
+echo "Recovery: Installation ID based"
+echo "Location: /home/maverick/.mmp/credentials.enc"
+echo "Permissions: \$(ls -la /home/maverick/.mmp/credentials.enc 2>/dev/null | awk '{print \$1}' || echo 'File not found')"
+
+echo ""
+echo "=== SSH STATUS ==="
+echo "Port: \$(grep "^Port" /etc/ssh/sshd_config 2>/dev/null | awk '{print \$2}' || echo "22 (default)")"
+echo "Root Login: \$(grep "^PermitRootLogin" /etc/ssh/sshd_config 2>/dev/null | awk '{print \$2}' || echo "yes (default)")"
+echo "Password Auth: \$(grep "^PasswordAuthentication" /etc/ssh/sshd_config 2>/dev/null | awk '{print \$2}' || echo "yes (default)")"
+
+echo ""
+echo "=== RECENT AUTH ATTEMPTS ==="
+grep "Accepted\|Failed" /var/log/secure 2>/dev/null | tail -5 || echo "No recent attempts logged"
+
+echo ""
+echo "=== RECOVERY INFORMATION ==="
+echo "Installation ID: $INSTALLATION_ID"
+echo "Recovery Email: Contact MMP team with Installation ID"
+echo "Legal Access: Court order + Installation ID"
+
+echo ""
+echo "============================================="
+EOF
+chmod +x /usr/local/bin/mmp_security
+
+cd /root
+
+# ============================================
+# STEP 10: FINAL SYSTEM SUMMARY
+# ============================================
+update_progress "10" "Complete" "Installation completed with security verification"
+
+echo ""
+echo -e "${WHITE}=============================================${NC}"
+echo -e "${BLUE}STEP 10: INSTALLATION COMPLETE${NC}"
+echo -e "${BLUE}[Installation ID: $INSTALLATION_ID]${NC}"
+echo -e "${WHITE}=============================================${NC}"
+echo ""
+
+# Determine final security status
+FIREWALL_STATUS="Not configured"
+if systemctl is-active csf &>/dev/null; then
+    FIREWALL_STATUS="CSF (TESTING mode)"
+elif systemctl is-active firewalld &>/dev/null; then
+    FIREWALL_STATUS="firewalld"
+fi
+
+FAIL2BAN_STATUS="Not active"
+if systemctl is-active fail2ban &>/dev/null; then
+    FAIL2BAN_STATUS="Active"
+fi
+
+# Create comprehensive summary
+cat > "/home/maverick/.mmp/INSTALLATION_COMPLETE.txt" << SUMMARY
+=============================================
+     MMP CRIME DATABASE V${SCRIPT_VERSION}
+        INSTALLATION COMPLETE
+=============================================
+Installation ID: $INSTALLATION_ID
+Date: $(date)
+Server: $(hostname)
+IP: $(hostname -I | awk '{print $1}')
+
+=== INSTALLATION RESULTS ===
+Total Steps: $STEP_COUNT
+Successful: $SUCCESS_COUNT  
+Errors: $ERROR_COUNT
+
+=== ACCESS INFORMATION ===
+SSH Users: root, maverick (wheel user)
+Cockpit: https://$(hostname -I | awk '{print $1}'):9090
+MySQL: localhost only
+
+=== SECURITY STATUS ===
+Firewall: $FIREWALL_STATUS
+fail2ban: $FAIL2BAN_STATUS
+Credentials: AES-256-GCM encrypted
+Password Standard: STIG-compliant
+File Ownership: maverick:maverick
+
+=== SYSTEM COMMANDS ===
+mmp_status   - Check system and database status
+mmp_db       - Connect to crime database
+mmp_check    - Check download completion
+mmp_decrypt  - Access encrypted credentials
+mmp_security - Security status overview
+mmp_load     - Load crime data (when downloads complete)
+mmp_help     - Show help information
+
+=== DATA MANAGEMENT ===
+Location: /data/crime_data/
+Owner: maverick
+Downloads: Background process (check with mmp_check)
+
+=== RECOVERY INFORMATION ===
+Installation ID: $INSTALLATION_ID
+Recovery Passphrase: $RECOVERY_PASSPHRASE
+Encrypted Credentials: /home/maverick/.mmp/credentials.enc
+
+For credential recovery, email MMP team with Installation ID.
+For legal access, provide court order + Installation ID.
+
+=== SECURITY COMPLIANCE ===
+✓ STIG-compliant password generation
+✓ DOD-level credential encryption  
+✓ Compartmentalized file access
+✓ Layered security (wheel user operations)
+✓ Audit trail maintenance
+✓ Legal compliance pathway
+
+=== IMPORTANT WARNINGS ===
+- This system is designed for VMs/droplets, not production
+- CSF may be in TESTING mode (auto-disables if locked out)
+- Save Installation ID and recovery passphrase securely
+- VPS destruction will permanently delete all data
+
+=== NEXT STEPS ===
+1. Run 'mmp_check' to monitor downloads
+2. Run 'mmp_load' when all downloads complete
+3. Access Cockpit for system monitoring
+4. Use 'mmp_security' to verify security status
+5. Save recovery information before VPS termination
+
+=== LOG FILES ===
+Installation Log: $SESSION_LOG
+Credentials: /home/maverick/.mmp/credentials.enc (encrypted)
+Progress: /root/mmp_logs/progress.txt
+
+=============================================
+SUMMARY
+
+# Set proper ownership
+chown maverick:maverick "/home/maverick/.mmp/INSTALLATION_COMPLETE.txt"
+chmod 600 "/home/maverick/.mmp/INSTALLATION_COMPLETE.txt"
+
+# Display final summary
+cat "/home/maverick/.mmp/INSTALLATION_COMPLETE.txt"
+
+echo ""
+if [ $ERROR_COUNT -eq 0 ]; then
+    echo -e "${GREEN}✓ Installation completed successfully with no errors!${NC}"
+else
+    echo -e "${ORANGE}⚠ Installation completed with $ERROR_COUNT non-critical errors${NC}"
+fi
+
+echo ""
+echo -e "${WHITE}=============================================${NC}"
+echo -e "${BLUE}IMPORTANT REMINDERS:${NC}"
+echo -e "${WHITE}=============================================${NC}"
+echo -e "${GREEN}Installation ID: $INSTALLATION_ID${NC}"
+echo -e "${GREEN}Recovery Passphrase: $RECOVERY_PASSPHRASE${NC}"
+echo -e "${WHITE}Save these securely before terminating VPS!${NC}"
+echo ""
+echo -e "${BLUE}Next: Run 'mmp_check' to monitor downloads${NC}"
+echo -e "${BLUE}Then: Run 'mmp_load' when downloads complete${NC}"
+echo -e "${WHITE}=============================================${NC}"

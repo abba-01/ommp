@@ -1,0 +1,159 @@
+# MMP v09 - Secure Passphrase Implementation
+
+## Overview
+Replace hardcoded recovery passphrase with secure random generation and one-time display system.
+
+## Complete Implementation
+
+### 1. Initial Setup with Random Passphrase Generation
+```bash
+#!/bin/bash
+# mmp_crime_complete_v09.sh
+set -euo pipefail
+
+# ============================================
+# CONFIGURATION AND FUNCTIONS
+# ============================================
+SCRIPT_VERSION="09"
+LOG_DIR="/root/mmp_logs"
+SESSION_TIME=$(date +%Y%m%d_%H%M%S)
+SENTINEL="/etc/mmp_install.lock"
+
+# Block reruns
+if [[ -f "$SENTINEL" ]]; then
+    echo "[ABORT] Installer already completed. Delete $SENTINEL to re-run (dev only)."
+    exit 1
+fi
+
+# Generate secure random recovery passphrase
+RECOVERY_PASSPHRASE=$(openssl rand -base64 32 | tr -dc 'A-Za-z0-9!@#$%^&*' | head -c 32)
+
+# Generate magic word for initial login (1 hour validity)
+MAGIC_WORD=$(openssl rand -base64 16 | tr -dc 'A-Za-z0-9' | head -c 16)
+MAGIC_EXPIRY=$(date -u -d "+1 hour" +%s)
+
+# Create secure storage for one-time credentials
+ONETIME_CREDS_FILE="/root/.mmp_onetime_creds"
+ONETIME_CREDS_DISPLAYED=false
+```
+
+### 2. PAM Configuration for Magic Word Authentication
+```bash
+# Create PAM module for magic word authentication
+create_magic_word_auth() {
+    cat > /usr/local/bin/mmp_pam_auth.sh << 'PAMEOF'
+#!/bin/bash
+# PAM authentication helper for magic word
+
+PAM_USER="$1"
+PAM_AUTHTOK="$2"
+
+# Only apply to maverick user
+[[ "$PAM_USER" != "maverick" ]] && exit 1
+
+# Check magic lock file
+MAGIC_LOCK="/home/maverick/.mmp/magic.lock"
+[[ ! -f "$MAGIC_LOCK" ]] && exit 1
+
+# Read magic word and expiry
+IFS=':' read -r stored_magic stored_expiry < "$MAGIC_LOCK"
+current_time=$(date +%s)
+
+# Validate magic word and expiry
+if [[ "$PAM_AUTHTOK" == "$stored_magic" ]] && [[ $current_time -lt $stored_expiry ]]; then
+    # Success - invalidate magic word after use
+    rm -f "$MAGIC_LOCK"
+    exit 0
+fi
+
+exit 1
+PAMEOF
+    chmod 755 /usr/local/bin/mmp_pam_auth.sh
+
+    # Add PAM configuration
+    cat > /etc/pam.d/mmp-magic << 'PAMCFG'
+# Magic word authentication for maverick
+auth sufficient pam_exec.so quiet /usr/local/bin/mmp_pam_auth.sh
+PAMCFG
+
+    # Include in SSH PAM stack
+    sed -i '/^@include common-auth/i @include mmp-magic' /etc/pam.d/sshd
+}
+```
+
+### 3. Secure Credential Storage Function
+```bash
+store_secure_credentials() {
+    local admin_pass="$1"
+    local mysql_root="$2"
+    local mysql_app="$3"
+    
+    # Create secure directory
+    mkdir -p /home/maverick/.mmp
+    chmod 700 /home/maverick/.mmp
+    
+    # Create credentials file
+    cat > /tmp/creds_plain.txt << EOF
+Installation ID: $INSTALLATION_ID
+Created: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+Admin User: maverick
+Admin Password: $admin_pass
+MySQL Root: $mysql_root
+MySQL App User: crime_analyst
+MySQL App Pass: $mysql_app
+EOF
+
+    # Encrypt with recovery passphrase
+    openssl enc -aes-256-gcm -pbkdf2 -iter 600000 -salt \
+        -in /tmp/creds_plain.txt \
+        -out /home/maverick/.mmp/credentials.enc \
+        -pass pass:"$RECOVERY_PASSPHRASE"
+    
+    # Store magic word info
+    echo "${MAGIC_WORD}:${MAGIC_EXPIRY}" > "$MAGIC_LOCK"
+    
+    # Secure cleanup
+    shred -vfz -n 7 /tmp/creds_plain.txt
+    chown -R maverick:maverick /home/maverick/.mmp
+    chmod 600 /home/maverick/.mmp/credentials.enc
+    chmod 600 "$MAGIC_LOCK"
+    
+    # Store one-time display info (root only)
+    cat > "$ONETIME_CREDS_FILE" << EOF
+RECOVERY_PASSPHRASE=$RECOVERY_PASSPHRASE
+ADMIN_PASSWORD=$admin_pass
+MAGIC_WORD=$MAGIC_WORD
+MAGIC_EXPIRY=$MAGIC_EXPIRY
+EOF
+    chmod 600 "$ONETIME_CREDS_FILE"
+}
+```
+
+### 4. Updated mmp_decrypt Command
+```bash
+# Create mmp_decrypt with passphrase validation
+cat > /usr/local/bin/mmp_decrypt << 'DECRYPTEOF'
+#!/bin/bash
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "                 🔐 MMP CREDENTIALS DECRYPTION"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+
+# Check if running as maverick or root
+if [[ $EUID -ne 0 ]] && [[ "$(whoami)" != "maverick" ]]; then
+    echo "ERROR: Must run as maverick or root"
+    exit 1
+fi
+
+# Anti-brute-force protection
+ATTEMPT_FILE="/tmp/.mmp_decrypt_attempts"
+MAX_ATTEMPTS=3
+LOCKOUT_TIME=300  # 5 minutes
+
+# Check lockout
+if [[ -f "$ATTEMPT_FILE" ]]; then
+    last_attempt=$(stat -c %Y "$ATTEMPT_FILE" 2>/dev/null || echo 0)
+    current_time=$(date +%s)
+    time_diff=$((current_time - last_attempt))
+    
+    attempts=$(cat "$ATTEMPT_FILE" 2>/dev/null || echo
