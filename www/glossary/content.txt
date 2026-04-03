@@ -1,0 +1,713 @@
+# Glossary
+
+MMP Mathematical Core v7.1 Glossary 
+ 
+ /* Reset and Base Styles */
+ * {
+ margin: 0;
+ padding: 0;
+ box-sizing: border-box;
+ }
+ 
+ body {
+ font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, sans-serif;
+ line-height: 1.6;
+ color: #333;
+ background-color: #f5f5f5;
+ }
+ 
+ /* Main Wrapper */
+ .mmp-framework {
+ width: 100%;
+ min-height: 100vh;
+ background-color: white;
+ }
+ 
+ /* Hero Section */
+ .hero-section {
+ background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+ color: white;
+ padding: 3rem 1rem;
+ text-align: center;
+ }
+ 
+ .academic-title {
+ font-size: 2.5rem;
+ font-weight: 700;
+ margin-bottom: 1rem;
+ }
+ 
+ .academic-subtitle {
+ font-size: 1.25rem;
+ opacity: 0.9;
+ margin-bottom: 0.5rem;
+ }
+ 
+ .academic-meta {
+ font-size: 1rem;
+ opacity: 0.8;
+ }
+ 
+ /* Container */
+ .academic-container {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 2rem 1rem;
+ }
+ 
+ /* Sections */
+ section {
+ margin-bottom: 3rem;
+ }
+ 
+ .section-title {
+ font-size: 2rem;
+ color: #1e3c72;
+ margin-bottom: 1.5rem;
+ padding-bottom: 0.5rem;
+ border-bottom: 2px solid #e0e0e0;
+ }
+ 
+ /* Boxes */
+ .nested-box {
+ background-color: #f8f9fa;
+ border: 1px solid #e0e0e0;
+ border-radius: 8px;
+ padding: 1.5rem;
+ margin-bottom: 1rem;
+ transition: box-shadow 0.3s ease;
+ }
+ 
+ .nested-box:hover {
+ box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+ }
+ 
+ .nested-box h3 {
+ color: #2a5298;
+ font-size: 1.25rem;
+ margin-bottom: 0.75rem;
+ }
+ 
+ .nested-box.highlight {
+ background-color: #e8f4f8;
+ border-color: #3498db;
+ }
+ 
+ .nested-box.process {
+ background-color: #f0f9ff;
+ border-color: #60a5fa;
+ }
+ 
+ /* CTA Section */
+ .cta-section {
+ background-color: #f0f7ff;
+ border-radius: 8px;
+ padding: 2rem;
+ margin: 2rem 0;
+ border: 1px solid #d0e7ff;
+ }
+ 
+ .cta-section h2 {
+ color: #1e3c72;
+ margin-bottom: 1rem;
+ }
+ 
+ /* Equations */
+ .equation-container {
+ margin: 1rem 0;
+ text-align: center;
+ }
+ 
+ .equation {
+ display: inline-block;
+ background-color: #f0f0f0;
+ padding: 0.75rem 1.5rem;
+ border-radius: 4px;
+ font-family: \'Courier New\', monospace;
+ font-size: 1.1rem;
+ }
+ 
+ /* Search Box */
+ #glossary-search {
+ width: 100%;
+ padding: 0.75rem;
+ font-size: 1rem;
+ border: 2px solid #3498db;
+ border-radius: 4px;
+ transition: border-color 0.3s ease;
+ }
+ 
+ #glossary-search:focus {
+ outline: none;
+ border-color: #2a5298;
+ }
+ 
+ #search-results {
+ margin-top: 1rem;
+ padding: 0.5rem;
+ min-height: 2rem;
+ }
+ 
+ /* Navigation */
+ nav ul {
+ list-style: none;
+ padding-left: 0;
+ }
+ 
+ nav li {
+ margin-bottom: 0.5rem;
+ }
+ 
+ nav a {
+ text-decoration: none;
+ color: #3498db;
+ transition: color 0.3s ease;
+ }
+ 
+ nav a:hover {
+ color: #2a5298;
+ text-decoration: underline;
+ }
+ 
+ /* Code blocks */
+ code {
+ background-color: #f0f0f0;
+ padding: 0.2rem 0.4rem;
+ border-radius: 3px;
+ font-family: \'Courier New\', monospace;
+ font-size: 0.9em;
+ }
+ 
+ /* Lists */
+ ul {
+ margin-left: 1.5rem;
+ margin-top: 0.5rem;
+ }
+ 
+ li {
+ margin-bottom: 0.5rem;
+ }
+ 
+ /* Footer */
+ .footer {
+ background-color: #f8f9fa;
+ padding: 2rem 1rem;
+ text-align: center;
+ margin-top: 3rem;
+ border-top: 1px solid #e0e0e0;
+ }
+ 
+ /* Responsive */
+ @media (max-width: 768px) {
+ .academic-title {
+ font-size: 2rem;
+ }
+ 
+ .section-title {
+ font-size: 1.5rem;
+ }
+ 
+ .academic-container {
+ padding: 1rem;
+ }
+ }
+ 
+ 
+ 
+ 
+ 
+ 
+ MMP Mathematical Core v7.1 Glossary 
+ Technical Terms and Mathematical Notation Reference 
+ Observer-Prefixed MMP: Comprehensive Terminology Guide 
+ 
+
+ 
+ 
+ 
+ Why \"Glossary\"? 
+ We chose to call this reference a glossary rather than other options we considered: 
+ 
+ Dictionary - Too broad; implies general-purpose alphabetical listing with etymologies 
+ Lexicon - Suggests a complete vocabulary of the field, which this focused subset is not 
+ Terminology - Too generic; doesn\'t convey the reference nature of the document 
+ Nomenclature - Implies a naming system rather than definitions 
+ 
+ A glossary best describes this specialized list of technical terms with definitions, organized by concept to support understanding of the MMP framework. 
+ 
+
+ 
+ 
+ 
+ Quick Search 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ Table of Contents 
+ 
+ By Section 
+ 
+ 
+ ▸ Core Concepts 
+ ▸ Mathematical Symbols & Notation 
+ ▸ State Space Components 
+ ▸ Information Theory Terms 
+ ▸ Cryptographic Elements 
+ ▸ Discretization Functions 
+ ▸ Optimization Metrics 
+ ▸ Consensus Mechanisms 
+ ▸ Physics Constraints 
+ ▸ Implementation Terms 
+ ▸ Acronyms & Abbreviations 
+ ▸ Version-Specific Terms (v7.1) 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ Core Concepts 
+ 
+ Absolute Record Theory 
+ The foundational principle that treats all observations as discrete, deterministic recorded events rather than probabilistic interpretations. If an observation is recorded, it definitively occurred (P = 1). 
+ 
+ 
+ Anomaly Classification 
+ The systematic categorization of unusual or unexplained phenomena based on observable characteristics across multiple dimensions (substrate, observer, medium, kinematics, properties). 
+ 
+ 
+ Byzantine Fault Tolerance 
+ A consensus mechanism that ensures system reliability even when some observers provide incorrect or malicious data. Requires 2f+1 honest observers to overcome f faulty ones. 
+ 
+ 
+ Discrete 
+ Referring to distinct, separate values or states rather than continuous ones. In MMP, observations are treated as discrete recorded events, and continuous parameters are discretized into finite bins for classification and analysis. 
+ 
+ 
+ Dimensions 
+ The five fundamental aspects of the MMP state space: Substrate (S), Observer (O), Medium (M), Kinematics (K), and Properties (P). Each observation is characterized across all five dimensions to create a complete classification. 
+ 
+ 
+ Observation (as a message) 
+ A discrete data packet or message containing recorded information about a phenomenon, including all relevant dimensional data (S, O, M, K, P), timestamps, and cryptographic signatures. Each observation is treated as an immutable record in the distributed ledger. 
+ 
+ 
+
+ 
+ 
+ Mathematical Symbols & Notation 
+ 
+ Primary Symbols 
+ 
+ Ω (Omega) - An individual observation record - the fundamental unit of data in the MMP system 
+ Ψ (Psi) - The universal observation space defined as Ψ = (S, O, M, K, P) encompassing all possible states 
+ ⊕ - Progressive refinement operator used to update records while preserving history 
+ ℏ (h-bar) - Reduced Planck constant (h/2π), fundamental to quantum mechanics uncertainty relations 
+ 
+ 
+ 
+ Logical Operators 
+ 
+ ∀ - Universal quantifier meaning \"for all\" or \"for every\" 
+ ∃! - Unique existence quantifier meaning \"there exists exactly one\" 
+ ⟺ - Logical biconditional meaning \"if and only if\" 
+ ∈ - Set membership operator meaning \"is an element of\" 
+ 
+ 
+ 
+
+ 
+ 
+ State Space Components 
+ 
+ S - Substrate Space 
+ The type of observer making the observation (human, AI, sensor, etc.). Each substrate has inherent observational constraints defined by: 
+ 
+ S_i = (Λ_i, Τ_i, Σ_i, Ε_i) 
+ 
+ 
+ 
+ Substrate 
+ The fundamental observer type or platform making observations. The framework supports any substrate with definable constraints S_i = (Λ_i, Τ_i, Σ_i, Ε_i) representing spectral range, temporal resolution, spatial resolution, and uncertainty. Examples include biological systems, AI, sensors, but the framework is substrate-agnostic by design. 
+ 
+ 
+ O - Observer State Manifold 
+ Complete description of the observer including spacetime coordinates (x, y, z, t) and internal state parameters. 
+ 
+ 
+ M - Medium/Domain Characteristics 
+ Environmental properties through which the observation occurs (e.g., atmospheric conditions, electromagnetic spectrum). 
+ 
+ 
+ Domain 
+ The environmental context or medium in which observations occur, characterized by the M dimension in the state space. The framework provides structure for domain classification but doesn\'t prescribe specific categories - implementations might include atmospheric, underwater, vacuum, etc., based on application needs. 
+ 
+ 
+ K - Kinematic Behavior Space 
+ Motion and trajectory characteristics of observed phenomena, classified into categories like Zero, Linear, Curved, Erratic, Reactive, Periodic, Unknown. 
+ 
+ 
+ Kinematics 
+ The study and classification of motion patterns without considering the forces that cause them. In MMP, kinematics refers to how observed phenomena move through space and time, including velocity, acceleration, trajectory shape, and behavioral patterns like hovering, linear motion, or erratic movement. 
+ 
+ 
+ Observer Discretization (D_O) 
+ Framework function that maps continuous observer states to discrete categories. Example implementation uses gravitational potential (Φ) to classify locations: Earth (Φ ∈ [-62.5, -59.5] MJ/kg), Mars (Φ ∈ [-12.8, -11.2] MJ/kg), etc. The specific categories (E, M, V, L, J, S, I) are application examples, not framework requirements. 
+ 
+ 
+ Hovering (Z) 
+ Kinematic state where an object maintains a relatively fixed position in space with minimal movement. Mathematically defined as: λ 
+ 
+ 
+ Linear Motion (L) 
+ Kinematic state characterized by straight-line movement with minimal deviation. Mathematically defined as: λ ∈ [0.01, 0.1], where λ is the Lyapunov exponent. This range indicates predictable, non-chaotic linear trajectories. 
+ 
+ 
+ Curved Motion (C) 
+ Kinematic state involving smooth, non-linear trajectories such as arcs, circles, or other curved paths. Mathematically defined as: λ ∈ [0.1, 2.0], where λ is the Lyapunov exponent. This range indicates moderately complex but still predictable motion patterns. 
+ 
+ 
+ Erratic Motion (E) 
+ Highly unpredictable movement pattern with rapid, seemingly random changes in direction and speed. Mathematically defined as: λ > 2.0, where λ is the Lyapunov exponent. This high value indicates chaotic, highly divergent trajectory behavior. 
+ 
+ 
+ Reactive Motion (R) 
+ Kinematic behavior where an object\'s movement correlates with observer actions. Mathematically defined as: Cor(Δv, Δv_observer) > 0.7, where Δv represents velocity changes. This correlation threshold of 0.7 indicates the object is responding to or interacting with the observer\'s movements. 
+ 
+ 
+ Periodic Motion (P) 
+ Kinematic state exhibiting repeating patterns or cycles in movement. While not explicitly defined in the mathematical framework shown, this category captures oscillatory, orbital, or other regularly repeating trajectories. 
+ 
+ 
+ Unknown Motion (U) 
+ Kinematic classification used when movement patterns don\'t fit into other categories or when insufficient data prevents accurate classification. This ensures complete coverage of all possible observations. 
+ 
+ 
+ P - Physical Property Space 
+ Measurable physical attributes such as size, temperature, luminosity, mass, etc. 
+ 
+ 
+ RF - Reference Frame 
+ The coordinate system and physical context from which observations are made, including velocity, acceleration, gravitational field, and time synchronization. 
+ 
+ 
+
+ 
+ 
+ Information Theory Terms 
+ 
+ Shannon Entropy H(X) 
+ A measure of information content calculated as: 
+ 
+ H(X) = -Σ p_i log₂(p_i) 
+ 
+ Used to optimize data discretization. 
+ 
+ 
+ Entropy 
+ A fundamental measure of information content or uncertainty in a system. In MMP, entropy quantifies the amount of information in observations and guides optimal discretization. Higher entropy indicates more information or unpredictability, while lower entropy suggests more ordered or predictable patterns. 
+ 
+ 
+ Kullback-Leibler Divergence D_KL 
+ A measure of difference between probability distributions, used to assess consistency between observations. 
+ 
+ 
+ Mutual Information I(X;Y) 
+ The amount of information shared between two variables, used to measure information preservation. 
+ 
+ 
+ Information Preservation 
+ The principle that data transformations should retain as much original information as possible. In MMP, bounded by discretization resolution with the guarantee: H(Original) - H(Encoded) ≤ log₂(bin_count). 
+ 
+ 
+ Information Loss 
+ The reduction in information content when continuous data is discretized or transformed. MMP mathematically bounds this loss to ensure critical observation details are preserved during processing. 
+ 
+ 
+ Bin Count 
+ The number of discrete categories used in discretization. Higher bin counts preserve more information but increase computational complexity, while lower counts simplify processing at the cost of detail. 
+ 
+ 
+
+ 
+ 
+ Cryptographic Elements 
+ 
+ Cryptographic 
+ Relating to the use of mathematical techniques for secure communication and data integrity. In MMP, cryptographic methods ensure observations are tamper-proof, verifiable, and can be traced to their source while optionally preserving observer anonymity through zero-knowledge proofs. 
+ 
+ 
+ Ed25519_pubkey 
+ A public key using the Ed25519 elliptic curve digital signature algorithm for observer identification. 
+ 
+ 
+ Hash Function 
+ Cryptographic function producing unique fixed-size output from variable input, used for creating observation IDs and ensuring data integrity. 
+ 
+ 
+ Zero-Knowledge Proof (ZK_Proof) 
+ Cryptographic method allowing observers to prove they made an observation without revealing their identity. 
+ 
+ 
+ Merkle Root 
+ Root hash of a Merkle tree containing all observations in a block, enabling efficient verification. 
+ 
+ 
+
+ 
+ 
+ Discretization Functions 
+ 
+ Discretization 
+ The process of converting continuous values into discrete categories or bins. In MMP, discretization transforms continuous observations (like position, velocity, or sensor readings) into finite, manageable categories that preserve essential information while enabling efficient classification and consensus building. 
+ 
+ 
+ D_O (Observer Discretization) 
+ Function mapping continuous observer states to discrete categories based on gravitational potential or other physical parameters. 
+ 
+ 
+ Kinematic Discretization (D_K) 
+ Framework function classifying motion patterns using mathematical measures like Lyapunov exponents. The framework defines the mathematical thresholds (λ 2.0 for erratic, etc.) but the specific category labels (Z, L, C, E, R, P, U) are implementation choices that could vary by application. 
+ 
+ 
+ Lyapunov Exponent (λ) 
+ Mathematical measure of trajectory divergence rate, used to classify kinematic behavior patterns. Quantifies how rapidly nearby trajectories separate over time - positive values indicate chaotic/unpredictable motion, near-zero values suggest stable/predictable paths. 
+ 
+ 
+ Trajectory Divergence Rate 
+ The speed at which initially close paths in phase space separate over time. High divergence rates indicate chaotic or erratic behavior, while low rates suggest predictable, stable motion. Used in MMP to classify kinematic patterns. 
+ 
+ 
+
+ 
+ 
+ Optimization Metrics 
+ 
+ r_opt (Optimal Resolution) 
+ The discretization granularity that maximizes the product of entropy, smoothness, and reproducibility. 
+ 
+ 
+ Resolution 
+ The level of detail or granularity in discretization. Higher resolution means more bins and finer distinctions between values, while lower resolution uses fewer, coarser categories. MMP optimizes resolution to balance information preservation with computational efficiency. 
+ 
+ 
+ Coarse 
+ Referring to low-resolution discretization with fewer, broader categories. Coarse binning reduces computational complexity but may lose fine details. MMP\'s adaptive algorithms find the optimal balance between coarse and fine discretization based on the data\'s information content. 
+ 
+ 
+ S(p,r) - Smoothness Metric 
+ Measure of parameter variation smoothness: 
+ 
+ S(p,r) = 1 - Var(∇²p)/⟨∇²p⟩ 
+ 
+ 
+ 
+ Smoothness 
+ A measure of how gradually parameters change across observations. High smoothness indicates gentle transitions without abrupt jumps, while low smoothness suggests rapid changes or discontinuities. The smoothness metric S(p,r) helps determine optimal discretization by favoring resolutions that preserve natural data patterns. 
+ 
+ 
+ R(p,r) - Reproducibility Score 
+ Probability that a pattern will be observed again under similar conditions. 
+ 
+ 
+
+ 
+ 
+ Consensus Mechanisms 
+ 
+ w_i (Weight) 
+ Relative importance assigned to observation i based on consistency with other observations. 
+ 
+ 
+ C(Ω_1, Ω_2) - Consistency Metric 
+ Measure of agreement between two observations, calculated using information-theoretic divergence. 
+ 
+ 
+ Consensus(t) 
+ Weighted average of observations that converges over time as more data accumulates. 
+ 
+ 
+ Byzantine Observer 
+ An observer that provides incorrect, malicious, or faulty data. The MMP system uses Byzantine fault tolerance to maintain reliability even when some observers are compromised, requiring 2f+1 honest observers to overcome f faulty ones. 
+ 
+ 
+ Outlier Detection 
+ Statistical process for identifying observations that deviate significantly from the consensus. Observations beyond 3σ (three standard deviations) from the median are flagged as potential Byzantine observers. 
+ 
+ 
+ Progressive Consensus 
+ The process by which multiple observations gradually converge toward agreement as more data accumulates. Uses weighted averaging based on consistency metrics to build reliable consensus over time. 
+ 
+ 
+
+ 
+ 
+ Physics Constraints 
+ 
+ Heisenberg Uncertainty 
+ Fundamental limit on simultaneous measurement precision: 
+ 
+ δx · δp ≥ ℏ/2 
+ 
+ 
+ 
+ Spacetime Uniqueness Principle 
+ No two observers can occupy identical spacetime coordinates, ensuring observation uniqueness. 
+ 
+ 
+ Gravitational Potential (Φ) 
+ Energy per unit mass in a gravitational field, used for observer location classification (Earth: -62.5 to -59.5 MJ/kg). 
+ 
+ 
+ Spacetime Coordinates 
+ The four-dimensional position (x, y, z, t) that uniquely identifies where and when an observation occurs. In MMP, these coordinates ensure each observation is unique and traceable to a specific location and moment in the universe. 
+ 
+ 
+ Reference Frame 
+ The coordinate system and physical state from which observations are made. Includes velocity, acceleration, gravitational field strength, and time synchronization method. Essential for interpreting observations correctly across different observers. 
+ 
+ 
+ Quantum Observation 
+ Observations of quantum systems where measurement affects the outcome. In MMP, these follow special rules including superposition collapse and complementarity constraints, requiring unique handling in the framework. 
+ 
+ 
+
+ 
+ 
+ Implementation Terms 
+ 
+ Blockchain Height 
+ The number of blocks in the distributed ledger, used as a timestamp reference. 
+ 
+ 
+ Smart Contract 
+ Self-executing code that validates observations and manages the distributed system. 
+ 
+ 
+ Reputation Score 
+ Observer reliability metric: 
+ 
+ reputation_score = validated_observations / total_observations 
+ 
+ 
+ 
+ Gateway Transform 
+ Mathematical function G enabling communication between different substrate types while preserving information. 
+ 
+ 
+ Distributed Ledger 
+ A decentralized database spread across multiple nodes that records all observations immutably. Each block contains observations, cryptographic proofs, and links to previous blocks, creating an tamper-proof chain of records. 
+ 
+ 
+ Observer Registry 
+ Blockchain-based system that tracks and validates observer identities, including their public keys, substrate types, calibration data, and reputation scores. Ensures accountability while supporting anonymous observations through zero-knowledge proofs. 
+ 
+ 
+ Calibration Hash 
+ Cryptographic fingerprint of an observer\'s sensor specifications and configuration. Ensures observers are properly calibrated and allows verification of measurement capabilities without revealing proprietary details. 
+ 
+ 
+ Validated Observations 
+ Observations that have passed consensus requirements and cryptographic verification. These contribute positively to an observer\'s reputation score and become part of the permanent record. 
+ 
+ 
+
+ 
+ 
+ Acronyms & Abbreviations 
+ 
+ 
+ MMP - MetaModal Platform 
+ oMMP - Observer-Prefixed MMP 
+ UTC - Coordinated Universal Time 
+ ZK - Zero-Knowledge 
+ 
+ 
+ 
+
+ 
+ 
+ Version-Specific Terms (v7.1) 
+ 
+ Substrate-Agnostic 
+ System design allowing any type of observer (human, AI, sensor) to contribute equally to the observation pool. 
+ 
+ 
+ Progressive Refinement 
+ Process of improving observation records over time without losing historical data. 
+ 
+ 
+ Information Preservation Bound 
+ Mathematical guarantee that information loss is limited by discretization resolution: 
+ 
+ H(Original) - H(Encoded) ≤ log₂(bin_count) 
+ 
+ 
+ 
+
+ 
+ 
+ © 2025 Eric D. Martin All Rights Reserved. 
+ MMP Mathematical Core v7.1 Glossary - MetaModalPlatform.org 
+ 
+ 
+ 
+
+ 
+ // Simple search functionality
+ document.addEventListener(\'DOMContentLoaded\', function() {
+ const searchInput = document.getElementById(\'glossary-search\');
+ const searchResults = document.getElementById(\'search-results\');
+ 
+ if (searchInput) {
+ searchInput.addEventListener(\'input\', function(e) {
+ const searchTerm = e.target.value.toLowerCase();
+ 
+ if (searchTerm.length {
+ if (term.textContent.toLowerCase().includes(searchTerm)) {
+ const section = term.closest(\'section\');
+ const sectionTitle = section ? section.querySelector(\'.section-title\').textContent : \'Unknown Section\';
+ matches.push({
+ term: term.textContent,
+ section: sectionTitle,
+ element: term.parentElement
+ });
+ }
+ });
+ 
+ if (matches.length > 0) {
+ let html = \' Found \' + matches.length + \' matches: \';
+ matches.forEach(match => {
+ html += \' \' + 
+ match.term + \' (\' + match.section + \') \';
+ });
+ searchResults.innerHTML = html;
+ } else {
+ searchResults.innerHTML = \' No terms found matching \"\' + searchTerm + \'\" \';
+ }
+ });
+ }
+ });
+
+ function scrollToTerm(event, termText) {
+ event.preventDefault();
+ const terms = document.querySelectorAll(\'.nested-box h3\');
+ for (let term of terms) {
+ if (term.textContent === termText) {
+ term.scrollIntoView({ behavior: \'smooth\', block: \'center\' });
+ // Highlight the term briefly
+ const parent = term.parentElement;
+ parent.style.transition = \'background-color 0.3s\';
+ parent.style.backgroundColor = \'#e8f4f8\';
+ setTimeout(() => {
+ parent.style.backgroundColor = \'\';
+ }, 2000);
+ break;
+ }
+ }
+ }

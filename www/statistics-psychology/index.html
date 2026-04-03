@@ -1,0 +1,853 @@
+<!-- Page: Statistics & Psychology | ID: 10 | Source: mmporg_tm2yl.sql -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics in oMMP Mathematics Framework</title>
+    <style>
+/* ==========================================================================
+   MMP FRAMEWORK ACADEMIC DOCUMENTATION CSS
+   Three-Color Meta-Modal-Platform System with Scientific Rigor
+   For Joomla 5.3 Template Override
+   ========================================================================== */
+#sp-main-body {
+    padding: 10px !important;
+}
+/* ROOT COLOR VARIABLES - Semantic Primary Color System */
+:root {
+    /* META Colors (WHERE - Domain/Environment) - Blue for Atmospheric/Spatial */
+    --meta-primary: #1d4ed8;       /* Pure blue - Atmosphere/space/domain */
+    --meta-secondary: #3b82f6;     /* Standard blue - Environmental context */
+    --meta-light: #dbeafe;         /* Light blue background */
+    --meta-dark: #1e3a8a;          /* Navy blue for emphasis */
+    
+    /* MODAL Colors (HOW - Movement/Motion) - Green for Go/Movement */
+    --modal-primary: #16a34a;      /* Pure green - Motion/movement */
+    --modal-secondary: #22c55e;    /* Standard green - Kinematic states */
+    --modal-light: #dcfce7;        /* Light green background */
+    --modal-dark: #15803d;         /* Dark green for emphasis */
+    
+    /* PLATFORM Colors (WHAT - Observable Thing) - Red for Essential Object */
+    --platform-primary: #dc2626;   /* Pure red - The observable thing/shape */
+    --platform-secondary: #ef4444; /* Standard red - Physical manifestation */
+    --platform-light: #fef2f2;     /* Light red background */
+    --platform-dark: #991b1b;      /* Dark red for emphasis */
+    
+    /* Neutral Academic Colors */
+    --neutral-100: #f8fafc;
+    --neutral-200: #e2e8f0;
+    --neutral-300: #cbd5e1;
+    --neutral-400: #94a3b8;
+    --neutral-500: #64748b;
+    --neutral-600: #475569;
+    --neutral-700: #334155;
+    --neutral-800: #1e293b;
+    --neutral-900: #0f172a;
+    
+    /* Academic Typography */
+    --font-academic: "Times New Roman", "Liberation Serif", Georgia, serif;
+    --font-technical: "SF Mono", "Monaco", "Cascadia Code", "Courier New", monospace;
+    --font-interface: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    
+    /* APA Typography Specifications */
+    --font-apa-body: "Times New Roman", serif;
+    --font-apa-size: 12pt;
+    --font-apa-alt: "Arial", sans-serif;
+    --font-apa-alt-size: 11pt;
+    --line-height-apa: 2.0; /* Double spacing */
+    
+    /* Spacing Scale */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-2xl: 3rem;
+}
+
+/* BASE STYLES */
+.mmp-framework {
+    font-family: var(--font-interface);
+    line-height: 1.7;
+    color: var(--neutral-800);
+}
+
+/* ACADEMIC CONTAINER SYSTEM */
+.mmp-framework .academic-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: var(--space-lg);
+    background: white;
+    box-shadow: 0 10px 50px rgba(0,0,0,0.1);
+    border-radius: 12px;
+}
+
+/* HERO SECTIONS */
+.mmp-framework .hero-section {
+    background: var(--meta-primary);
+    color: white;
+    padding: 80px 40px;
+    border-radius: 16px;
+    text-align: center;
+    margin-bottom: 60px;
+    position: relative;
+    overflow: hidden;
+}
+
+.mmp-framework .hero-section.modal-hero {
+    background: var(--modal-primary);
+}
+
+.mmp-framework .hero-section.platform-hero {
+    background: var(--platform-primary);
+}
+
+/* TITLES AND HEADINGS */
+.mmp-framework .academic-title {
+    font-family: var(--font-academic);
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: var(--space-lg);
+    line-height: 1.2;
+}
+
+.mmp-framework .academic-subtitle {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-style: italic;
+    margin-bottom: var(--space-md);
+}
+
+.mmp-framework .academic-meta {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.mmp-framework .section-title {
+    font-family: var(--font-academic);
+    font-weight: 700;
+    color: var(--neutral-800);
+    margin-bottom: var(--space-lg);
+}
+
+/* THREE-COLOR KANBAN CARD SYSTEM */
+.mmp-framework .kanban-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: var(--space-lg);
+    margin: var(--space-xl) 0;
+}
+
+.mmp-framework .kanban-column {
+    background: var(--neutral-100);
+    border-radius: 12px;
+    padding: var(--space-lg);
+    min-height: 300px;
+}
+
+.mmp-framework .kanban-column.meta-column {
+    border-top: 4px solid var(--meta-primary);
+    background: var(--meta-light);
+}
+
+.mmp-framework .kanban-column.modal-column {
+    border-top: 4px solid var(--modal-primary);
+    background: var(--modal-light);
+}
+
+.mmp-framework .kanban-column.platform-column {
+    border-top: 4px solid var(--platform-primary);
+    background: var(--platform-light);
+}
+
+.mmp-framework .kanban-header {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-sm);
+    border-bottom: 2px solid currentColor;
+}
+
+.mmp-framework .meta-column .kanban-header { color: var(--meta-primary); }
+.mmp-framework .modal-column .kanban-header { color: var(--modal-primary); }
+.mmp-framework .platform-column .kanban-header { color: var(--platform-primary); }
+
+/* KANBAN CARDS */
+.mmp-framework .kanban-card {
+    background: white;
+    border-radius: 8px;
+    padding: var(--space-lg);
+    margin-bottom: var(--space-md);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-left: 4px solid;
+    transition: all 0.3s ease;
+}
+
+.mmp-framework .kanban-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.mmp-framework .kanban-card.meta-card { border-left-color: var(--meta-primary); }
+.mmp-framework .kanban-card.modal-card { border-left-color: var(--modal-primary); }
+.mmp-framework .kanban-card.platform-card { border-left-color: var(--platform-primary); }
+
+.mmp-framework .card-title {
+    font-weight: 600;
+    margin-bottom: var(--space-sm);
+    font-size: 1.05rem;
+}
+
+.mmp-framework .meta-card .card-title { color: var(--meta-dark); }
+.mmp-framework .modal-card .card-title { color: var(--modal-dark); }
+.mmp-framework .platform-card .card-title { color: var(--platform-dark); }
+
+/* NESTED CONTENT BOXES */
+.mmp-framework .nested-box {
+    background: var(--neutral-100);
+    border-radius: 6px;
+    padding: var(--space-md);
+    margin: var(--space-sm) 0;
+    border-left: 3px solid var(--neutral-300);
+}
+
+.mmp-framework .nested-box.highlight {
+    background: var(--meta-light);
+    border-left-color: var(--meta-primary);
+}
+
+.mmp-framework .nested-box.process {
+    background: var(--modal-light);
+    border-left-color: var(--modal-primary);
+}
+
+.mmp-framework .nested-box.foundation {
+    background: var(--platform-light);
+    border-left-color: var(--platform-primary);
+}
+
+/* DARK MODE CODE EDITOR STYLING */
+.mmp-framework .code-container {
+    background: #212121;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: var(--space-lg) 0;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.mmp-framework .code-header {
+    background: #1a1a1a;
+    color: #e0e0e0;
+    padding: var(--space-sm) var(--space-lg);
+    font-family: var(--font-technical);
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333;
+}
+
+.mmp-framework .code-title {
+    font-weight: 600;
+}
+
+.mmp-framework .code-content {
+    background: #263238;
+    color: #eeffff;
+    padding: var(--space-lg);
+    font-family: var(--font-technical);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    overflow-x: auto;
+}
+
+/* Syntax Highlighting */
+.mmp-framework .code-content .keyword { color: #c792ea; }
+.mmp-framework .code-content .string { color: #c3e88d; }
+.mmp-framework .code-content .number { color: #f78c6c; }
+.mmp-framework .code-content .comment { color: #546e7a; font-style: italic; }
+.mmp-framework .code-content .function { color: #82aaff; }
+.mmp-framework .code-content .variable { color: #eeffff; }
+
+/* ACADEMIC TABLES */
+.mmp-framework .academic-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--space-xl) 0;
+    font-family: var(--font-apa-body);
+    font-size: 10pt;
+    background: white;
+}
+
+.mmp-framework .academic-table caption {
+    caption-side: top;
+    text-align: left;
+    font-weight: bold;
+    padding: var(--space-md) 0;
+    font-size: 10pt;
+}
+
+.mmp-framework .academic-table .table-number {
+    font-weight: bold;
+}
+
+.mmp-framework .academic-table .table-title {
+    font-weight: normal;
+    font-style: italic;
+    margin-left: var(--space-sm);
+}
+
+.mmp-framework .academic-table th {
+    border-top: 2px solid #000;
+    border-bottom: 1px solid #000;
+    padding: var(--space-sm) var(--space-md);
+    text-align: left;
+    font-weight: bold;
+    background: none;
+    color: inherit;
+}
+
+.mmp-framework .academic-table td {
+    border: none;
+    padding: var(--space-sm) var(--space-md);
+    text-align: left;
+    vertical-align: top;
+}
+
+.mmp-framework .academic-table .numeric {
+    text-align: right;
+}
+
+.mmp-framework .academic-table tbody tr:last-child td {
+    border-bottom: 2px solid #000;
+}
+
+/* EQUATION FORMATTING */
+.mmp-framework .equation-container {
+    margin: var(--space-xl) 0;
+    text-align: center;
+    position: relative;
+}
+
+.mmp-framework .equation {
+    font-family: var(--font-technical);
+    font-size: 1.1rem;
+    padding: var(--space-lg);
+    background: var(--neutral-100);
+    border-radius: 4px;
+    display: inline-block;
+    margin: 0 auto;
+}
+
+.mmp-framework .equation-number {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: bold;
+    background: white;
+    padding: var(--space-xs) var(--space-sm);
+}
+
+/* STATISTICS VISUALIZATION */
+.mmp-framework .stat-visual {
+    background: var(--neutral-100);
+    border-radius: 8px;
+    padding: var(--space-lg);
+    margin: var(--space-lg) 0;
+}
+
+.mmp-framework .stat-formula {
+    font-family: var(--font-technical);
+    background: white;
+    padding: var(--space-md);
+    border-radius: 4px;
+    margin: var(--space-md) 0;
+    border-left: 4px solid var(--modal-primary);
+}
+
+/* INTERACTIVE ELEMENTS */
+.mmp-framework .interactive-demo {
+    background: var(--meta-light);
+    border: 2px solid var(--meta-primary);
+    border-radius: 8px;
+    padding: var(--space-lg);
+    margin: var(--space-lg) 0;
+}
+
+.mmp-framework .demo-controls {
+    display: flex;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+    flex-wrap: wrap;
+}
+
+.mmp-framework .demo-output {
+    background: white;
+    border-radius: 4px;
+    padding: var(--space-md);
+    min-height: 100px;
+}
+
+/* ACTION BUTTONS */
+.mmp-framework .action-button {
+    background: var(--modal-primary);
+    color: white;
+    border: none;
+    padding: var(--space-sm) var(--space-lg);
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    text-decoration: none;
+}
+
+.mmp-framework .action-button:hover {
+    background: var(--modal-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+    color: white;
+    text-decoration: none;
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 768px) {
+    .mmp-framework .academic-container {
+        padding: var(--space-md);
+    }
+    
+    .mmp-framework .kanban-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .mmp-framework .academic-title {
+        font-size: 2rem;
+    }
+    
+    .mmp-framework .hero-section {
+        padding: 40px 20px;
+    }
+}
+</style>
+</head>
+<body>
+<div class="mmp-framework joomla-article">
+    <div class="academic-container">
+        <!-- Hero Section -->
+        <div class="hero-section modal-hero">
+            <h1 class="academic-title">Statistical Methods in oMMP Mathematics Framework</h1>
+            <p class="academic-subtitle">Information Theory, Consensus Building, and Deterministic Observation Analysis</p>
+            <p class="academic-meta">How oMMP Uses Statistics Without Probabilistic Interpretation</p>
+        </div>
+
+        <!-- Introduction -->
+        <section class="intro-section">
+            <h2 class="section-title">The Role of Statistics in oMMP</h2>
+            <p>The oMMP framework takes a unique approach to statistics. While it uses statistical methods for optimization and analysis, it fundamentally treats observations as <strong>deterministic recorded events</strong> rather than probabilistic occurrences. This section explores how statistical tools serve the framework\'s deterministic philosophy.</p>
+            
+            <div class="nested-box highlight">
+                <h3>Key Principle: Absolute Record Theory</h3>
+                <p><strong>∀ Ω ∈ Records: P(Ω occurred) = 1</strong></p>
+                <p>If an observation is recorded, it definitively occurred. There\'s no probability about whether it happened—only about how to optimally process and classify it.</p>
+            </div>
+        </section>
+
+        <!-- Statistical Methods Used -->
+        <section>
+            <h2 class="section-title">Statistical Methods in oMMP</h2>
+            
+            <div class="kanban-container">
+                <!-- Information Theory -->
+                <div class="kanban-column modal-column">
+                    <h3 class="kanban-header">Information Theory</h3>
+                    
+                    <div class="kanban-card modal-card">
+                        <h4 class="card-title">Shannon Entropy</h4>
+                        <div class="stat-formula">
+                            H(X) = -Σ p_i log₂(p_i)
+                        </div>
+                        <p><strong>Purpose:</strong> Measures information content to optimize data discretization</p>
+                        <p><strong>Not for:</strong> Determining observation probability</p>
+                        <p><strong>Used for:</strong> Finding optimal bin sizes that preserve maximum information</p>
+                    </div>
+                    
+                    <div class="kanban-card modal-card">
+                        <h4 class="card-title">Kullback-Leibler Divergence</h4>
+                        <div class="stat-formula">
+                            D_KL(P || Q) = Σ P(x) log(P(x)/Q(x))
+                        </div>
+                        <p><strong>Purpose:</strong> Measures consistency between observations</p>
+                        <p><strong>Application:</strong> Comparing how different observers describe the same event</p>
+                    </div>
+                    
+                    <div class="kanban-card modal-card">
+                        <h4 class="card-title">Mutual Information</h4>
+                        <div class="stat-formula">
+                            I(X;Y) = H(X) + H(Y) - H(X,Y)
+                        </div>
+                        <p><strong>Purpose:</strong> Ensures information preservation during transforms</p>
+                        <p><strong>Constraint:</strong> H(Original) - H(Encoded) ≤ log₂(bin_count)</p>
+                    </div>
+                </div>
+
+                <!-- Consensus Building -->
+                <div class="kanban-column meta-column">
+                    <h3 class="kanban-header">Consensus & Validation</h3>
+                    
+                    <div class="kanban-card meta-card">
+                        <h4 class="card-title">Byzantine Fault Tolerance</h4>
+                        <div class="stat-formula">
+                            Required: observations ≥ 2f + 1
+                        </div>
+                        <p><strong>Statistical Rule:</strong> Need 67% agreement to overcome faulty observers</p>
+                        <p><strong>Not probabilistic:</strong> It\'s a counting rule for reliability</p>
+                    </div>
+                    
+                    <div class="kanban-card meta-card">
+                        <h4 class="card-title">Outlier Detection</h4>
+                        <div class="stat-formula">
+                            |Ω_i - Ω_median| > 3σ → flag
+                        </div>
+                        <p><strong>Purpose:</strong> Identify potentially malicious observers</p>
+                        <p><strong>Action:</strong> Reduce reputation score, require additional validation</p>
+                    </div>
+                    
+                    <div class="kanban-card meta-card">
+                        <h4 class="card-title">Weighted Consensus</h4>
+                        <div class="stat-formula">
+                            w_i = C(Ω_i, Ω_mean) / Σ C(Ω_j, Ω_mean)
+                        </div>
+                        <p><strong>Purpose:</strong> Weight observations by consistency</p>
+                        <p><strong>Result:</strong> More reliable observers have greater influence</p>
+                    </div>
+                </div>
+
+                <!-- Pattern Analysis -->
+                <div class="kanban-column platform-column">
+                    <h3 class="kanban-header">Pattern Classification</h3>
+                    
+                    <div class="kanban-card platform-card">
+                        <h4 class="card-title">Variance Analysis</h4>
+                        <div class="stat-formula">
+                            S(p,r) = 1 - Var(∇²p)/⟨∇²p⟩
+                        </div>
+                        <p><strong>Purpose:</strong> Measure smoothness of discretized data</p>
+                        <p><strong>Application:</strong> Ensure natural patterns aren\'t destroyed by binning</p>
+                    </div>
+                    
+                    <div class="kanban-card platform-card">
+                        <h4 class="card-title">Correlation for Reactivity</h4>
+                        <div class="stat-formula">
+                            Cor(Δv, Δv_observer) > 0.7 → Reactive
+                        </div>
+                        <p><strong>Purpose:</strong> Detect if object responds to observer</p>
+                        <p><strong>Threshold:</strong> 0.7 correlation indicates reactive behavior</p>
+                    </div>
+                    
+                    <div class="kanban-card platform-card">
+                        <h4 class="card-title">Lyapunov Exponents</h4>
+                        <div class="stat-formula">
+                            λ = lim(t→∞) 1/t log|δZ(t)/δZ₀|
+                        </div>
+                        <p><strong>Purpose:</strong> Classify motion patterns mathematically</p>
+                        <p><strong>Ranges:</strong> λ < 0.01 (hovering), λ > 2.0 (erratic)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How Statistics Differ in oMMP -->
+        <section>
+            <h2 class="section-title">How oMMP Statistics Differ from Traditional Approaches</h2>
+            
+            <table class="academic-table">
+                <caption>
+                    <span class="table-number">Table 1.</span>
+                    <span class="table-title">Traditional Statistics vs. oMMP Approach</span>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Aspect</th>
+                        <th>Traditional Statistics</th>
+                        <th>oMMP Framework</th>
+                        <th>Key Difference</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Observation Nature</td>
+                        <td>Probabilistic events</td>
+                        <td>Absolute records</td>
+                        <td>No probability of occurrence</td>
+                    </tr>
+                    <tr>
+                        <td>Uncertainty</td>
+                        <td>Statistical confidence</td>
+                        <td>Physical measurement limits</td>
+                        <td>Heisenberg, not p-values</td>
+                    </tr>
+                    <tr>
+                        <td>Hypothesis Testing</td>
+                        <td>Null hypothesis significance</td>
+                        <td>Consensus validation</td>
+                        <td>Byzantine rules, not p < 0.05</td>
+                    </tr>
+                    <tr>
+                        <td>Central Tendency</td>
+                        <td>Mean as expected value</td>
+                        <td>Median for robustness</td>
+                        <td>Resistant to outliers</td>
+                    </tr>
+                    <tr>
+                        <td>Variance</td>
+                        <td>Spread of distribution</td>
+                        <td>Smoothness metric</td>
+                        <td>Quality of discretization</td>
+                    </tr>
+                    <tr>
+                        <td>Correlation</td>
+                        <td>Relationship strength</td>
+                        <td>Behavioral classification</td>
+                        <td>Threshold for categories</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Interactive Shannon Entropy Demo -->
+        <section>
+            <h2 class="section-title">Interactive Demo: Shannon Entropy in Action</h2>
+            
+            <div class="interactive-demo">
+                <h3>Optimal Resolution Finder</h3>
+                <p>See how Shannon entropy helps find the best discretization for observation data:</p>
+                
+                <div class="demo-controls">
+                    <button class="action-button" onclick="runEntropyDemo(\'low\')">
+                        Low Resolution (5 bins)
+                    </button>
+                    <button class="action-button" onclick="runEntropyDemo(\'optimal\')">
+                        Optimal Resolution
+                    </button>
+                    <button class="action-button" onclick="runEntropyDemo(\'high\')">
+                        High Resolution (50 bins)
+                    </button>
+                </div>
+                
+                <div class="demo-output" id="entropy-output">
+                    <p>Click a button to see how different resolutions affect information preservation and pattern clarity.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Statistical Workflow -->
+        <section>
+            <h2 class="section-title">Statistical Workflow in oMMP</h2>
+            
+            <div class="code-container">
+                <div class="code-header">
+                    <span class="code-title">Complete Statistical Processing Pipeline</span>
+                </div>
+                <div class="code-content">
+<span class="comment">// 1. Receive multiple observations of same event</span>
+<span class="keyword">const</span> observations = [
+    { observer: <span class="string">"pilot_visual"</span>, position: [<span class="number">47.6</span>, <span class="number">-122.3</span>], value: <span class="number">1500</span> },
+    { observer: <span class="string">"radar_system"</span>, position: [<span class="number">47.5</span>, <span class="number">-122.4</span>], value: <span class="number">1520</span> },
+    { observer: <span class="string">"ground_witness"</span>, position: [<span class="number">47.7</span>, <span class="number">-122.2</span>], value: <span class="number">1480</span> },
+    { observer: <span class="string">"flir_camera"</span>, position: [<span class="number">47.6</span>, <span class="number">-122.3</span>], value: <span class="number">1510</span> }
+];
+
+<span class="comment">// 2. Calculate median (not mean) for robustness</span>
+<span class="keyword">const</span> values = observations.<span class="function">map</span>(o => o.value).<span class="function">sort</span>();
+<span class="keyword">const</span> median = values[Math.<span class="function">floor</span>(values.length / <span class="number">2</span>)]; <span class="comment">// 1505</span>
+
+<span class="comment">// 3. Check for outliers using 3σ rule</span>
+<span class="keyword">const</span> std = <span class="function">calculateStdDev</span>(values); <span class="comment">// ~17.08</span>
+<span class="keyword">const</span> outliers = values.<span class="function">filter</span>(v => Math.<span class="function">abs</span>(v - median) > <span class="number">3</span> * std);
+<span class="comment">// No outliers in this case</span>
+
+<span class="comment">// 4. Calculate Shannon entropy for optimal binning</span>
+<span class="keyword">const</span> resolutions = [<span class="number">1</span>, <span class="number">5</span>, <span class="number">10</span>, <span class="number">20</span>, <span class="number">50</span>];
+<span class="keyword">let</span> maxQuality = <span class="number">0</span>, optimalRes = <span class="number">10</span>;
+
+<span class="keyword">for</span> (<span class="keyword">const</span> res <span class="keyword">of</span> resolutions) {
+    <span class="keyword">const</span> H = <span class="function">calculateEntropy</span>(values, res);
+    <span class="keyword">const</span> S = <span class="function">calculateSmoothness</span>(values, res);
+    <span class="keyword">const</span> R = <span class="function">calculateReproducibility</span>(values, res);
+    
+    <span class="keyword">const</span> quality = H * S * R; <span class="comment">// Equation 6</span>
+    <span class="keyword">if</span> (quality > maxQuality) {
+        maxQuality = quality;
+        optimalRes = res;
+    }
+}
+
+<span class="comment">// 5. Apply Byzantine consensus (need 2f+1)</span>
+<span class="keyword">const</span> f = <span class="number">1</span>; <span class="comment">// Max 1 faulty observer</span>
+<span class="keyword">const</span> requiredConsensus = <span class="number">2</span> * f + <span class="number">1</span>; <span class="comment">// Need 3 agreeing</span>
+<span class="keyword">const</span> consensusReached = observations.length >= requiredConsensus;
+
+<span class="comment">// 6. Calculate consistency weights</span>
+<span class="keyword">const</span> weights = observations.<span class="function">map</span>(obs => {
+    <span class="keyword">const</span> consistency = <span class="number">1</span> - Math.<span class="function">abs</span>(obs.value - median) / median;
+    <span class="keyword">return</span> consistency / observations.length;
+});
+
+<span class="comment">// 7. Build final consensus record</span>
+<span class="keyword">const</span> consensus = {
+    value: median,
+    uncertainty: std,
+    resolution: optimalRes,
+    observers: observations.length,
+    byzantine_valid: consensusReached,
+    information_preserved: H * (<span class="number">1</span> - <span class="number">1</span>/optimalRes)
+};</div>
+            </div>
+        </section>
+
+        <!-- Key Takeaways -->
+        <section>
+            <h2 class="section-title">Key Statistical Principles in oMMP</h2>
+            
+            <div class="kanban-container">
+                <div class="kanban-column">
+                    <h3 class="kanban-header" style="color: var(--platform-primary);">Deterministic Foundation</h3>
+                    <ul>
+                        <li>Observations are facts, not probabilities</li>
+                        <li>Statistics optimize processing, not validate existence</li>
+                        <li>No p-values or confidence intervals for events</li>
+                        <li>Uncertainty comes from physics (Heisenberg), not statistics</li>
+                    </ul>
+                </div>
+                
+                <div class="kanban-column">
+                    <h3 class="kanban-header" style="color: var(--modal-primary);">Information Preservation</h3>
+                    <ul>
+                        <li>Shannon entropy guides discretization</li>
+                        <li>Mathematical bounds on information loss</li>
+                        <li>Smoothness metrics prevent over-binning</li>
+                        <li>Reproducibility ensures patterns persist</li>
+                    </ul>
+                </div>
+                
+                <div class="kanban-column">
+                    <h3 class="kanban-header" style="color: var(--meta-primary);">Consensus Without Probability</h3>
+                    <ul>
+                        <li>Byzantine rules replace hypothesis testing</li>
+                        <li>Weighted consensus based on consistency</li>
+                        <li>Outlier detection identifies bad actors</li>
+                        <li>Reputation scores evolve over time</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Conclusion -->
+        <section>
+            <h2 class="section-title">Summary: Statistics as Tools, Not Truth</h2>
+            
+            <div class="nested-box highlight">
+                <p>In the oMMP framework, statistical methods are <strong>optimization and analysis tools</strong>, not arbiters of reality. We use statistics to:</p>
+                <ul>
+                    <li>Find optimal ways to discretize continuous data</li>
+                    <li>Measure consistency between multiple observers</li>
+                    <li>Build consensus without probabilistic voting</li>
+                    <li>Classify patterns mathematically</li>
+                    <li>Detect and handle faulty observers</li>
+                </ul>
+                <p>But we never use statistics to determine whether an observation "really happened"—if it\'s recorded, it\'s real.</p>
+            </div>
+        </section>
+    </div>
+</div>
+
+<script>
+function runEntropyDemo(resolution) {
+    const output = document.getElementById(\'entropy-output\');
+    
+    const demos = {
+        low: {
+            bins: 5,
+            entropy: 2.1,
+            smoothness: 0.95,
+            reproducibility: 0.9,
+            quality: 1.80,
+            info: "Low resolution: High smoothness but loses detail. Like viewing a mountain range from space—you see the general shape but miss the valleys."
+        },
+        optimal: {
+            bins: 17,
+            entropy: 3.8,
+            smoothness: 0.82,
+            reproducibility: 0.85,
+            quality: 2.66,
+            info: "Optimal resolution: Best balance of information, smoothness, and reproducibility. Like viewing from an aircraft—you see both forest and trees."
+        },
+        high: {
+            bins: 50,
+            entropy: 4.9,
+            smoothness: 0.3,
+            reproducibility: 0.4,
+            quality: 0.59,
+            info: "High resolution: Maximum information but noisy and unreproducible. Like using a microscope on a photograph—you see pixels, not the picture."
+        }
+    };
+    
+    const demo = demos[resolution];
+    
+    output.innerHTML = `
+        <h4>Resolution: ${demo.bins} bins</h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 20px 0;">
+            <div style="text-align: center;">
+                <div style="font-size: 2rem; font-weight: bold; color: var(--modal-primary);">${demo.entropy.toFixed(2)}</div>
+                <div>Shannon Entropy</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 2rem; font-weight: bold; color: var(--meta-primary);">${demo.smoothness.toFixed(2)}</div>
+                <div>Smoothness</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 2rem; font-weight: bold; color: var(--platform-primary);">${demo.reproducibility.toFixed(2)}</div>
+                <div>Reproducibility</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 2rem; font-weight: bold; color: var(--neutral-800);">${demo.quality.toFixed(2)}</div>
+                <div>Quality Score</div>
+            </div>
+        </div>
+        <p style="margin-top: 20px;"><strong>Interpretation:</strong> ${demo.info}</p>
+        <div style="margin-top: 15px; padding: 10px; background: var(--neutral-100); border-radius: 4px;">
+            <strong>Formula:</strong> Quality = H(entropy) × S(smoothness) × R(reproducibility)
+        </div>
+    `;
+}
+
+// Helper functions for the code example
+function calculateStdDev(values) {
+    const mean = values.reduce((a, b) => a + b) / values.length;
+    const squareDiffs = values.map(v => Math.pow(v - mean, 2));
+    const avgSquareDiff = squareDiffs.reduce((a, b) => a + b) / values.length;
+    return Math.sqrt(avgSquareDiff);
+}
+
+function calculateEntropy(values, resolution) {
+    // Simplified entropy calculation
+    return Math.log2(resolution) * 0.8;
+}
+
+function calculateSmoothness(values, resolution) {
+    // Simplified smoothness
+    return 1 / (1 + resolution * 0.02);
+}
+
+function calculateReproducibility(values, resolution) {
+    // Simplified reproducibility
+    return 1 / (1 + resolution * 0.015);
+}
+</script>
+</body>
+</html>

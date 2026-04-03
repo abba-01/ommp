@@ -1,0 +1,885 @@
+# Psychology
+
+oMMP Framework in Psychology Statistics 
+ 
+/* ==========================================================================
+ MMP FRAMEWORK ACADEMIC DOCUMENTATION CSS
+ Three-Color Meta-Modal-Platform System with Scientific Rigor
+ For Joomla 5.3 Template Override
+ ========================================================================== */
+#sp-main-body {
+ padding: 10px !important;
+}
+/* ROOT COLOR VARIABLES - Semantic Primary Color System */
+:root {
+ /* META Colors (WHERE - Domain/Environment) - Blue for Atmospheric/Spatial */
+ --meta-primary: #1d4ed8; /* Pure blue - Atmosphere/space/domain */
+ --meta-secondary: #3b82f6; /* Standard blue - Environmental context */
+ --meta-light: #dbeafe; /* Light blue background */
+ --meta-dark: #1e3a8a; /* Navy blue for emphasis */
+ 
+ /* MODAL Colors (HOW - Movement/Motion) - Green for Go/Movement */
+ --modal-primary: #16a34a; /* Pure green - Motion/movement */
+ --modal-secondary: #22c55e; /* Standard green - Kinematic states */
+ --modal-light: #dcfce7; /* Light green background */
+ --modal-dark: #15803d; /* Dark green for emphasis */
+ 
+ /* PLATFORM Colors (WHAT - Observable Thing) - Red for Essential Object */
+ --platform-primary: #dc2626; /* Pure red - The observable thing/shape */
+ --platform-secondary: #ef4444; /* Standard red - Physical manifestation */
+ --platform-light: #fef2f2; /* Light red background */
+ --platform-dark: #991b1b; /* Dark red for emphasis */
+ 
+ /* Neutral Academic Colors */
+ --neutral-100: #f8fafc;
+ --neutral-200: #e2e8f0;
+ --neutral-300: #cbd5e1;
+ --neutral-400: #94a3b8;
+ --neutral-500: #64748b;
+ --neutral-600: #475569;
+ --neutral-700: #334155;
+ --neutral-800: #1e293b;
+ --neutral-900: #0f172a;
+ 
+ /* Academic Typography */
+ --font-academic: \"Times New Roman\", \"Liberation Serif\", Georgia, serif;
+ --font-technical: \"SF Mono\", \"Monaco\", \"Cascadia Code\", \"Courier New\", monospace;
+ --font-interface: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif;
+ 
+ /* APA Typography Specifications */
+ --font-apa-body: \"Times New Roman\", serif;
+ --font-apa-size: 12pt;
+ --font-apa-alt: \"Arial\", sans-serif;
+ --font-apa-alt-size: 11pt;
+ --line-height-apa: 2.0; /* Double spacing */
+ 
+ /* Spacing Scale */
+ --space-xs: 0.25rem;
+ --space-sm: 0.5rem;
+ --space-md: 1rem;
+ --space-lg: 1.5rem;
+ --space-xl: 2rem;
+ --space-2xl: 3rem;
+}
+
+/* BASE STYLES */
+.mmp-framework {
+ font-family: var(--font-interface);
+ line-height: 1.7;
+ color: var(--neutral-800);
+}
+
+/* ACADEMIC CONTAINER SYSTEM */
+.mmp-framework .academic-container {
+ max-width: 1400px;
+ margin: 0 auto;
+ padding: var(--space-lg);
+ background: white;
+ box-shadow: 0 10px 50px rgba(0,0,0,0.1);
+ border-radius: 12px;
+}
+
+/* HERO SECTIONS */
+.mmp-framework .hero-section {
+ background: var(--meta-primary);
+ color: white;
+ padding: 80px 40px;
+ border-radius: 16px;
+ text-align: center;
+ margin-bottom: 60px;
+ position: relative;
+ overflow: hidden;
+}
+
+.mmp-framework .hero-section.platform-hero {
+ background: var(--platform-primary);
+}
+
+/* TITLES AND HEADINGS */
+.mmp-framework .academic-title {
+ font-family: var(--font-academic);
+ font-size: 2.5rem;
+ font-weight: 700;
+ color: white;
+ margin-bottom: var(--space-lg);
+ line-height: 1.2;
+}
+
+.mmp-framework .academic-subtitle {
+ font-size: 1.25rem;
+ color: rgba(255, 255, 255, 0.9);
+ font-style: italic;
+ margin-bottom: var(--space-md);
+}
+
+.mmp-framework .section-title {
+ font-family: var(--font-academic);
+ font-weight: 700;
+ color: var(--neutral-800);
+ margin-bottom: var(--space-lg);
+}
+
+/* THREE-COLOR KANBAN CARD SYSTEM */
+.mmp-framework .kanban-container {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+ gap: var(--space-lg);
+ margin: var(--space-xl) 0;
+}
+
+.mmp-framework .kanban-column {
+ background: var(--neutral-100);
+ border-radius: 12px;
+ padding: var(--space-lg);
+ min-height: 300px;
+}
+
+.mmp-framework .kanban-column.meta-column {
+ border-top: 4px solid var(--meta-primary);
+ background: var(--meta-light);
+}
+
+.mmp-framework .kanban-column.modal-column {
+ border-top: 4px solid var(--modal-primary);
+ background: var(--modal-light);
+}
+
+.mmp-framework .kanban-column.platform-column {
+ border-top: 4px solid var(--platform-primary);
+ background: var(--platform-light);
+}
+
+.mmp-framework .kanban-header {
+ font-weight: 700;
+ font-size: 1.1rem;
+ margin-bottom: var(--space-lg);
+ padding-bottom: var(--space-sm);
+ border-bottom: 2px solid currentColor;
+}
+
+.mmp-framework .meta-column .kanban-header { color: var(--meta-primary); }
+.mmp-framework .modal-column .kanban-header { color: var(--modal-primary); }
+.mmp-framework .platform-column .kanban-header { color: var(--platform-primary); }
+
+/* KANBAN CARDS */
+.mmp-framework .kanban-card {
+ background: white;
+ border-radius: 8px;
+ padding: var(--space-lg);
+ margin-bottom: var(--space-md);
+ box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+ border-left: 4px solid;
+ transition: all 0.3s ease;
+}
+
+.mmp-framework .kanban-card:hover {
+ transform: translateY(-2px);
+ box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.mmp-framework .kanban-card.meta-card { border-left-color: var(--meta-primary); }
+.mmp-framework .kanban-card.modal-card { border-left-color: var(--modal-primary); }
+.mmp-framework .kanban-card.platform-card { border-left-color: var(--platform-primary); }
+
+/* NESTED CONTENT BOXES */
+.mmp-framework .nested-box {
+ background: var(--neutral-100);
+ border-radius: 6px;
+ padding: var(--space-md);
+ margin: var(--space-sm) 0;
+ border-left: 3px solid var(--neutral-300);
+}
+
+.mmp-framework .nested-box.highlight {
+ background: var(--meta-light);
+ border-left-color: var(--meta-primary);
+}
+
+/* DARK MODE CODE EDITOR STYLING */
+.mmp-framework .code-container {
+ background: #212121;
+ border-radius: 8px;
+ overflow: hidden;
+ margin: var(--space-lg) 0;
+ box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.mmp-framework .code-header {
+ background: #1a1a1a;
+ color: #e0e0e0;
+ padding: var(--space-sm) var(--space-lg);
+ font-family: var(--font-technical);
+ font-size: 0.85rem;
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ border-bottom: 1px solid #333;
+}
+
+.mmp-framework .code-content {
+ background: #263238;
+ color: #eeffff;
+ padding: var(--space-lg);
+ font-family: var(--font-technical);
+ font-size: 0.9rem;
+ line-height: 1.6;
+ overflow-x: auto;
+}
+
+/* Syntax Highlighting */
+.mmp-framework .code-content .keyword { color: #c792ea; }
+.mmp-framework .code-content .string { color: #c3e88d; }
+.mmp-framework .code-content .number { color: #f78c6c; }
+.mmp-framework .code-content .comment { color: #546e7a; font-style: italic; }
+.mmp-framework .code-content .function { color: #82aaff; }
+
+/* ACADEMIC TABLES */
+.mmp-framework .academic-table {
+ width: 100%;
+ border-collapse: collapse;
+ margin: var(--space-xl) 0;
+ font-family: var(--font-apa-body);
+ font-size: 10pt;
+ background: white;
+}
+
+.mmp-framework .academic-table caption {
+ caption-side: top;
+ text-align: left;
+ font-weight: bold;
+ padding: var(--space-md) 0;
+ font-size: 10pt;
+}
+
+.mmp-framework .academic-table th {
+ border-top: 2px solid #000;
+ border-bottom: 1px solid #000;
+ padding: var(--space-sm) var(--space-md);
+ text-align: left;
+ font-weight: bold;
+}
+
+.mmp-framework .academic-table td {
+ border: none;
+ padding: var(--space-sm) var(--space-md);
+ text-align: left;
+ vertical-align: top;
+}
+
+.mmp-framework .academic-table .numeric {
+ text-align: right;
+}
+
+.mmp-framework .academic-table tbody tr:last-child td {
+ border-bottom: 2px solid #000;
+}
+
+/* CASE STUDY BOX */
+.mmp-framework .case-study {
+ background: var(--neutral-100);
+ border: 2px solid var(--meta-primary);
+ border-radius: 8px;
+ padding: var(--space-xl);
+ margin: var(--space-xl) 0;
+}
+
+.mmp-framework .case-study-header {
+ font-size: 1.2rem;
+ font-weight: bold;
+ color: var(--meta-primary);
+ margin-bottom: var(--space-md);
+}
+
+/* OBSERVER PERSPECTIVE CARDS */
+.mmp-framework .observer-grid {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+ gap: var(--space-md);
+ margin: var(--space-lg) 0;
+}
+
+.mmp-framework .observer-card {
+ background: white;
+ border: 1px solid var(--neutral-300);
+ border-radius: 6px;
+ padding: var(--space-lg);
+ position: relative;
+}
+
+.mmp-framework .observer-type {
+ position: absolute;
+ top: -12px;
+ left: 20px;
+ background: white;
+ padding: 0 var(--space-sm);
+ font-weight: bold;
+ color: var(--meta-primary);
+ font-size: 0.9rem;
+}
+
+/* ACTION BUTTONS */
+.mmp-framework .action-button {
+ background: var(--modal-primary);
+ color: white;
+ border: none;
+ padding: var(--space-sm) var(--space-lg);
+ border-radius: 6px;
+ font-weight: 600;
+ cursor: pointer;
+ transition: all 0.2s ease;
+ display: inline-flex;
+ align-items: center;
+ gap: var(--space-sm);
+ text-decoration: none;
+}
+
+.mmp-framework .action-button:hover {
+ background: var(--modal-dark);
+ transform: translateY(-1px);
+ box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 768px) {
+ .mmp-framework .academic-container {
+ padding: var(--space-md);
+ }
+ 
+ .mmp-framework .kanban-container {
+ grid-template-columns: 1fr;
+ }
+ 
+ .mmp-framework .observer-grid {
+ grid-template-columns: 1fr;
+ }
+}
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ oMMP Framework in Psychology Statistics 
+ Multi-Observer Consensus Building for Psychological Assessment 
+ Transforming Subjective Observations into Objective Classifications 
+ 
+
+ 
+ 
+ Psychology Meets Substrate-Agnostic Observation 
+ Traditional psychological assessment relies heavily on single-perspective evaluations and probabilistic interpretations. The oMMP framework revolutionizes this by treating all psychological observations—from patient self-reports to clinical assessments to neuroimaging data—as equally valid recorded events that build consensus through multi-substrate analysis. 
+ 
+ 
+ Core Principle for Psychology 
+ Every psychological observation—whether from patient, clinician, test, or scan—is an absolute record of what that observer experienced. The framework doesn\'t ask \"Is the patient really depressed?\" but rather \"How do multiple observers classify this behavioral state?\" 
+ 
+ 
+
+ 
+ 
+ Psychological Observer Substrates 
+ 
+ 
+ 
+ Human Observers (S_human) 
+ 
+ 
+ Patient Self-Report 
+ Strengths: Direct access to internal states 
+ Limitations: Subjective interpretation, memory bias 
+ Example: \"I feel anxious most days\" → K = Periodic 
+ 
+ 
+ 
+ Clinical Observer 
+ Strengths: Professional training, pattern recognition 
+ Limitations: Observer bias, limited time window 
+ Example: \"Flat affect observed\" → P = Restricted 
+ 
+ 
+ 
+ Family/Peer Reports 
+ Strengths: Long-term behavioral patterns 
+ Limitations: Emotional involvement, partial view 
+ Example: \"More withdrawn lately\" → K = Changing 
+ 
+ 
+
+ 
+ Digital Observers (S_digital) 
+ 
+ 
+ Standardized Tests 
+ Examples: PHQ-9, GAD-7, MMPI 
+ Output: Discrete scores with known ranges 
+ Classification: Direct mapping to severity levels 
+ 
+ 
+ 
+ Behavioral Tracking 
+ Examples: Sleep patterns, activity levels 
+ Data: Continuous time series 
+ Analysis: Lyapunov exponents for stability 
+ 
+ 
+ 
+ Digital Biomarkers 
+ Examples: Voice analysis, typing patterns 
+ Metrics: Pause duration, pressure variance 
+ Classification: Pattern deviation from baseline 
+ 
+ 
+
+ 
+ Physiological Observers (S_physio) 
+ 
+ 
+ Neuroimaging 
+ Types: fMRI, EEG, PET 
+ Data: Brain activation patterns 
+ Resolution: Spatial/temporal trade-offs 
+ 
+ 
+ 
+ Autonomic Measures 
+ Metrics: HRV, GSR, cortisol 
+ Temporal: Real-time stress indicators 
+ Objective: Not under conscious control 
+ 
+ 
+ 
+ Genetic Markers 
+ Data: SNPs, methylation patterns 
+ Temporal: Static or slow-changing 
+ Use: Risk factors, not diagnosis 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ Case Study 1: Multi-Observer Depression Assessment 
+ 
+ 
+ Traditional Single-Observer Approach vs. oMMP Multi-Observer Consensus 
+ 
+ Scenario: Adult presenting with potential major depressive disorder 
+ 
+ 
+ 
+ Patient (S_human) 
+ Self-Report Data 
+ 
+ PHQ-9 Score: 16 (moderately severe) 
+ Sleep: \"3-4 hours per night\" 
+ Mood: \"Empty, hopeless\" 
+ Timeline: \"3 months\" 
+ 
+ oMMP: K = Persistent, P = Severe 
+ 
+ 
+ 
+ Clinician (S_human) 
+ Clinical Observation 
+ 
+ Psychomotor retardation observed 
+ Flat affect 
+ Poor eye contact 
+ Coherent but slow speech 
+ 
+ oMMP: K = Stable, P = Restricted 
+ 
+ 
+ 
+ Wearable (S_digital) 
+ Activity Data (30 days) 
+ 
+ Steps/day: 1,200 (↓ 80% from baseline) 
+ Sleep efficiency: 42% 
+ REM latency: 35 min (↓ 50%) 
+ Activity peaks: Absent 
+ 
+ oMMP: K = Diminished, P = Hypoactive 
+ 
+ 
+ 
+ fMRI (S_physio) 
+ Brain Imaging 
+ 
+ Reduced PFC activation 
+ Hyperactive amygdala 
+ Default mode network: Altered 
+ Reward circuit: Hypoactive 
+ 
+ oMMP: K = Altered, P = Dysregulated 
+ 
+ 
+
+ 
+ 
+ oMMP Consensus Building for Depression 
+ 
+ 
+ // Collect observations from all substrates 
+ const observations = [
+ {
+ substrate: \"S_human_patient\" ,
+ scores: { phq9: 16 , sleep_hours: 3.5 , duration_months: 3 },
+ classification: { K: \"Persistent\" , P: \"Severe\" }
+ },
+ {
+ substrate: \"S_human_clinician\" ,
+ observations: [ \"psychomotor_retardation\" , \"flat_affect\" ],
+ classification: { K: \"Stable\" , P: \"Restricted\" }
+ },
+ {
+ substrate: \"S_digital_wearable\" ,
+ metrics: { activity_change: -0.80 , sleep_efficiency: 0.42 },
+ classification: { K: \"Diminished\" , P: \"Hypoactive\" }
+ },
+ {
+ substrate: \"S_physio_fmri\" ,
+ regions: { pfc_activation: -2.3 , amygdala: +3.1 }, // z-scores 
+ classification: { K: \"Altered\" , P: \"Dysregulated\" }
+ }
+];
+
+ // Calculate information consistency between observers 
+ function calculateConsistency (obs1, obs2) {
+ // Simplified: in practice, use proper similarity metrics 
+ const kinematicMatch = obs1.classification.K === obs2.classification.K;
+ const severityCorrelation = correlateSeverity (
+ obs1.classification.P, 
+ obs2.classification.P
+ );
+ return (kinematicMatch ? 0.5 : 0 ) + severityCorrelation * 0.5 ;
+}
+
+ // Apply Byzantine consensus (need 3 of 4 agreeing) 
+ const f = 1 ; // Maximum 1 faulty observer 
+ const consensusThreshold = 2 * f + 1 ; // Need 3 
+
+ // Build consensus classification 
+ const consensus = {
+ diagnosis: \"Major Depressive Episode\" ,
+ confidence: 0.92 , // Based on observer agreement 
+ severity: \"Moderate-Severe\" ,
+ trajectory: \"Stable-Persistent\" ,
+ treatment_indicators: {
+ psychotherapy: \"Strongly indicated\" ,
+ medication: \"Consider based on duration\" ,
+ lifestyle: \"Activity scheduling critical\" 
+ }
+}; 
+ 
+ 
+ 
+
+ 
+ 
+ Case Study 2: Anxiety Pattern Recognition 
+ 
+ 
+ Detecting Reactive vs. Generalized Anxiety Through Multi-Observer Analysis 
+ 
+ 
+ 
+ Table 1. 
+ Multi-Observer Anxiety Classifications 
+ 
+ 
+ 
+ Observer Type 
+ Key Metrics 
+ Kinematic (K) 
+ Pattern (P) 
+ Reactivity 
+ 
+ 
+ 
+ 
+ Patient Report 
+ GAD-7: 14 Worry topics: Multiple 
+ Erratic 
+ Diffuse 
+ Low 
+ 
+ 
+ Ecological Momentary 
+ Anxiety spikes: 5-7 daily Duration: 20-40 min 
+ Periodic 
+ Episodic 
+ High 
+ 
+ 
+ Heart Rate Variability 
+ RMSSD: 22ms LF/HF: 3.2 
+ Dysregulated 
+ Sympathetic 
+ Moderate 
+ 
+ 
+ Cortisol Pattern 
+ CAR: Blunted Diurnal: Flattened 
+ Chronic 
+ Exhausted 
+ Low 
+ 
+ 
+ 
+
+ 
+ oMMP Consensus Finding 
+ The multi-observer data reveals a pattern of Generalized Anxiety with chronic physiological dysregulation rather than specific phobic responses. The low reactivity scores across observers suggest persistent worry rather than situational triggers. 
+ 
+ 
+ 
+
+ 
+ 
+ Shannon Entropy in Psychological Data 
+ 
+ 
+ 
+ Mood Rating Discretization 
+ 
+ Daily mood ratings (1-10 scale) over 90 days need optimal binning: 
+ 
+ 
+ 
+ Finding Optimal Mood Categories 
+ 
+ 
+ // Patient mood ratings over 90 days 
+ const moodRatings = [ 3 , 4 , 3 , 2 , 3 , 5 , 6 , 4 , 3 , ...];
+
+ // Test different discretization schemes 
+ const schemes = {
+ binary: { bins: 2 , labels: [ \"Low\" , \"High\" ] },
+ ternary: { bins: 3 , labels: [ \"Low\" , \"Medium\" , \"High\" ] },
+ clinical: { bins: 4 , labels: [ \"Severe\" , \"Moderate\" , \"Mild\" , \"None\" ] }
+};
+
+ // Shannon entropy reveals clinical (4-bin) preserves most information 
+ // while maintaining interpretability 
+ 
+ 
+ 
+ 
+ Behavioral Pattern Entropy 
+ 
+ Analyzing randomness in daily activities: 
+ 
+ 
+ High Entropy (4.2 bits): Unpredictable schedule, possible mania or ADHD 
+ Low Entropy (1.1 bits): Rigid routine, possible OCD or autism spectrum 
+ Moderate Entropy (2.8 bits): Healthy variation with structure 
+ 
+ 
+ The entropy metric objectively quantifies behavioral flexibility without subjective interpretation. 
+ 
+ 
+ 
+ Response Consistency 
+ 
+ Using KL divergence to detect response patterns: 
+ 
+ 
+ Consistent Responder: 
+ D_KL(Test1 || Test2) = 0.12 
+ 
+ Random Responder: 
+ D_KL(Test1 || Test2) = 2.84 
+ 
+ Threshold: D_KL > 1.5 triggers validity check
+ 
+ 
+ 
+ 
+
+ 
+ 
+ Implementing oMMP in Clinical Practice 
+ 
+ 
+ 
+ Clinical oMMP Assessment Pipeline 
+ 
+ 
+ class ClinicalOMMPAssessment {
+ constructor () {
+ this .observers = [];
+ this .consensusThreshold = 0.7 ;
+ }
+ 
+ // Register all available observers for patient 
+ registerObservers (patientId) {
+ this .observers = [
+ { type: \"S_human\" , source: \"patient_self\" , weight: 1.0 },
+ { type: \"S_human\" , source: \"clinician\" , weight: 1.2 },
+ { type: \"S_digital\" , source: \"PHQ9\" , weight: 0.9 },
+ { type: \"S_digital\" , source: \"wearable\" , weight: 0.8 },
+ { type: \"S_physio\" , source: \"HRV\" , weight: 0.7 }
+ ];
+ }
+ 
+ // Collect observations with timestamps 
+ collectObservations (timeWindow) {
+ return this .observers. map (observer => ({
+ ...observer,
+ data: this . getObserverData (observer, timeWindow),
+ timestamp: Date. now (),
+ uncertainty: this . calculateUncertainty (observer.type)
+ }));
+ }
+ 
+ // Build consensus using Byzantine rules 
+ buildConsensus (observations) {
+ const f = Math. floor (observations.length / 3 );
+ const required = 2 * f + 1 ;
+ 
+ // Group by classification agreement 
+ const classifications = this . groupByAgreement (observations);
+ 
+ // Find majority consensus 
+ for ( const [pattern, supporters] of classifications) {
+ if (supporters.length >= required) {
+ return {
+ consensus: pattern,
+ confidence: supporters.length / observations.length,
+ dissenting: observations.length - supporters.length
+ };
+ }
+ }
+ 
+ return { consensus: \"No consensus\" , confidence: 0 };
+ }
+ 
+ // Generate clinical report 
+ generateReport (consensus, observations) {
+ return {
+ primary_classification: consensus.consensus,
+ confidence_level: consensus.confidence,
+ observer_agreement: this . calculateAgreementMatrix (observations),
+ recommendations: this . deriveRecommendations (consensus),
+ follow_up: this . suggestAdditionalObservers (consensus.confidence)
+ };
+ }
+} 
+ 
+ 
+
+ 
+ 
+ Benefits of oMMP for Psychological Assessment 
+ 
+ 
+ 
+ Reduced Bias 
+ 
+ No single observer dominates diagnosis 
+ Cultural biases diluted across substrates 
+ Subjective interpretations balanced by objective data 
+ Historical bias patterns become visible 
+ 
+ 
+ 
+ 
+ Enhanced Validity 
+ 
+ Multiple convergent data sources 
+ Real-time validation of self-reports 
+ Ecological validity through continuous monitoring 
+ Detection of response biases 
+ 
+ 
+ 
+ 
+ Clinical Utility 
+ 
+ Treatment response tracking across domains 
+ Early warning system for relapse 
+ Personalized intervention timing 
+ Objective progress metrics 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ Future Directions 
+ 
+ 
+ Emerging Observer Substrates for Psychology 
+ 
+ S_social: Social media behavioral patterns, communication analysis 
+ S_genomic: Polygenic risk scores, epigenetic markers 
+ S_microbiome: Gut-brain axis indicators 
+ S_quantum: Quantum cognition models for decision-making 
+ 
+ Each new substrate adds another perspective to the consensus, making psychological assessment more robust and comprehensive. 
+ 
+ 
+
+ 
+ 
+ Conclusion: Objective Classification of Subjective Experience 
+ 
+ The oMMP framework transforms psychological assessment by: 
+ 
+ 
+ Treating all observations as valid data points rather than privileging clinical judgment 
+ Using mathematical consensus instead of subjective interpretation 
+ Enabling continuous assessment through digital and physiological observers 
+ Providing transparent, auditable decision paths for diagnosis and treatment 
+ 
+ 
+ 
+ 
+ Access Implementation Resources
+ 
+ 
+ 
+ 
+ 
+
+ 
+// Helper functions for demonstrations
+function correlateSeverity(p1, p2) {
+ // Simplified severity correlation
+ const severityMap = {
+ \'Severe\': 3,
+ \'Restricted\': 2,
+ \'Moderate\': 2,
+ \'Mild\': 1,
+ \'Hypoactive\': 2,
+ \'Dysregulated\': 3,
+ \'Altered\': 2,
+ \'Diminished\': 2
+ };
+ 
+ const v1 = severityMap[p1] || 0;
+ const v2 = severityMap[p2] || 0;
+ 
+ return 1 - Math.abs(v1 - v2) / 3;
+}
+
+// Interactive elements
+document.addEventListener(\'DOMContentLoaded\', function() {
+ // Add hover effects to observer cards
+ const cards = document.querySelectorAll(\'.observer-card\');
+ cards.forEach(card => {
+ card.addEventListener(\'mouseenter\', function() {
+ this.style.transform = \'translateY(-5px)\';
+ this.style.boxShadow = \'0 8px 16px rgba(0,0,0,0.15)\';
+ });
+ 
+ card.addEventListener(\'mouseleave\', function() {
+ this.style.transform = \'translateY(0)\';
+ this.style.boxShadow = \'none\';
+ });
+ });
+});

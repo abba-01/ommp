@@ -1,0 +1,216 @@
+# Register
+
+MMP Platform Registration 
+ Secure, Private, and Simple Account Creation 
+ Join the MetaModal Platform Community 
+ 
+
+ 
+ 
+ 
+ Quick Registration 
+ Get started in seconds with your Google account: 
+ 
+{JFBCLogin}
+ 
+ No password needed - Google handles your authentication securely 
+ 
+
+ 
+ 
+ Why We Use Google Registration 
+ We\'ve implemented JFBConnect by SourceCoast to provide seamless Google OAuth 2.0 integration. This enterprise-grade Joomla extension ensures: 
+ 
+ We never see or store your password - Your Google credentials stay with Google 
+ No password resets needed - Google handles all authentication 
+ Industry-leading security - Benefit from Google\'s advanced security infrastructure 
+ One less password to remember - Use your existing Google account 
+ Automatic profile sync - Your Google profile information stays up-to-date 
+ 
+ 
+
+ 
+ 
+ How Registration Works 
+ 
+ Simple 3-Step Process 
+ 
+ Click \"Sign in with Google\" - You\'ll be redirected to Google\'s secure login page 
+ Authorize MMP Access - Review and approve the minimal permissions we request 
+ Complete Your Profile - Add optional details to enhance your MMP experience 
+ 
+ The entire process typically takes less than 30 seconds. 
+ 
+ 
+
+ 
+ 
+ What Information We Access 
+ 
+ Minimal Data Collection 
+ When you register with Google, we only request access to: 
+ 
+ Basic Profile Information 
+ 
+ Your name (to personalize your experience) 
+ Your email address (for account notifications) 
+ Your Google profile picture (optional display) 
+ 
+ 
+ OpenID - A unique identifier to create your MMP account 
+ 
+ That\'s it. We don\'t request access to your contacts, files, calendar, or any other Google services. 
+ 
+ 
+
+ 
+ 
+ Our Privacy Commitment 
+ 
+ Your Data, Your Control 
+ Our approach to privacy is simple and transparent: 
+ 
+ No Password Storage - We never store passwords, reducing the risk of credential theft 
+ Encrypted Sessions - All communication uses industry-standard TLS encryption 
+ No Data Selling - Your information is never sold to third parties 
+ Minimal Retention - We only keep data necessary for platform functionality 
+ GDPR Compliant - Full compliance with international privacy regulations 
+ 
+ 
+
+ 
+ Data Deletion Rights 
+ You maintain complete control over your data: 
+ 
+ Request data export at any time 
+ Delete your account and all associated data 
+ Revoke Google permissions through your Google account settings 
+ 
+ 
+ 
+
+ 
+ 
+ Security Benefits 
+ 
+ Enterprise-Grade Protection 
+ By using Google authentication, you automatically benefit from: 
+ 
+ Two-Factor Authentication (2FA) - If enabled on your Google account 
+ Advanced Threat Detection - Google\'s AI-powered security monitoring 
+ Account Recovery Options - Through Google\'s proven recovery systems 
+ No MMP-Specific Attack Surface - We don\'t store credentials that could be compromised 
+ 
+ 
+ 
+
+ 
+ 
+ Alternative Registration Options 
+ 
+ Coming Soon 
+ While Google registration is our primary method, we\'re working on additional options: 
+ 
+ Email + Magic Link - Passwordless email authentication (Q2 2025) 
+ Other OAuth Providers - GitHub, Microsoft, and Apple sign-in (Q3 2025) 
+ Anonymous Observations - Submit data without registration using zero-knowledge proofs 
+ 
+ These options will maintain our same high security and privacy standards. 
+ 
+ 
+
+ 
+ 
+ Ready to Get Started? 
+ 
+ Join the MMP Community Today 
+ Registration takes less than 30 seconds and gives you access to all platform features. 
+ 
+ 
+{JFBCLogin}
+ 
+ 
+ 
+ 
+ 
+ 
+By registering, you agree to our Terms of Service and Privacy Policy 
+ 
+ 
+ 
+
+ 
+ 
+ Frequently Asked Questions 
+ 
+ Do I need a Google account? 
+ Currently, yes. Google registration is our primary authentication method. If you don\'t have a Google account, you can create one for free at accounts.google.com. We\'re working on alternative registration methods for future releases. 
+ 
+ 
+ Can I change my email address later? 
+ Your primary email is linked to your Google account. You can add alternative contact emails in your MMP profile settings, but your login will always use your Google account. 
+ 
+ 
+ What if I want to delete my account? 
+ You can delete your MMP account at any time from your account settings. This will remove all your data from our systems. You can also revoke MMP\'s access through your Google account settings without deleting your MMP account. 
+ 
+ 
+ Is my Google data safe? 
+ Absolutely. We use Google\'s official OAuth 2.0 implementation, which means we never see your Google password. We only access the minimal information needed to create your account (name, email, and profile picture). All other Google data remains private. 
+ 
+ 
+
+ 
+ 
+ © 2025 Eric D. Martin All Rights Reserved. 
+ MMP Platform Registration - MetaModalPlatform.org 
+ Powered by JFBConnect from SourceCoast 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+
+ 
+ 
+
+ 
+ 
+/* Custom styling for JFBConnect Google button */
+.jfbconnect-login-button {
+ margin: 1rem 0;
+}
+
+.jfbc-login.google {
+ background-color: #4285f4 !important;
+ color: white !important;
+ padding: 0.75rem 1.5rem !important;
+ border-radius: 4px !important;
+ font-size: 1rem !important;
+ border: none !important;
+ cursor: pointer !important;
+ transition: background-color 0.3s !important;
+}
+
+.jfbc-login.google:hover {
+ background-color: #357ae8 !important;
+}
+
+/* Module wrapper styling */
+.sclogin-joomla-login {
+ background-color: #f8f9fa;
+ padding: 1.5rem;
+ border-radius: 8px;
+ margin: 1rem 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+ .jfbc-login.google {
+ width: 100%;
+ display: block;
+ }
+}

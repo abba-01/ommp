@@ -1,0 +1,892 @@
+<!-- Page: Psychology | ID: 11 | Source: mmporg_tm2yl.sql -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>oMMP Framework in Psychology Statistics</title>
+    <style>
+/* ==========================================================================
+   MMP FRAMEWORK ACADEMIC DOCUMENTATION CSS
+   Three-Color Meta-Modal-Platform System with Scientific Rigor
+   For Joomla 5.3 Template Override
+   ========================================================================== */
+#sp-main-body {
+    padding: 10px !important;
+}
+/* ROOT COLOR VARIABLES - Semantic Primary Color System */
+:root {
+    /* META Colors (WHERE - Domain/Environment) - Blue for Atmospheric/Spatial */
+    --meta-primary: #1d4ed8;       /* Pure blue - Atmosphere/space/domain */
+    --meta-secondary: #3b82f6;     /* Standard blue - Environmental context */
+    --meta-light: #dbeafe;         /* Light blue background */
+    --meta-dark: #1e3a8a;          /* Navy blue for emphasis */
+    
+    /* MODAL Colors (HOW - Movement/Motion) - Green for Go/Movement */
+    --modal-primary: #16a34a;      /* Pure green - Motion/movement */
+    --modal-secondary: #22c55e;    /* Standard green - Kinematic states */
+    --modal-light: #dcfce7;        /* Light green background */
+    --modal-dark: #15803d;         /* Dark green for emphasis */
+    
+    /* PLATFORM Colors (WHAT - Observable Thing) - Red for Essential Object */
+    --platform-primary: #dc2626;   /* Pure red - The observable thing/shape */
+    --platform-secondary: #ef4444; /* Standard red - Physical manifestation */
+    --platform-light: #fef2f2;     /* Light red background */
+    --platform-dark: #991b1b;      /* Dark red for emphasis */
+    
+    /* Neutral Academic Colors */
+    --neutral-100: #f8fafc;
+    --neutral-200: #e2e8f0;
+    --neutral-300: #cbd5e1;
+    --neutral-400: #94a3b8;
+    --neutral-500: #64748b;
+    --neutral-600: #475569;
+    --neutral-700: #334155;
+    --neutral-800: #1e293b;
+    --neutral-900: #0f172a;
+    
+    /* Academic Typography */
+    --font-academic: "Times New Roman", "Liberation Serif", Georgia, serif;
+    --font-technical: "SF Mono", "Monaco", "Cascadia Code", "Courier New", monospace;
+    --font-interface: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    
+    /* APA Typography Specifications */
+    --font-apa-body: "Times New Roman", serif;
+    --font-apa-size: 12pt;
+    --font-apa-alt: "Arial", sans-serif;
+    --font-apa-alt-size: 11pt;
+    --line-height-apa: 2.0; /* Double spacing */
+    
+    /* Spacing Scale */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-2xl: 3rem;
+}
+
+/* BASE STYLES */
+.mmp-framework {
+    font-family: var(--font-interface);
+    line-height: 1.7;
+    color: var(--neutral-800);
+}
+
+/* ACADEMIC CONTAINER SYSTEM */
+.mmp-framework .academic-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: var(--space-lg);
+    background: white;
+    box-shadow: 0 10px 50px rgba(0,0,0,0.1);
+    border-radius: 12px;
+}
+
+/* HERO SECTIONS */
+.mmp-framework .hero-section {
+    background: var(--meta-primary);
+    color: white;
+    padding: 80px 40px;
+    border-radius: 16px;
+    text-align: center;
+    margin-bottom: 60px;
+    position: relative;
+    overflow: hidden;
+}
+
+.mmp-framework .hero-section.platform-hero {
+    background: var(--platform-primary);
+}
+
+/* TITLES AND HEADINGS */
+.mmp-framework .academic-title {
+    font-family: var(--font-academic);
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: var(--space-lg);
+    line-height: 1.2;
+}
+
+.mmp-framework .academic-subtitle {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-style: italic;
+    margin-bottom: var(--space-md);
+}
+
+.mmp-framework .section-title {
+    font-family: var(--font-academic);
+    font-weight: 700;
+    color: var(--neutral-800);
+    margin-bottom: var(--space-lg);
+}
+
+/* THREE-COLOR KANBAN CARD SYSTEM */
+.mmp-framework .kanban-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: var(--space-lg);
+    margin: var(--space-xl) 0;
+}
+
+.mmp-framework .kanban-column {
+    background: var(--neutral-100);
+    border-radius: 12px;
+    padding: var(--space-lg);
+    min-height: 300px;
+}
+
+.mmp-framework .kanban-column.meta-column {
+    border-top: 4px solid var(--meta-primary);
+    background: var(--meta-light);
+}
+
+.mmp-framework .kanban-column.modal-column {
+    border-top: 4px solid var(--modal-primary);
+    background: var(--modal-light);
+}
+
+.mmp-framework .kanban-column.platform-column {
+    border-top: 4px solid var(--platform-primary);
+    background: var(--platform-light);
+}
+
+.mmp-framework .kanban-header {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-sm);
+    border-bottom: 2px solid currentColor;
+}
+
+.mmp-framework .meta-column .kanban-header { color: var(--meta-primary); }
+.mmp-framework .modal-column .kanban-header { color: var(--modal-primary); }
+.mmp-framework .platform-column .kanban-header { color: var(--platform-primary); }
+
+/* KANBAN CARDS */
+.mmp-framework .kanban-card {
+    background: white;
+    border-radius: 8px;
+    padding: var(--space-lg);
+    margin-bottom: var(--space-md);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-left: 4px solid;
+    transition: all 0.3s ease;
+}
+
+.mmp-framework .kanban-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.mmp-framework .kanban-card.meta-card { border-left-color: var(--meta-primary); }
+.mmp-framework .kanban-card.modal-card { border-left-color: var(--modal-primary); }
+.mmp-framework .kanban-card.platform-card { border-left-color: var(--platform-primary); }
+
+/* NESTED CONTENT BOXES */
+.mmp-framework .nested-box {
+    background: var(--neutral-100);
+    border-radius: 6px;
+    padding: var(--space-md);
+    margin: var(--space-sm) 0;
+    border-left: 3px solid var(--neutral-300);
+}
+
+.mmp-framework .nested-box.highlight {
+    background: var(--meta-light);
+    border-left-color: var(--meta-primary);
+}
+
+/* DARK MODE CODE EDITOR STYLING */
+.mmp-framework .code-container {
+    background: #212121;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: var(--space-lg) 0;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.mmp-framework .code-header {
+    background: #1a1a1a;
+    color: #e0e0e0;
+    padding: var(--space-sm) var(--space-lg);
+    font-family: var(--font-technical);
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333;
+}
+
+.mmp-framework .code-content {
+    background: #263238;
+    color: #eeffff;
+    padding: var(--space-lg);
+    font-family: var(--font-technical);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    overflow-x: auto;
+}
+
+/* Syntax Highlighting */
+.mmp-framework .code-content .keyword { color: #c792ea; }
+.mmp-framework .code-content .string { color: #c3e88d; }
+.mmp-framework .code-content .number { color: #f78c6c; }
+.mmp-framework .code-content .comment { color: #546e7a; font-style: italic; }
+.mmp-framework .code-content .function { color: #82aaff; }
+
+/* ACADEMIC TABLES */
+.mmp-framework .academic-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--space-xl) 0;
+    font-family: var(--font-apa-body);
+    font-size: 10pt;
+    background: white;
+}
+
+.mmp-framework .academic-table caption {
+    caption-side: top;
+    text-align: left;
+    font-weight: bold;
+    padding: var(--space-md) 0;
+    font-size: 10pt;
+}
+
+.mmp-framework .academic-table th {
+    border-top: 2px solid #000;
+    border-bottom: 1px solid #000;
+    padding: var(--space-sm) var(--space-md);
+    text-align: left;
+    font-weight: bold;
+}
+
+.mmp-framework .academic-table td {
+    border: none;
+    padding: var(--space-sm) var(--space-md);
+    text-align: left;
+    vertical-align: top;
+}
+
+.mmp-framework .academic-table .numeric {
+    text-align: right;
+}
+
+.mmp-framework .academic-table tbody tr:last-child td {
+    border-bottom: 2px solid #000;
+}
+
+/* CASE STUDY BOX */
+.mmp-framework .case-study {
+    background: var(--neutral-100);
+    border: 2px solid var(--meta-primary);
+    border-radius: 8px;
+    padding: var(--space-xl);
+    margin: var(--space-xl) 0;
+}
+
+.mmp-framework .case-study-header {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--meta-primary);
+    margin-bottom: var(--space-md);
+}
+
+/* OBSERVER PERSPECTIVE CARDS */
+.mmp-framework .observer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-md);
+    margin: var(--space-lg) 0;
+}
+
+.mmp-framework .observer-card {
+    background: white;
+    border: 1px solid var(--neutral-300);
+    border-radius: 6px;
+    padding: var(--space-lg);
+    position: relative;
+}
+
+.mmp-framework .observer-type {
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: white;
+    padding: 0 var(--space-sm);
+    font-weight: bold;
+    color: var(--meta-primary);
+    font-size: 0.9rem;
+}
+
+/* ACTION BUTTONS */
+.mmp-framework .action-button {
+    background: var(--modal-primary);
+    color: white;
+    border: none;
+    padding: var(--space-sm) var(--space-lg);
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    text-decoration: none;
+}
+
+.mmp-framework .action-button:hover {
+    background: var(--modal-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 768px) {
+    .mmp-framework .academic-container {
+        padding: var(--space-md);
+    }
+    
+    .mmp-framework .kanban-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .mmp-framework .observer-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+<body>
+<div class="mmp-framework joomla-article">
+    <div class="academic-container">
+        <!-- Hero Section -->
+        <div class="hero-section platform-hero">
+            <h1 class="academic-title">oMMP Framework in Psychology Statistics</h1>
+            <p class="academic-subtitle">Multi-Observer Consensus Building for Psychological Assessment</p>
+            <p class="academic-meta">Transforming Subjective Observations into Objective Classifications</p>
+        </div>
+
+        <!-- Introduction -->
+        <section class="intro-section">
+            <h2 class="section-title">Psychology Meets Substrate-Agnostic Observation</h2>
+            <p>Traditional psychological assessment relies heavily on single-perspective evaluations and probabilistic interpretations. The oMMP framework revolutionizes this by treating all psychological observations—from patient self-reports to clinical assessments to neuroimaging data—as equally valid recorded events that build consensus through multi-substrate analysis.</p>
+            
+            <div class="nested-box highlight">
+                <h3>Core Principle for Psychology</h3>
+                <p>Every psychological observation—whether from patient, clinician, test, or scan—is an absolute record of what that observer experienced. The framework doesn\'t ask "Is the patient really depressed?" but rather "How do multiple observers classify this behavioral state?"</p>
+            </div>
+        </section>
+
+        <!-- Observer Types in Psychology -->
+        <section>
+            <h2 class="section-title">Psychological Observer Substrates</h2>
+            
+            <div class="kanban-container">
+                <div class="kanban-column platform-column">
+                    <h3 class="kanban-header">Human Observers (S_human)</h3>
+                    
+                    <div class="kanban-card platform-card">
+                        <h4 class="card-title">Patient Self-Report</h4>
+                        <p><strong>Strengths:</strong> Direct access to internal states</p>
+                        <p><strong>Limitations:</strong> Subjective interpretation, memory bias</p>
+                        <p><strong>Example:</strong> "I feel anxious most days" → K = Periodic</p>
+                    </div>
+                    
+                    <div class="kanban-card platform-card">
+                        <h4 class="card-title">Clinical Observer</h4>
+                        <p><strong>Strengths:</strong> Professional training, pattern recognition</p>
+                        <p><strong>Limitations:</strong> Observer bias, limited time window</p>
+                        <p><strong>Example:</strong> "Flat affect observed" → P = Restricted</p>
+                    </div>
+                    
+                    <div class="kanban-card platform-card">
+                        <h4 class="card-title">Family/Peer Reports</h4>
+                        <p><strong>Strengths:</strong> Long-term behavioral patterns</p>
+                        <p><strong>Limitations:</strong> Emotional involvement, partial view</p>
+                        <p><strong>Example:</strong> "More withdrawn lately" → K = Changing</p>
+                    </div>
+                </div>
+
+                <div class="kanban-column modal-column">
+                    <h3 class="kanban-header">Digital Observers (S_digital)</h3>
+                    
+                    <div class="kanban-card modal-card">
+                        <h4 class="card-title">Standardized Tests</h4>
+                        <p><strong>Examples:</strong> PHQ-9, GAD-7, MMPI</p>
+                        <p><strong>Output:</strong> Discrete scores with known ranges</p>
+                        <p><strong>Classification:</strong> Direct mapping to severity levels</p>
+                    </div>
+                    
+                    <div class="kanban-card modal-card">
+                        <h4 class="card-title">Behavioral Tracking</h4>
+                        <p><strong>Examples:</strong> Sleep patterns, activity levels</p>
+                        <p><strong>Data:</strong> Continuous time series</p>
+                        <p><strong>Analysis:</strong> Lyapunov exponents for stability</p>
+                    </div>
+                    
+                    <div class="kanban-card modal-card">
+                        <h4 class="card-title">Digital Biomarkers</h4>
+                        <p><strong>Examples:</strong> Voice analysis, typing patterns</p>
+                        <p><strong>Metrics:</strong> Pause duration, pressure variance</p>
+                        <p><strong>Classification:</strong> Pattern deviation from baseline</p>
+                    </div>
+                </div>
+
+                <div class="kanban-column meta-column">
+                    <h3 class="kanban-header">Physiological Observers (S_physio)</h3>
+                    
+                    <div class="kanban-card meta-card">
+                        <h4 class="card-title">Neuroimaging</h4>
+                        <p><strong>Types:</strong> fMRI, EEG, PET</p>
+                        <p><strong>Data:</strong> Brain activation patterns</p>
+                        <p><strong>Resolution:</strong> Spatial/temporal trade-offs</p>
+                    </div>
+                    
+                    <div class="kanban-card meta-card">
+                        <h4 class="card-title">Autonomic Measures</h4>
+                        <p><strong>Metrics:</strong> HRV, GSR, cortisol</p>
+                        <p><strong>Temporal:</strong> Real-time stress indicators</p>
+                        <p><strong>Objective:</strong> Not under conscious control</p>
+                    </div>
+                    
+                    <div class="kanban-card meta-card">
+                        <h4 class="card-title">Genetic Markers</h4>
+                        <p><strong>Data:</strong> SNPs, methylation patterns</p>
+                        <p><strong>Temporal:</strong> Static or slow-changing</p>
+                        <p><strong>Use:</strong> Risk factors, not diagnosis</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Case Study 1: Depression Assessment -->
+        <section>
+            <h2 class="section-title">Case Study 1: Multi-Observer Depression Assessment</h2>
+            
+            <div class="case-study">
+                <div class="case-study-header">Traditional Single-Observer Approach vs. oMMP Multi-Observer Consensus</div>
+                
+                <h3>Scenario: Adult presenting with potential major depressive disorder</h3>
+                
+                <div class="observer-grid">
+                    <div class="observer-card">
+                        <span class="observer-type">Patient (S_human)</span>
+                        <h4>Self-Report Data</h4>
+                        <ul>
+                            <li>PHQ-9 Score: 16 (moderately severe)</li>
+                            <li>Sleep: "3-4 hours per night"</li>
+                            <li>Mood: "Empty, hopeless"</li>
+                            <li>Timeline: "3 months"</li>
+                        </ul>
+                        <p><strong>oMMP:</strong> K = Persistent, P = Severe</p>
+                    </div>
+                    
+                    <div class="observer-card">
+                        <span class="observer-type">Clinician (S_human)</span>
+                        <h4>Clinical Observation</h4>
+                        <ul>
+                            <li>Psychomotor retardation observed</li>
+                            <li>Flat affect</li>
+                            <li>Poor eye contact</li>
+                            <li>Coherent but slow speech</li>
+                        </ul>
+                        <p><strong>oMMP:</strong> K = Stable, P = Restricted</p>
+                    </div>
+                    
+                    <div class="observer-card">
+                        <span class="observer-type">Wearable (S_digital)</span>
+                        <h4>Activity Data (30 days)</h4>
+                        <ul>
+                            <li>Steps/day: 1,200 (↓ 80% from baseline)</li>
+                            <li>Sleep efficiency: 42%</li>
+                            <li>REM latency: 35 min (↓ 50%)</li>
+                            <li>Activity peaks: Absent</li>
+                        </ul>
+                        <p><strong>oMMP:</strong> K = Diminished, P = Hypoactive</p>
+                    </div>
+                    
+                    <div class="observer-card">
+                        <span class="observer-type">fMRI (S_physio)</span>
+                        <h4>Brain Imaging</h4>
+                        <ul>
+                            <li>Reduced PFC activation</li>
+                            <li>Hyperactive amygdala</li>
+                            <li>Default mode network: Altered</li>
+                            <li>Reward circuit: Hypoactive</li>
+                        </ul>
+                        <p><strong>oMMP:</strong> K = Altered, P = Dysregulated</p>
+                    </div>
+                </div>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-title">oMMP Consensus Building for Depression</span>
+                    </div>
+                    <div class="code-content">
+<span class="comment">// Collect observations from all substrates</span>
+<span class="keyword">const</span> observations = [
+    {
+        substrate: <span class="string">"S_human_patient"</span>,
+        scores: { phq9: <span class="number">16</span>, sleep_hours: <span class="number">3.5</span>, duration_months: <span class="number">3</span> },
+        classification: { K: <span class="string">"Persistent"</span>, P: <span class="string">"Severe"</span> }
+    },
+    {
+        substrate: <span class="string">"S_human_clinician"</span>,
+        observations: [<span class="string">"psychomotor_retardation"</span>, <span class="string">"flat_affect"</span>],
+        classification: { K: <span class="string">"Stable"</span>, P: <span class="string">"Restricted"</span> }
+    },
+    {
+        substrate: <span class="string">"S_digital_wearable"</span>,
+        metrics: { activity_change: <span class="number">-0.80</span>, sleep_efficiency: <span class="number">0.42</span> },
+        classification: { K: <span class="string">"Diminished"</span>, P: <span class="string">"Hypoactive"</span> }
+    },
+    {
+        substrate: <span class="string">"S_physio_fmri"</span>,
+        regions: { pfc_activation: <span class="number">-2.3</span>, amygdala: <span class="number">+3.1</span> }, <span class="comment">// z-scores</span>
+        classification: { K: <span class="string">"Altered"</span>, P: <span class="string">"Dysregulated"</span> }
+    }
+];
+
+<span class="comment">// Calculate information consistency between observers</span>
+<span class="keyword">function</span> <span class="function">calculateConsistency</span>(obs1, obs2) {
+    <span class="comment">// Simplified: in practice, use proper similarity metrics</span>
+    <span class="keyword">const</span> kinematicMatch = obs1.classification.K === obs2.classification.K;
+    <span class="keyword">const</span> severityCorrelation = <span class="function">correlateSeverity</span>(
+        obs1.classification.P, 
+        obs2.classification.P
+    );
+    <span class="keyword">return</span> (kinematicMatch ? <span class="number">0.5</span> : <span class="number">0</span>) + severityCorrelation * <span class="number">0.5</span>;
+}
+
+<span class="comment">// Apply Byzantine consensus (need 3 of 4 agreeing)</span>
+<span class="keyword">const</span> f = <span class="number">1</span>; <span class="comment">// Maximum 1 faulty observer</span>
+<span class="keyword">const</span> consensusThreshold = <span class="number">2</span> * f + <span class="number">1</span>; <span class="comment">// Need 3</span>
+
+<span class="comment">// Build consensus classification</span>
+<span class="keyword">const</span> consensus = {
+    diagnosis: <span class="string">"Major Depressive Episode"</span>,
+    confidence: <span class="number">0.92</span>, <span class="comment">// Based on observer agreement</span>
+    severity: <span class="string">"Moderate-Severe"</span>,
+    trajectory: <span class="string">"Stable-Persistent"</span>,
+    treatment_indicators: {
+        psychotherapy: <span class="string">"Strongly indicated"</span>,
+        medication: <span class="string">"Consider based on duration"</span>,
+        lifestyle: <span class="string">"Activity scheduling critical"</span>
+    }
+};</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Case Study 2: Anxiety Disorder -->
+        <section>
+            <h2 class="section-title">Case Study 2: Anxiety Pattern Recognition</h2>
+            
+            <div class="case-study">
+                <div class="case-study-header">Detecting Reactive vs. Generalized Anxiety Through Multi-Observer Analysis</div>
+                
+                <table class="academic-table">
+                    <caption>
+                        <span class="table-number">Table 1.</span>
+                        <span class="table-title">Multi-Observer Anxiety Classifications</span>
+                    </caption>
+                    <thead>
+                        <tr>
+                            <th>Observer Type</th>
+                            <th>Key Metrics</th>
+                            <th>Kinematic (K)</th>
+                            <th>Pattern (P)</th>
+                            <th>Reactivity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Patient Report</td>
+                            <td>GAD-7: 14<br>Worry topics: Multiple</td>
+                            <td>Erratic</td>
+                            <td>Diffuse</td>
+                            <td>Low</td>
+                        </tr>
+                        <tr>
+                            <td>Ecological Momentary</td>
+                            <td>Anxiety spikes: 5-7 daily<br>Duration: 20-40 min</td>
+                            <td>Periodic</td>
+                            <td>Episodic</td>
+                            <td>High</td>
+                        </tr>
+                        <tr>
+                            <td>Heart Rate Variability</td>
+                            <td>RMSSD: 22ms<br>LF/HF: 3.2</td>
+                            <td>Dysregulated</td>
+                            <td>Sympathetic</td>
+                            <td>Moderate</td>
+                        </tr>
+                        <tr>
+                            <td>Cortisol Pattern</td>
+                            <td>CAR: Blunted<br>Diurnal: Flattened</td>
+                            <td>Chronic</td>
+                            <td>Exhausted</td>
+                            <td>Low</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="nested-box highlight">
+                    <h4>oMMP Consensus Finding</h4>
+                    <p>The multi-observer data reveals a pattern of <strong>Generalized Anxiety</strong> with chronic physiological dysregulation rather than specific phobic responses. The low reactivity scores across observers suggest persistent worry rather than situational triggers.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Shannon Entropy Application -->
+        <section>
+            <h2 class="section-title">Shannon Entropy in Psychological Data</h2>
+            
+            <div class="kanban-container">
+                <div class="kanban-column">
+                    <h3 class="kanban-header" style="color: var(--modal-primary);">Mood Rating Discretization</h3>
+                    
+                    <p>Daily mood ratings (1-10 scale) over 90 days need optimal binning:</p>
+                    
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="code-title">Finding Optimal Mood Categories</span>
+                        </div>
+                        <div class="code-content">
+<span class="comment">// Patient mood ratings over 90 days</span>
+<span class="keyword">const</span> moodRatings = [<span class="number">3</span>, <span class="number">4</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">4</span>, <span class="number">3</span>, ...];
+
+<span class="comment">// Test different discretization schemes</span>
+<span class="keyword">const</span> schemes = {
+    binary: { bins: <span class="number">2</span>, labels: [<span class="string">"Low"</span>, <span class="string">"High"</span>] },
+    ternary: { bins: <span class="number">3</span>, labels: [<span class="string">"Low"</span>, <span class="string">"Medium"</span>, <span class="string">"High"</span>] },
+    clinical: { bins: <span class="number">4</span>, labels: [<span class="string">"Severe"</span>, <span class="string">"Moderate"</span>, <span class="string">"Mild"</span>, <span class="string">"None"</span>] }
+};
+
+<span class="comment">// Shannon entropy reveals clinical (4-bin) preserves most information</span>
+<span class="comment">// while maintaining interpretability</span></div>
+                    </div>
+                </div>
+                
+                <div class="kanban-column">
+                    <h3 class="kanban-header" style="color: var(--meta-primary);">Behavioral Pattern Entropy</h3>
+                    
+                    <p>Analyzing randomness in daily activities:</p>
+                    
+                    <ul>
+                        <li><strong>High Entropy (4.2 bits):</strong> Unpredictable schedule, possible mania or ADHD</li>
+                        <li><strong>Low Entropy (1.1 bits):</strong> Rigid routine, possible OCD or autism spectrum</li>
+                        <li><strong>Moderate Entropy (2.8 bits):</strong> Healthy variation with structure</li>
+                    </ul>
+                    
+                    <p>The entropy metric objectively quantifies behavioral flexibility without subjective interpretation.</p>
+                </div>
+                
+                <div class="kanban-column">
+                    <h3 class="kanban-header" style="color: var(--platform-primary);">Response Consistency</h3>
+                    
+                    <p>Using KL divergence to detect response patterns:</p>
+                    
+                    <div style="background: white; padding: 15px; border-radius: 4px; margin-top: 10px;">
+                        <strong>Consistent Responder:</strong><br>
+                        D_KL(Test1 || Test2) = 0.12<br><br>
+                        
+                        <strong>Random Responder:</strong><br>
+                        D_KL(Test1 || Test2) = 2.84<br><br>
+                        
+                        <strong>Threshold:</strong> D_KL > 1.5 triggers validity check
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Implementation Guide -->
+        <section>
+            <h2 class="section-title">Implementing oMMP in Clinical Practice</h2>
+            
+            <div class="code-container">
+                <div class="code-header">
+                    <span class="code-title">Clinical oMMP Assessment Pipeline</span>
+                </div>
+                <div class="code-content">
+<span class="keyword">class</span> <span class="function">ClinicalOMMPAssessment</span> {
+    <span class="keyword">constructor</span>() {
+        <span class="keyword">this</span>.observers = [];
+        <span class="keyword">this</span>.consensusThreshold = <span class="number">0.7</span>;
+    }
+    
+    <span class="comment">// Register all available observers for patient</span>
+    <span class="function">registerObservers</span>(patientId) {
+        <span class="keyword">this</span>.observers = [
+            { type: <span class="string">"S_human"</span>, source: <span class="string">"patient_self"</span>, weight: <span class="number">1.0</span> },
+            { type: <span class="string">"S_human"</span>, source: <span class="string">"clinician"</span>, weight: <span class="number">1.2</span> },
+            { type: <span class="string">"S_digital"</span>, source: <span class="string">"PHQ9"</span>, weight: <span class="number">0.9</span> },
+            { type: <span class="string">"S_digital"</span>, source: <span class="string">"wearable"</span>, weight: <span class="number">0.8</span> },
+            { type: <span class="string">"S_physio"</span>, source: <span class="string">"HRV"</span>, weight: <span class="number">0.7</span> }
+        ];
+    }
+    
+    <span class="comment">// Collect observations with timestamps</span>
+    <span class="function">collectObservations</span>(timeWindow) {
+        <span class="keyword">return</span> <span class="keyword">this</span>.observers.<span class="function">map</span>(observer => ({
+            ...observer,
+            data: <span class="keyword">this</span>.<span class="function">getObserverData</span>(observer, timeWindow),
+            timestamp: Date.<span class="function">now</span>(),
+            uncertainty: <span class="keyword">this</span>.<span class="function">calculateUncertainty</span>(observer.type)
+        }));
+    }
+    
+    <span class="comment">// Build consensus using Byzantine rules</span>
+    <span class="function">buildConsensus</span>(observations) {
+        <span class="keyword">const</span> f = Math.<span class="function">floor</span>(observations.length / <span class="number">3</span>);
+        <span class="keyword">const</span> required = <span class="number">2</span> * f + <span class="number">1</span>;
+        
+        <span class="comment">// Group by classification agreement</span>
+        <span class="keyword">const</span> classifications = <span class="keyword">this</span>.<span class="function">groupByAgreement</span>(observations);
+        
+        <span class="comment">// Find majority consensus</span>
+        <span class="keyword">for</span> (<span class="keyword">const</span> [pattern, supporters] <span class="keyword">of</span> classifications) {
+            <span class="keyword">if</span> (supporters.length >= required) {
+                <span class="keyword">return</span> {
+                    consensus: pattern,
+                    confidence: supporters.length / observations.length,
+                    dissenting: observations.length - supporters.length
+                };
+            }
+        }
+        
+        <span class="keyword">return</span> { consensus: <span class="string">"No consensus"</span>, confidence: <span class="number">0</span> };
+    }
+    
+    <span class="comment">// Generate clinical report</span>
+    <span class="function">generateReport</span>(consensus, observations) {
+        <span class="keyword">return</span> {
+            primary_classification: consensus.consensus,
+            confidence_level: consensus.confidence,
+            observer_agreement: <span class="keyword">this</span>.<span class="function">calculateAgreementMatrix</span>(observations),
+            recommendations: <span class="keyword">this</span>.<span class="function">deriveRecommendations</span>(consensus),
+            follow_up: <span class="keyword">this</span>.<span class="function">suggestAdditionalObservers</span>(consensus.confidence)
+        };
+    }
+}</div>
+            </div>
+        </section>
+
+        <!-- Benefits for Psychology -->
+        <section>
+            <h2 class="section-title">Benefits of oMMP for Psychological Assessment</h2>
+            
+            <div class="kanban-container">
+                <div class="kanban-column">
+                    <h3 class="kanban-header" style="color: var(--platform-primary);">Reduced Bias</h3>
+                    <ul>
+                        <li>No single observer dominates diagnosis</li>
+                        <li>Cultural biases diluted across substrates</li>
+                        <li>Subjective interpretations balanced by objective data</li>
+                        <li>Historical bias patterns become visible</li>
+                    </ul>
+                </div>
+                
+                <div class="kanban-column">
+                    <h3 class="kanban-header" style="color: var(--modal-primary);">Enhanced Validity</h3>
+                    <ul>
+                        <li>Multiple convergent data sources</li>
+                        <li>Real-time validation of self-reports</li>
+                        <li>Ecological validity through continuous monitoring</li>
+                        <li>Detection of response biases</li>
+                    </ul>
+                </div>
+                
+                <div class="kanban-column">
+                    <h3 class="kanban-header" style="color: var(--meta-primary);">Clinical Utility</h3>
+                    <ul>
+                        <li>Treatment response tracking across domains</li>
+                        <li>Early warning system for relapse</li>
+                        <li>Personalized intervention timing</li>
+                        <li>Objective progress metrics</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Future Directions -->
+        <section>
+            <h2 class="section-title">Future Directions</h2>
+            
+            <div class="nested-box highlight">
+                <h3>Emerging Observer Substrates for Psychology</h3>
+                <ul>
+                    <li><strong>S_social:</strong> Social media behavioral patterns, communication analysis</li>
+                    <li><strong>S_genomic:</strong> Polygenic risk scores, epigenetic markers</li>
+                    <li><strong>S_microbiome:</strong> Gut-brain axis indicators</li>
+                    <li><strong>S_quantum:</strong> Quantum cognition models for decision-making</li>
+                </ul>
+                <p>Each new substrate adds another perspective to the consensus, making psychological assessment more robust and comprehensive.</p>
+            </div>
+        </section>
+
+        <!-- Conclusion -->
+        <section>
+            <h2 class="section-title">Conclusion: Objective Classification of Subjective Experience</h2>
+            
+            <p>The oMMP framework transforms psychological assessment by:</p>
+            
+            <ol>
+                <li><strong>Treating all observations as valid data points</strong> rather than privileging clinical judgment</li>
+                <li><strong>Using mathematical consensus</strong> instead of subjective interpretation</li>
+                <li><strong>Enabling continuous assessment</strong> through digital and physiological observers</li>
+                <li><strong>Providing transparent, auditable decision paths</strong> for diagnosis and treatment</li>
+            </ol>
+            
+            <div style="text-align: center; margin: 40px 0;">
+                <button class="action-button" onclick="alert(\'Implementation guides and case studies available at MetaModalPlatform.org\')">
+                    Access Implementation Resources
+                </button>
+            </div>
+        </section>
+    </div>
+</div>
+
+<script>
+// Helper functions for demonstrations
+function correlateSeverity(p1, p2) {
+    // Simplified severity correlation
+    const severityMap = {
+        \'Severe\': 3,
+        \'Restricted\': 2,
+        \'Moderate\': 2,
+        \'Mild\': 1,
+        \'Hypoactive\': 2,
+        \'Dysregulated\': 3,
+        \'Altered\': 2,
+        \'Diminished\': 2
+    };
+    
+    const v1 = severityMap[p1] || 0;
+    const v2 = severityMap[p2] || 0;
+    
+    return 1 - Math.abs(v1 - v2) / 3;
+}
+
+// Interactive elements
+document.addEventListener(\'DOMContentLoaded\', function() {
+    // Add hover effects to observer cards
+    const cards = document.querySelectorAll(\'.observer-card\');
+    cards.forEach(card => {
+        card.addEventListener(\'mouseenter\', function() {
+            this.style.transform = \'translateY(-5px)\';
+            this.style.boxShadow = \'0 8px 16px rgba(0,0,0,0.15)\';
+        });
+        
+        card.addEventListener(\'mouseleave\', function() {
+            this.style.transform = \'translateY(0)\';
+            this.style.boxShadow = \'none\';
+        });
+    });
+});
+</script>
+</body>
+</html>

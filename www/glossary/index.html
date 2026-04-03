@@ -1,0 +1,730 @@
+<!-- Page: Glossary | ID: 6 | Source: mmporg_tm2yl.sql -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MMP Mathematical Core v7.1 Glossary</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        /* Main Wrapper */
+        .mmp-framework {
+            width: 100%;
+            min-height: 100vh;
+            background-color: white;
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 3rem 1rem;
+            text-align: center;
+        }
+        
+        .academic-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .academic-subtitle {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+        
+        .academic-meta {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        
+        /* Container */
+        .academic-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        /* Sections */
+        section {
+            margin-bottom: 3rem;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            color: #1e3c72;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        /* Boxes */
+        .nested-box {
+            background-color: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .nested-box:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nested-box h3 {
+            color: #2a5298;
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .nested-box.highlight {
+            background-color: #e8f4f8;
+            border-color: #3498db;
+        }
+        
+        .nested-box.process {
+            background-color: #f0f9ff;
+            border-color: #60a5fa;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            background-color: #f0f7ff;
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid #d0e7ff;
+        }
+        
+        .cta-section h2 {
+            color: #1e3c72;
+            margin-bottom: 1rem;
+        }
+        
+        /* Equations */
+        .equation-container {
+            margin: 1rem 0;
+            text-align: center;
+        }
+        
+        .equation {
+            display: inline-block;
+            background-color: #f0f0f0;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-family: \'Courier New\', monospace;
+            font-size: 1.1rem;
+        }
+        
+        /* Search Box */
+        #glossary-search {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1rem;
+            border: 2px solid #3498db;
+            border-radius: 4px;
+            transition: border-color 0.3s ease;
+        }
+        
+        #glossary-search:focus {
+            outline: none;
+            border-color: #2a5298;
+        }
+        
+        #search-results {
+            margin-top: 1rem;
+            padding: 0.5rem;
+            min-height: 2rem;
+        }
+        
+        /* Navigation */
+        nav ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        nav li {
+            margin-bottom: 0.5rem;
+        }
+        
+        nav a {
+            text-decoration: none;
+            color: #3498db;
+            transition: color 0.3s ease;
+        }
+        
+        nav a:hover {
+            color: #2a5298;
+            text-decoration: underline;
+        }
+        
+        /* Code blocks */
+        code {
+            background-color: #f0f0f0;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: \'Courier New\', monospace;
+            font-size: 0.9em;
+        }
+        
+        /* Lists */
+        ul {
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: #f8f9fa;
+            padding: 2rem 1rem;
+            text-align: center;
+            margin-top: 3rem;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .academic-title {
+                font-size: 2rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .academic-container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="mmp-framework joomla-article">
+        <!-- Hero Section -->
+        <div class="hero-section meta-hero">
+            <h1 class="academic-title" id="mmp-glossary">MMP Mathematical Core v7.1 Glossary</h1>
+            <p class="academic-subtitle">Technical Terms and Mathematical Notation Reference</p>
+            <p class="academic-meta">Observer-Prefixed MMP: Comprehensive Terminology Guide</p>
+        </div>
+
+        <div class="academic-container">
+            <!-- Terminology Note -->
+            <div class="cta-section">
+                <h2 class="section-title" id="why-glossary">Why "Glossary"?</h2>
+                <p>We chose to call this reference a <strong>glossary</strong> rather than other options we considered:</p>
+                <ul>
+                    <li><strong>Dictionary</strong> - Too broad; implies general-purpose alphabetical listing with etymologies</li>
+                    <li><strong>Lexicon</strong> - Suggests a complete vocabulary of the field, which this focused subset is not</li>
+                    <li><strong>Terminology</strong> - Too generic; doesn\'t convey the reference nature of the document</li>
+                    <li><strong>Nomenclature</strong> - Implies a naming system rather than definitions</li>
+                </ul>
+                <p>A glossary best describes this specialized list of technical terms with definitions, organized by concept to support understanding of the MMP framework.</p>
+            </div>
+
+            <!-- Search Box -->
+            <section>
+                <div class="nested-box highlight">
+                    <h3>Quick Search</h3>
+                    <input type="text" id="glossary-search" placeholder="Search for a term...">
+                    <div id="search-results"></div>
+                </div>
+            </section>
+
+            <!-- Table of Contents -->
+            <section>
+                <h2 class="section-title" id="table-of-contents">Table of Contents</h2>
+                <div class="nested-box">
+                    <h3>By Section</h3>
+                    <nav>
+                        <ul>
+                            <li><a href="#core-concepts">▸ Core Concepts</a></li>
+                            <li><a href="#mathematical-symbols">▸ Mathematical Symbols & Notation</a></li>
+                            <li><a href="#state-space-components">▸ State Space Components</a></li>
+                            <li><a href="#information-theory-terms">▸ Information Theory Terms</a></li>
+                            <li><a href="#cryptographic-elements">▸ Cryptographic Elements</a></li>
+                            <li><a href="#discretization-functions">▸ Discretization Functions</a></li>
+                            <li><a href="#optimization-metrics">▸ Optimization Metrics</a></li>
+                            <li><a href="#consensus-mechanisms">▸ Consensus Mechanisms</a></li>
+                            <li><a href="#physics-constraints">▸ Physics Constraints</a></li>
+                            <li><a href="#implementation-terms">▸ Implementation Terms</a></li>
+                            <li><a href="#acronyms">▸ Acronyms & Abbreviations</a></li>
+                            <li><a href="#version-specific-terms">▸ Version-Specific Terms (v7.1)</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </section>
+
+            <!-- Section: Core Concepts -->
+            <section>
+                <h2 class="section-title" id="core-concepts">Core Concepts</h2>
+                <div class="nested-box">
+                    <h3>Absolute Record Theory</h3>
+                    <p>The foundational principle that treats all observations as discrete, deterministic recorded events rather than probabilistic interpretations. If an observation is recorded, it definitively occurred (P = 1).</p>
+                </div>
+                <div class="nested-box">
+                    <h3>Anomaly Classification</h3>
+                    <p>The systematic categorization of unusual or unexplained phenomena based on observable characteristics across multiple dimensions (substrate, observer, medium, kinematics, properties).</p>
+                </div>
+                <div class="nested-box">
+                    <h3>Byzantine Fault Tolerance</h3>
+                    <p>A consensus mechanism that ensures system reliability even when some observers provide incorrect or malicious data. Requires 2f+1 honest observers to overcome f faulty ones.</p>
+                </div>
+                <div class="nested-box highlight">
+                    <h3>Discrete</h3>
+                    <p>Referring to distinct, separate values or states rather than continuous ones. In MMP, observations are treated as discrete recorded events, and continuous parameters are discretized into finite bins for classification and analysis.</p>
+                </div>
+                <div class="nested-box highlight">
+                    <h3>Dimensions</h3>
+                    <p>The five fundamental aspects of the MMP state space: Substrate (S), Observer (O), Medium (M), Kinematics (K), and Properties (P). Each observation is characterized across all five dimensions to create a complete classification.</p>
+                </div>
+                <div class="nested-box highlight">
+                    <h3>Observation (as a message)</h3>
+                    <p>A discrete data packet or message containing recorded information about a phenomenon, including all relevant dimensional data (S, O, M, K, P), timestamps, and cryptographic signatures. Each observation is treated as an immutable record in the distributed ledger.</p>
+                </div>
+            </section>
+
+            <!-- Section: Mathematical Symbols & Notation -->
+            <section>
+                <h2 class="section-title" id="mathematical-symbols">Mathematical Symbols & Notation</h2>
+                <div class="nested-box highlight">
+                    <h3>Primary Symbols</h3>
+                    <ul>
+                        <li><strong>Ω (Omega)</strong> - An individual observation record - the fundamental unit of data in the MMP system</li>
+                        <li><strong>Ψ (Psi)</strong> - The universal observation space defined as <code>Ψ = (S, O, M, K, P)</code> encompassing all possible states</li>
+                        <li><strong>⊕</strong> - Progressive refinement operator used to update records while preserving history</li>
+                        <li><strong>ℏ (h-bar)</strong> - Reduced Planck constant (h/2π), fundamental to quantum mechanics uncertainty relations</li>
+                    </ul>
+                </div>
+                <div class="nested-box">
+                    <h3>Logical Operators</h3>
+                    <ul>
+                        <li><strong>∀</strong> - Universal quantifier meaning "for all" or "for every"</li>
+                        <li><strong>∃!</strong> - Unique existence quantifier meaning "there exists exactly one"</li>
+                        <li><strong>⟺</strong> - Logical biconditional meaning "if and only if"</li>
+                        <li><strong>∈</strong> - Set membership operator meaning "is an element of"</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Section: State Space Components -->
+            <section>
+                <h2 class="section-title" id="state-space-components">State Space Components</h2>
+                <div class="nested-box highlight">
+                    <h3>S - Substrate Space</h3>
+                    <p>The type of observer making the observation (human, AI, sensor, etc.). Each substrate has inherent observational constraints defined by:</p>
+                    <div class="equation-container">
+                        <div class="equation">S_i = (Λ_i, Τ_i, Σ_i, Ε_i)</div>
+                    </div>
+                </div>
+                <div class="nested-box highlight">
+                    <h3>Substrate</h3>
+                    <p>The fundamental observer type or platform making observations. The framework supports any substrate with definable constraints S_i = (Λ_i, Τ_i, Σ_i, Ε_i) representing spectral range, temporal resolution, spatial resolution, and uncertainty. Examples include biological systems, AI, sensors, but the framework is substrate-agnostic by design.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>O - Observer State Manifold</h3>
+                    <p>Complete description of the observer including spacetime coordinates (x, y, z, t) and internal state parameters.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>M - Medium/Domain Characteristics</h3>
+                    <p>Environmental properties through which the observation occurs (e.g., atmospheric conditions, electromagnetic spectrum).</p>
+                </div>
+                <div class="nested-box highlight">
+                    <h3>Domain</h3>
+                    <p>The environmental context or medium in which observations occur, characterized by the M dimension in the state space. The framework provides structure for domain classification but doesn\'t prescribe specific categories - implementations might include atmospheric, underwater, vacuum, etc., based on application needs.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>K - Kinematic Behavior Space</h3>
+                    <p>Motion and trajectory characteristics of observed phenomena, classified into categories like Zero, Linear, Curved, Erratic, Reactive, Periodic, Unknown.</p>
+                </div>
+                <div class="nested-box highlight">
+                    <h3>Kinematics</h3>
+                    <p>The study and classification of motion patterns without considering the forces that cause them. In MMP, kinematics refers to how observed phenomena move through space and time, including velocity, acceleration, trajectory shape, and behavioral patterns like hovering, linear motion, or erratic movement.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>Observer Discretization (D_O)</h3>
+                    <p>Framework function that maps continuous observer states to discrete categories. Example implementation uses gravitational potential (Φ) to classify locations: Earth (Φ ∈ [-62.5, -59.5] MJ/kg), Mars (Φ ∈ [-12.8, -11.2] MJ/kg), etc. The specific categories (E, M, V, L, J, S, I) are application examples, not framework requirements.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>Hovering (Z)</h3>
+                    <p>Kinematic state where an object maintains a relatively fixed position in space with minimal movement. Mathematically defined as: λ < 0.01, where λ is the Lyapunov exponent. This near-zero value indicates extremely stable, stationary behavior.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>Linear Motion (L)</h3>
+                    <p>Kinematic state characterized by straight-line movement with minimal deviation. Mathematically defined as: λ ∈ [0.01, 0.1], where λ is the Lyapunov exponent. This range indicates predictable, non-chaotic linear trajectories.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>Curved Motion (C)</h3>
+                    <p>Kinematic state involving smooth, non-linear trajectories such as arcs, circles, or other curved paths. Mathematically defined as: λ ∈ [0.1, 2.0], where λ is the Lyapunov exponent. This range indicates moderately complex but still predictable motion patterns.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>Erratic Motion (E)</h3>
+                    <p>Highly unpredictable movement pattern with rapid, seemingly random changes in direction and speed. Mathematically defined as: λ > 2.0, where λ is the Lyapunov exponent. This high value indicates chaotic, highly divergent trajectory behavior.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>Reactive Motion (R)</h3>
+                    <p>Kinematic behavior where an object\'s movement correlates with observer actions. Mathematically defined as: Cor(Δv, Δv_observer) > 0.7, where Δv represents velocity changes. This correlation threshold of 0.7 indicates the object is responding to or interacting with the observer\'s movements.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>Periodic Motion (P)</h3>
+                    <p>Kinematic state exhibiting repeating patterns or cycles in movement. While not explicitly defined in the mathematical framework shown, this category captures oscillatory, orbital, or other regularly repeating trajectories.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>Unknown Motion (U)</h3>
+                    <p>Kinematic classification used when movement patterns don\'t fit into other categories or when insufficient data prevents accurate classification. This ensures complete coverage of all possible observations.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>P - Physical Property Space</h3>
+                    <p>Measurable physical attributes such as size, temperature, luminosity, mass, etc.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>RF - Reference Frame</h3>
+                    <p>The coordinate system and physical context from which observations are made, including velocity, acceleration, gravitational field, and time synchronization.</p>
+                </div>
+            </section>
+
+            <!-- Section: Information Theory Terms -->
+            <section>
+                <h2 class="section-title" id="information-theory-terms">Information Theory Terms</h2>
+                <div class="nested-box">
+                    <h3>Shannon Entropy H(X)</h3>
+                    <p>A measure of information content calculated as:</p>
+                    <div class="equation-container">
+                        <div class="equation">H(X) = -Σ p_i log₂(p_i)</div>
+                    </div>
+                    <p>Used to optimize data discretization.</p>
+                </div>
+                <div class="nested-box highlight">
+                    <h3>Entropy</h3>
+                    <p>A fundamental measure of information content or uncertainty in a system. In MMP, entropy quantifies the amount of information in observations and guides optimal discretization. Higher entropy indicates more information or unpredictability, while lower entropy suggests more ordered or predictable patterns.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>Kullback-Leibler Divergence D_KL</h3>
+                    <p>A measure of difference between probability distributions, used to assess consistency between observations.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>Mutual Information I(X;Y)</h3>
+                    <p>The amount of information shared between two variables, used to measure information preservation.</p>
+                </div>
+                <div class="nested-box highlight">
+                    <h3>Information Preservation</h3>
+                    <p>The principle that data transformations should retain as much original information as possible. In MMP, bounded by discretization resolution with the guarantee: H(Original) - H(Encoded) ≤ log₂(bin_count).</p>
+                </div>
+                <div class="nested-box">
+                    <h3>Information Loss</h3>
+                    <p>The reduction in information content when continuous data is discretized or transformed. MMP mathematically bounds this loss to ensure critical observation details are preserved during processing.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>Bin Count</h3>
+                    <p>The number of discrete categories used in discretization. Higher bin counts preserve more information but increase computational complexity, while lower counts simplify processing at the cost of detail.</p>
+                </div>
+            </section>
+
+            <!-- Section: Cryptographic Elements -->
+            <section>
+                <h2 class="section-title" id="cryptographic-elements">Cryptographic Elements</h2>
+                <div class="nested-box highlight">
+                    <h3>Cryptographic</h3>
+                    <p>Relating to the use of mathematical techniques for secure communication and data integrity. In MMP, cryptographic methods ensure observations are tamper-proof, verifiable, and can be traced to their source while optionally preserving observer anonymity through zero-knowledge proofs.</p>
+                </div>
+                <div class="nested-box highlight">
+                    <h3>Ed25519_pubkey</h3>
+                    <p>A public key using the Ed25519 elliptic curve digital signature algorithm for observer identification.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>Hash Function</h3>
+                    <p>Cryptographic function producing unique fixed-size output from variable input, used for creating observation IDs and ensuring data integrity.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>Zero-Knowledge Proof (ZK_Proof)</h3>
+                    <p>Cryptographic method allowing observers to prove they made an observation without revealing their identity.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>Merkle Root</h3>
+                    <p>Root hash of a Merkle tree containing all observations in a block, enabling efficient verification.</p>
+                </div>
+            </section>
+
+            <!-- Section: Discretization Functions -->
+            <section>
+                <h2 class="section-title" id="discretization-functions">Discretization Functions</h2>
+                <div class="nested-box highlight">
+                    <h3>Discretization</h3>
+                    <p>The process of converting continuous values into discrete categories or bins. In MMP, discretization transforms continuous observations (like position, velocity, or sensor readings) into finite, manageable categories that preserve essential information while enabling efficient classification and consensus building.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>D_O (Observer Discretization)</h3>
+                    <p>Function mapping continuous observer states to discrete categories based on gravitational potential or other physical parameters.</p>
+                </div>
+                <div class="nested-box highlight">
+                    <h3>Kinematic Discretization (D_K)</h3>
+                    <p>Framework function classifying motion patterns using mathematical measures like Lyapunov exponents. The framework defines the mathematical thresholds (λ < 0.01 for hovering, λ > 2.0 for erratic, etc.) but the specific category labels (Z, L, C, E, R, P, U) are implementation choices that could vary by application.</p>
+                </div>
+                <div class="nested-box highlight">
+                    <h3>Lyapunov Exponent (λ)</h3>
+                    <p>Mathematical measure of trajectory divergence rate, used to classify kinematic behavior patterns. Quantifies how rapidly nearby trajectories separate over time - positive values indicate chaotic/unpredictable motion, near-zero values suggest stable/predictable paths.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>Trajectory Divergence Rate</h3>
+                    <p>The speed at which initially close paths in phase space separate over time. High divergence rates indicate chaotic or erratic behavior, while low rates suggest predictable, stable motion. Used in MMP to classify kinematic patterns.</p>
+                </div>
+            </section>
+
+            <!-- Section: Optimization Metrics -->
+            <section>
+                <h2 class="section-title" id="optimization-metrics">Optimization Metrics</h2>
+                <div class="nested-box">
+                    <h3>r_opt (Optimal Resolution)</h3>
+                    <p>The discretization granularity that maximizes the product of entropy, smoothness, and reproducibility.</p>
+                </div>
+                <div class="nested-box highlight">
+                    <h3>Resolution</h3>
+                    <p>The level of detail or granularity in discretization. Higher resolution means more bins and finer distinctions between values, while lower resolution uses fewer, coarser categories. MMP optimizes resolution to balance information preservation with computational efficiency.</p>
+                </div>
+                <div class="nested-box highlight">
+                    <h3>Coarse</h3>
+                    <p>Referring to low-resolution discretization with fewer, broader categories. Coarse binning reduces computational complexity but may lose fine details. MMP\'s adaptive algorithms find the optimal balance between coarse and fine discretization based on the data\'s information content.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>S(p,r) - Smoothness Metric</h3>
+                    <p>Measure of parameter variation smoothness:</p>
+                    <div class="equation-container">
+                        <div class="equation">S(p,r) = 1 - Var(∇²p)/⟨∇²p⟩</div>
+                    </div>
+                </div>
+                <div class="nested-box highlight">
+                    <h3>Smoothness</h3>
+                    <p>A measure of how gradually parameters change across observations. High smoothness indicates gentle transitions without abrupt jumps, while low smoothness suggests rapid changes or discontinuities. The smoothness metric S(p,r) helps determine optimal discretization by favoring resolutions that preserve natural data patterns.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>R(p,r) - Reproducibility Score</h3>
+                    <p>Probability that a pattern will be observed again under similar conditions.</p>
+                </div>
+            </section>
+
+            <!-- Section: Consensus Mechanisms -->
+            <section>
+                <h2 class="section-title" id="consensus-mechanisms">Consensus Mechanisms</h2>
+                <div class="nested-box process">
+                    <h3>w_i (Weight)</h3>
+                    <p>Relative importance assigned to observation i based on consistency with other observations.</p>
+                </div>
+                <div class="nested-box process">
+                    <h3>C(Ω_1, Ω_2) - Consistency Metric</h3>
+                    <p>Measure of agreement between two observations, calculated using information-theoretic divergence.</p>
+                </div>
+                <div class="nested-box process">
+                    <h3>Consensus(t)</h3>
+                    <p>Weighted average of observations that converges over time as more data accumulates.</p>
+                </div>
+                <div class="nested-box highlight">
+                    <h3>Byzantine Observer</h3>
+                    <p>An observer that provides incorrect, malicious, or faulty data. The MMP system uses Byzantine fault tolerance to maintain reliability even when some observers are compromised, requiring 2f+1 honest observers to overcome f faulty ones.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>Outlier Detection</h3>
+                    <p>Statistical process for identifying observations that deviate significantly from the consensus. Observations beyond 3σ (three standard deviations) from the median are flagged as potential Byzantine observers.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>Progressive Consensus</h3>
+                    <p>The process by which multiple observations gradually converge toward agreement as more data accumulates. Uses weighted averaging based on consistency metrics to build reliable consensus over time.</p>
+                </div>
+            </section>
+
+            <!-- Section: Physics Constraints -->
+            <section>
+                <h2 class="section-title" id="physics-constraints">Physics Constraints</h2>
+                <div class="nested-box highlight">
+                    <h3>Heisenberg Uncertainty</h3>
+                    <p>Fundamental limit on simultaneous measurement precision:</p>
+                    <div class="equation-container">
+                        <div class="equation">δx · δp ≥ ℏ/2</div>
+                    </div>
+                </div>
+                <div class="nested-box">
+                    <h3>Spacetime Uniqueness Principle</h3>
+                    <p>No two observers can occupy identical spacetime coordinates, ensuring observation uniqueness.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>Gravitational Potential (Φ)</h3>
+                    <p>Energy per unit mass in a gravitational field, used for observer location classification (Earth: -62.5 to -59.5 MJ/kg).</p>
+                </div>
+                <div class="nested-box highlight">
+                    <h3>Spacetime Coordinates</h3>
+                    <p>The four-dimensional position (x, y, z, t) that uniquely identifies where and when an observation occurs. In MMP, these coordinates ensure each observation is unique and traceable to a specific location and moment in the universe.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>Reference Frame</h3>
+                    <p>The coordinate system and physical state from which observations are made. Includes velocity, acceleration, gravitational field strength, and time synchronization method. Essential for interpreting observations correctly across different observers.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>Quantum Observation</h3>
+                    <p>Observations of quantum systems where measurement affects the outcome. In MMP, these follow special rules including superposition collapse and complementarity constraints, requiring unique handling in the framework.</p>
+                </div>
+            </section>
+
+            <!-- Section: Implementation Terms -->
+            <section>
+                <h2 class="section-title" id="implementation-terms">Implementation Terms</h2>
+                <div class="nested-box">
+                    <h3>Blockchain Height</h3>
+                    <p>The number of blocks in the distributed ledger, used as a timestamp reference.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>Smart Contract</h3>
+                    <p>Self-executing code that validates observations and manages the distributed system.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>Reputation Score</h3>
+                    <p>Observer reliability metric:</p>
+                    <div class="equation-container">
+                        <div class="equation">reputation_score = validated_observations / total_observations</div>
+                    </div>
+                </div>
+                <div class="nested-box">
+                    <h3>Gateway Transform</h3>
+                    <p>Mathematical function G enabling communication between different substrate types while preserving information.</p>
+                </div>
+                <div class="nested-box highlight">
+                    <h3>Distributed Ledger</h3>
+                    <p>A decentralized database spread across multiple nodes that records all observations immutably. Each block contains observations, cryptographic proofs, and links to previous blocks, creating an tamper-proof chain of records.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>Observer Registry</h3>
+                    <p>Blockchain-based system that tracks and validates observer identities, including their public keys, substrate types, calibration data, and reputation scores. Ensures accountability while supporting anonymous observations through zero-knowledge proofs.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>Calibration Hash</h3>
+                    <p>Cryptographic fingerprint of an observer\'s sensor specifications and configuration. Ensures observers are properly calibrated and allows verification of measurement capabilities without revealing proprietary details.</p>
+                </div>
+                <div class="nested-box">
+                    <h3>Validated Observations</h3>
+                    <p>Observations that have passed consensus requirements and cryptographic verification. These contribute positively to an observer\'s reputation score and become part of the permanent record.</p>
+                </div>
+            </section>
+
+            <!-- Section: Acronyms & Abbreviations -->
+            <section>
+                <h2 class="section-title" id="acronyms">Acronyms & Abbreviations</h2>
+                <div class="nested-box">
+                    <ul>
+                        <li><strong>MMP</strong> - MetaModal Platform</li>
+                        <li><strong>oMMP</strong> - Observer-Prefixed MMP</li>
+                        <li><strong>UTC</strong> - Coordinated Universal Time</li>
+                        <li><strong>ZK</strong> - Zero-Knowledge</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Section: Version-Specific Terms -->
+            <section>
+                <h2 class="section-title" id="version-specific-terms">Version-Specific Terms (v7.1)</h2>
+                <div class="nested-box highlight">
+                    <h3>Substrate-Agnostic</h3>
+                    <p>System design allowing any type of observer (human, AI, sensor) to contribute equally to the observation pool.</p>
+                </div>
+                <div class="nested-box highlight">
+                    <h3>Progressive Refinement</h3>
+                    <p>Process of improving observation records over time without losing historical data.</p>
+                </div>
+                <div class="nested-box highlight">
+                    <h3>Information Preservation Bound</h3>
+                    <p>Mathematical guarantee that information loss is limited by discretization resolution:</p>
+                    <div class="equation-container">
+                        <div class="equation">H(Original) - H(Encoded) ≤ log₂(bin_count)</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <div class="footer">
+                <p class="academic-meta">© 2025 Eric D. Martin All Rights Reserved.</p>
+                <p class="academic-meta">MMP Mathematical Core v7.1 Glossary - MetaModalPlatform.org</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple search functionality
+        document.addEventListener(\'DOMContentLoaded\', function() {
+            const searchInput = document.getElementById(\'glossary-search\');
+            const searchResults = document.getElementById(\'search-results\');
+            
+            if (searchInput) {
+                searchInput.addEventListener(\'input\', function(e) {
+                    const searchTerm = e.target.value.toLowerCase();
+                    
+                    if (searchTerm.length < 2) {
+                        searchResults.innerHTML = \'\';
+                        return;
+                    }
+                    
+                    // Find all term headings
+                    const terms = document.querySelectorAll(\'.nested-box h3\');
+                    const matches = [];
+                    
+                    terms.forEach(term => {
+                        if (term.textContent.toLowerCase().includes(searchTerm)) {
+                            const section = term.closest(\'section\');
+                            const sectionTitle = section ? section.querySelector(\'.section-title\').textContent : \'Unknown Section\';
+                            matches.push({
+                                term: term.textContent,
+                                section: sectionTitle,
+                                element: term.parentElement
+                            });
+                        }
+                    });
+                    
+                    if (matches.length > 0) {
+                        let html = \'<p style="margin-bottom: 0.5rem;">Found \' + matches.length + \' matches:</p>\';
+                        matches.forEach(match => {
+                            html += \'<p style="margin: 0.2rem 0;"><a href="#" onclick="scrollToTerm(event, \\\'\' + 
+                                    match.term.replace(/\'/g, "\\\\\'") + \'\\\')" style="color: #3498db;">\' + 
+                                    match.term + \'</a> <span style="color: #666; font-size: 0.9rem;">(\' + match.section + \')</span></p>\';
+                        });
+                        searchResults.innerHTML = html;
+                    } else {
+                        searchResults.innerHTML = \'<p style="color: #666;">No terms found matching "\' + searchTerm + \'"</p>\';
+                    }
+                });
+            }
+        });
+
+        function scrollToTerm(event, termText) {
+            event.preventDefault();
+            const terms = document.querySelectorAll(\'.nested-box h3\');
+            for (let term of terms) {
+                if (term.textContent === termText) {
+                    term.scrollIntoView({ behavior: \'smooth\', block: \'center\' });
+                    // Highlight the term briefly
+                    const parent = term.parentElement;
+                    parent.style.transition = \'background-color 0.3s\';
+                    parent.style.backgroundColor = \'#e8f4f8\';
+                    setTimeout(() => {
+                        parent.style.backgroundColor = \'\';
+                    }, 2000);
+                    break;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

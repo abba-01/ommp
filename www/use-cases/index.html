@@ -1,0 +1,919 @@
+<!-- Page: Use Cases | ID: 8 | Source: mmporg_tm2yl.sql -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>oMMP Use Case Scenarios</title>
+    <style>
+        /* Core Styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .mmp-framework {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+        
+        .academic-title {
+            font-size: 2.5rem;
+            margin: 0 0 1rem 0;
+            font-weight: 700;
+        }
+        
+        .academic-subtitle {
+            font-size: 1.25rem;
+            margin: 0 0 0.5rem 0;
+            opacity: 0.9;
+        }
+        
+        .academic-meta {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        
+        /* Container */
+        .academic-container {
+            padding: 2rem;
+        }
+        
+        /* Sections */
+        .section-title {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin: 2rem 0 1rem 0;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        /* Boxes */
+        .nested-box {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        
+        .nested-box.highlight {
+            background-color: #e3f2fd;
+            border-color: #2196f3;
+        }
+        
+        .nested-box.process {
+            background-color: #f3e5f5;
+            border-color: #9c27b0;
+        }
+        
+        .nested-box h3 {
+            margin-top: 0;
+            color: #34495e;
+        }
+        
+        /* Code Containers */
+        .code-container {
+            background-color: #2b2b2b;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .code-header {
+            background-color: #1e1e1e;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #444;
+        }
+        
+        .code-title {
+            color: #ffd700;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .code-content {
+            color: #f8f8f2;
+            padding: 1rem;
+            font-family: \'Consolas\', \'Monaco\', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+        
+        /* Equations */
+        .equation-container {
+            background-color: #f0f4f8;
+            border-left: 4px solid #3498db;
+            padding: 1rem 1.5rem;
+            margin: 1rem 0;
+        }
+        
+        .equation {
+            font-family: \'Courier New\', monospace;
+            font-size: 1.1rem;
+            color: #2c3e50;
+        }
+        
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            background-color: #ecf0f1;
+            padding: 2rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+        
+        /* Lists */
+        ul {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        
+        li {
+            margin: 0.5rem 0;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .academic-title {
+                font-size: 2rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            table {
+                font-size: 0.9rem;
+            }
+            
+            th, td {
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="mmp-framework joomla-article">
+    <!-- Hero Section -->
+    <div class="hero-section meta-hero">
+        <h1 class="academic-title" id="ommp-use-cases">oMMP Use Case Scenarios</h1>
+        <p class="academic-subtitle">Real-World Applications of Observer-Prefixed MMP Framework</p>
+        <p class="academic-meta">Demonstrating Substrate-Agnostic Multi-Observer Analysis Across Domains</p>
+    </div>
+
+    <div class="academic-container">
+        <!-- PART 1: FRAMEWORK INTRODUCTION -->
+        <!-- Introduction -->
+        <div class="cta-section">
+            <h2 class="section-title">Framework Overview</h2>
+            <p>The Observer-Prefixed MMP (oMMP) framework provides a universal system for analyzing observations across any domain. By treating all observations as discrete events in a five-dimensional state space (S, O, M, K, P), the same mathematical framework can analyze crime scenes, anomalous phenomena, medical diagnoses, and even theoretical spacetime navigation.</p>
+            <p><strong>Key Innovation:</strong> Observer perspective switching within the same event enables multi-dimensional understanding impossible with single-observer systems.</p>
+        </div>
+
+        <!-- Core Components -->
+        <section>
+            <h2 class="section-title" id="classification-system">Universal Classification System</h2>
+            <div class="nested-box highlight">
+                <h3>Five-Character Classification Code</h3>
+                <p>Every observation receives a five-character code representing key attributes. Each position has specific meaning:</p>
+                <ol>
+                    <li><strong>Observer Location (Meta/Elevation):</strong> Where observation originates</li>
+                    <li><strong>Medium/Gateway:</strong> Environment where phenomenon exists</li>
+                    <li><strong>Kinematic Pattern (Modal/Speed):</strong> How it moves</li>
+                    <li><strong>Behavioral Type:</strong> Reactive, passive, or autonomous</li>
+                    <li><strong>Physical Form (Platform/Shape):</strong> What it looks like</li>
+                </ol>
+            </div>
+
+            <div class="nested-box">
+                <h3>Mathematical Foundation</h3>
+                <div class="equation-container">
+                    <div class="equation">Ω = (S, O, M, K, P) × (x, y, z, t)</div>
+                </div>
+                <p>Where:</p>
+                <ul>
+                    <li><strong>S:</strong> Substrate (human, digital, physical sensor)</li>
+                    <li><strong>O:</strong> Observer identity and location</li>
+                    <li><strong>M:</strong> Medium/environment</li>
+                    <li><strong>K:</strong> Kinematic behavior</li>
+                    <li><strong>P:</strong> Physical properties</li>
+                    <li><strong>(x,y,z,t):</strong> Spacetime coordinates</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Observer Switching -->
+        <section>
+            <h2 class="section-title" id="observer-switching">Cross-Domain Observer Switching</h2>
+            <div class="nested-box highlight">
+                <h3>Universal Observer Transformation</h3>
+                <p>The same observer-switching logic applies across all domains, enabling perspective shifts that reveal hidden patterns.</p>
+            </div>
+
+            <div class="nested-box">
+                <h3>Observer Types by Domain</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Domain</th>
+                            <th>Primary Observer</th>
+                            <th>Alternative Perspectives</th>
+                            <th>Consensus Benefit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Crime</strong></td>
+                            <td>Witness</td>
+                            <td>Suspect, Victim, CCTV, Forensics</td>
+                            <td>Complete reconstruction</td>
+                        </tr>
+                        <tr>
+                            <td><strong>UAP</strong></td>
+                            <td>Pilot Visual</td>
+                            <td>Radar, FLIR, Ground, Satellite</td>
+                            <td>Multi-spectrum confirmation</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Medical</strong></td>
+                            <td>Patient</td>
+                            <td>Doctor, Imaging, Lab, AI</td>
+                            <td>Holistic diagnosis</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Financial</strong></td>
+                            <td>Trader</td>
+                            <td>Analyst, Algorithm, Regulator</td>
+                            <td>Fraud detection</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- PART 2: TECHNICAL ARCHITECTURE -->
+        <!-- Implementation Architecture -->
+        <section>
+            <h2 class="section-title" id="implementation">Implementation Architecture</h2>
+            <div class="nested-box">
+                <h3>Domain-Agnostic Smart Contract</h3>
+                <div class="code-container">
+                    <div class="code-header"><span class="code-title">Universal Observer Contract Interface</span></div>
+                    <div class="code-content">contract UniversalObserver {
+    enum Domain { CRIME, UAP, MEDICAL, FINANCIAL, CUSTOM }
+    
+    struct Observation {
+        bytes32 id;          // Hash(S, O, M, K, P, t)
+        Domain domain;       // Application context
+        address observer;    // Can be anonymous (ZK)
+        uint256 timestamp;   // Spacetime t coordinate
+        bytes data;         // Encrypted observation
+        uint256 weight;     // Based on reputation
+    }
+    
+    function submitObservation(
+        Domain _domain,
+        bytes memory _encryptedData,
+        bytes memory _proof
+    ) public returns (bytes32);
+    
+    function switchObserverPerspective(
+        bytes32 _eventId,
+        address _newObserver
+    ) public view returns (Observation memory);
+}</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Secure Peer Network -->
+        <section>
+            <h2 class="section-title" id="secure-peers">Secure Database Peers & Agnostic Updates</h2>
+            <div class="nested-box highlight">
+                <h3>Distributed Framework Evolution</h3>
+                <p>The framework employs secure database peers enabling domain-specific enhancements while maintaining universal compatibility.</p>
+            </div>
+
+            <div class="nested-box">
+                <h3>Peer Network Architecture</h3>
+                <div class="code-container">
+                    <div class="code-header"><span class="code-title">Secure Peer Configuration</span></div>
+                    <div class="code-content">SecurePeerNetwork = {
+    peer_types: {
+        core_peers: "Maintain base framework (S,O,M,K,P)",
+        domain_peers: "Specialized extensions per use case",
+        taxonomy_peers: "Classification system updates",
+        validation_peers: "Consensus and verification"
+    },
+    
+    update_mechanism: {
+        proposal: "Peer suggests framework extension",
+        validation: "2f+1 peers must approve",
+        integration: "Backward compatible merge",
+        propagation: "Distributed to all nodes"
+    }
+}</div>
+                </div>
+            </div>
+
+            <div class="nested-box process">
+                <h3>Agnostic Update Process</h3>
+                <ol>
+                    <li><strong>Pattern Recognition:</strong> Domain peers identify new classification needs</li>
+                    <li><strong>Proposal Creation:</strong> Formal extension specification</li>
+                    <li><strong>Peer Review:</strong> Domain experts validate utility</li>
+                    <li><strong>Consensus Voting:</strong> 67% approval threshold</li>
+                    <li><strong>Integration:</strong> Merge into domain branch</li>
+                    <li><strong>Cross-Domain Notification:</strong> Other domains informed</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- PART 3: USE CASES -->
+        <!-- Crime Investigation Use Case -->
+        <section>
+            <h2 class="section-title" id="crime-investigation">Use Case 1: Crime Investigation</h2>
+            <div class="nested-box highlight">
+                <h3>Multi-Observer Crime Scene Analysis</h3>
+                <p>Traditional investigations rely on linear witness statements. oMMP enables dynamic observer perspective switching for comprehensive 4D reconstruction.</p>
+            </div>
+
+            <div class="nested-box">
+                <h3>Observer Registry</h3>
+                <div class="code-container">
+                    <div class="code-header"><span class="code-title">Crime Scene Observer Types</span></div>
+                    <div class="code-content">Substrates = {
+    S_human: {
+        witness: "Civilian with limited observation window",
+        suspect: "Involved party with selective memory",
+        officer: "Trained observer arriving post-event",
+        victim: "Affected party with trauma considerations"
+    },
+    S_digital: {
+        cctv: "Fixed position, continuous recording",
+        bodycam: "Mobile POV, officer perspective",
+        smartphone: "Intermittent civilian recordings",
+        forensic_ai: "Pattern analysis system"
+    },
+    S_physical: {
+        ballistics: "Trajectory analysis sensors",
+        acoustic: "Gunshot detection system",
+        biometric: "DNA, fingerprint scanners"
+    }
+}</div>
+                </div>
+            </div>
+
+            <div class="nested-box process">
+                <h3>Observer Switching Example</h3>
+                <p><strong>Event:</strong> Robbery at downtown intersection</p>
+                
+                <div class="equation-container">
+                    <div class="equation">Ω_witness = (S_human, O_civilian, M_street, K_erratic, P_masked)</div>
+                </div>
+                <p>Witness perceives erratic motion due to fear response.</p>
+
+                <div class="equation-container">
+                    <div class="equation">Ω_suspect = (S_human, O_perpetrator, M_street, K_purposeful, P_escape_route)</div>
+                </div>
+                <p>Suspect\'s perspective shows purposeful motion toward planned escape.</p>
+
+                <div class="equation-container">
+                    <div class="equation">Ω_cctv = (S_digital, O_fixed, M_street, K_tracked, P_biometric_gait)</div>
+                </div>
+                <p>CCTV provides objective kinematic tracking.</p>
+
+                <p><strong>Consensus Building Benefits:</strong></p>
+                <ul>
+                    <li>Identifies perception bias (fear vs purposeful)</li>
+                    <li>Reveals selective memory gaps</li>
+                    <li>Provides ground truth trajectories</li>
+                    <li>Creates complete event sequence</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- UAP Investigation Use Case -->
+        <section>
+            <h2 class="section-title" id="uap-investigation">Use Case 2: UAP Investigation - Tic Tac Encounter</h2>
+            <div class="nested-box highlight">
+                <h3>Multi-Substrate Anomaly Tracking</h3>
+                <p>The USS Nimitz "Tic Tac" encounter (2004) demonstrates quantified classification using multiple observer types.</p>
+            </div>
+
+            <div class="nested-box">
+                <h3>EaARF Classification Breakdown</h3>
+                <div class="code-container">
+                    <div class="code-header"><span class="code-title">Tic Tac Quantified Classification</span></div>
+                    <div class="code-content">TicTac_Classification = "EaARF" {
+    E: "Earth-based observer POV (pilots in atmosphere)",
+    a: "Atmospheric medium - object gateway/operating environment",
+    A: "Anomalous kinematics - physics-defying maneuvers", 
+    R: "Reactive to pilot movements (quantified)",
+    F: "Fusiform/Tic-Tac shape (quantified)"
+}
+
+Classification_Components = {
+    E_ELEVATION: {
+        observer_altitude: "25,000 ft (F-18 operating altitude)",
+        object_range: "0 - 80,000 ft tracked",
+        encounter_zone: "15,000 - 25,000 ft"
+    },
+    
+    a_MEDIUM: {
+        type: "Clear atmosphere",
+        visibility: "10+ miles",
+        conditions: "No weather interference"
+    },
+    
+    A_ANOMALOUS: {
+        acceleration: "0 to 2,000+ mph in <2 seconds",
+        g_forces: "50-100g calculated",
+        physics_violations: [
+            "No visible propulsion",
+            "No sonic boom at Mach 3+",
+            "Cold IR signature"
+        ]
+    },
+    
+    R_REACTIVE: {
+        behaviors: [
+            "Mirrored F-18 descent",
+            "Appeared at CAP point",
+            "Rapid evasion when approached"
+        ],
+        correlation: "High (multiple witnesses)"
+    },
+    
+    F_FUSIFORM: {
+        length: "40-46 feet (radar estimate)",
+        shape: "Smooth oval \'Tic-Tac\'",
+        aspect_ratio: "~3.5:1",
+        surface: "White, no markings"
+    }
+}</div>
+                </div>
+            </div>
+
+            <div class="nested-box">
+                <h3>Multi-Observer Network</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Observer</th>
+                            <th>Substrate</th>
+                            <th>Key Data</th>
+                            <th>Unique Contribution</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Cmdr. Fravor</td>
+                            <td>S_human (visual)</td>
+                            <td>5-min engagement</td>
+                            <td>Behavioral patterns</td>
+                        </tr>
+                        <tr>
+                            <td>USS Princeton</td>
+                            <td>S_digital (SPY-1)</td>
+                            <td>2-week tracking</td>
+                            <td>80k ft drops</td>
+                        </tr>
+                        <tr>
+                            <td>FLIR Pod</td>
+                            <td>S_digital (IR)</td>
+                            <td>Video evidence</td>
+                            <td>Cold signature</td>
+                        </tr>
+                        <tr>
+                            <td>USS Louisville</td>
+                            <td>S_acoustic (sonar)</td>
+                            <td>Underwater disturbance</td>
+                            <td>Cross-medium activity</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Phoenix Lights Elevation Analysis -->
+        <section>
+            <h2 class="section-title" id="phoenix-lights">Use Case 3: Elevation-Based Visibility Analysis</h2>
+            <div class="nested-box highlight">
+                <h3>Why Some See Structure, Others Only Lights</h3>
+                <p>The Phoenix Lights case demonstrates how observer elevation relative to terrain determines whether witnesses see physical structure or just lights.</p>
+            </div>
+
+            <div class="nested-box">
+                <h3>Visibility Calculation Method</h3>
+                <div class="equation-container">
+                    <div class="equation">Structure_Visibility = (Observer_Elevation - Terrain_Peak) > (Object_Altitude - Margin)</div>
+                </div>
+                
+                <p><strong>Key Factors:</strong></p>
+                <ul>
+                    <li><strong>Elevation Differential:</strong> Observers above object see structure</li>
+                    <li><strong>Viewing Angle:</strong> Shallow angles show only lights</li>
+                    <li><strong>Terrain Masking:</strong> Mountains block low-angle views</li>
+                    <li><strong>Distance Effect:</strong> Light scattering increases with range</li>
+                </ul>
+            </div>
+
+            <div class="nested-box process">
+                <h3>Predicted Visibility by Elevation</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Observer Position</th>
+                            <th>Elevation Range</th>
+                            <th>View Angle</th>
+                            <th>Expected Observation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>High Elevation</td>
+                            <td>5,000+ ft</td>
+                            <td>Looking down</td>
+                            <td>Full structure visible</td>
+                        </tr>
+                        <tr>
+                            <td>Valley Floor (close)</td>
+                            <td>~1,100 ft</td>
+                            <td>High angle up</td>
+                            <td>Dark mass/underside</td>
+                        </tr>
+                        <tr>
+                            <td>Valley Floor (distant)</td>
+                            <td>~1,100 ft</td>
+                            <td>Low angle</td>
+                            <td>Lights only</td>
+                        </tr>
+                        <tr>
+                            <td>Behind Mountains</td>
+                            <td>Any</td>
+                            <td>Blocked</td>
+                            <td>Nothing visible</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="nested-box">
+                <h3>Database Integration Method</h3>
+                <div class="code-container">
+                    <div class="code-header"><span class="code-title">Elevation Validation Process</span></div>
+                    <div class="code-content">Validation_Method = {
+    // Terrain data sources
+    Elevation_Data: [
+        "USGS Digital Elevation Models",
+        "OpenTopography LiDAR",
+        "SRTM radar topography"
+    ],
+    
+    // Witness databases
+    Report_Sources: [
+        "NUFORC reports with locations",
+        "MUFON case files",
+        "Local media archives",
+        "Geotagged social media"
+    ],
+    
+    // Analysis steps
+    Process: {
+        1: "Extract observer locations",
+        2: "Determine ground elevation",
+        3: "Calculate line-of-sight",
+        4: "Check terrain obstruction",
+        5: "Compare predicted vs reported"
+    }
+}</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PART 4: DATA INTEGRATION -->
+        <!-- Secondary Data Integration -->
+        <section>
+            <h2 class="section-title" id="secondary-data">Creating Absolute Datasets from Secondary Sources</h2>
+            <div class="nested-box highlight">
+                <h3>Progressive Data Enhancement Through Foreign Tables</h3>
+                <p>Starting with base crime data, we create absolute values through normalization, then progressively enhance missing MMP details using domain-specific foreign tables that build upon previous values.</p>
+            </div>
+
+            <!-- Base Crime Data -->
+            <div class="nested-box">
+                <h3>Step 1: Base Absolute Value Creation</h3>
+                <div class="code-container">
+                    <div class="code-header"><span class="code-title">Initial Crime Data Normalization</span></div>
+                    <div class="code-content">// Raw crime record from police database
+Raw_Crime_Record = {
+    case_id: "2024-0123456",
+    date_time: "2024-01-15T22:30:00",
+    location: "47.6062° N, 122.3321° W",
+    offense: "BURGLARY-FORCE-RES",
+    beat: "U3",
+    status: "OPEN"
+}
+
+// Initial normalization to base oMMP
+Base_Absolute_Value = {
+    S: "S_digital",  // Police database source
+    O: {
+        id: "BEAT_U3",
+        coord: [47.6062, -122.3321, 0],  // x,y,z
+        t: 1705360200  // Unix timestamp
+    },
+    M: "?",  // Unknown - needs enhancement
+    K: "?",  // Unknown - needs pattern analysis  
+    P: {
+        type: "BURGLARY",
+        subtype: "FORCE-RES"
+    }
+}</div>
+                </div>
+            </div>
+
+            <!-- Foreign Table Enhancement -->
+            <div class="nested-box process">
+                <h3>Step 2: Foreign Table Enhancement Chain</h3>
+                <div class="code-container">
+                    <div class="code-header"><span class="code-title">Progressive MMP Enhancement</span></div>
+                    <div class="code-content">// FOREIGN TABLE 1: Environmental Context (fills M)
+Environmental_Context_Table = {
+    lookup_key: [coord, timestamp],
+    provides: {
+        weather: "NOAA hourly data",
+        lighting: "Civil twilight calculations",
+        events: "City event database",
+        demographics: "Census block data"
+    },
+    
+    enhancement: function(base_value) {
+        let conditions = lookup_weather(base_value.O.coord, base_value.O.t);
+        let lighting = calculate_lighting(base_value.O.coord, base_value.O.t);
+        
+        base_value.M = {
+            weather: conditions.rain ? "wet" : "dry",
+            visibility: lighting.dark ? "poor" : "good",
+            temp: conditions.temp,
+            nearby_events: lookup_events(base_value.O.coord, base_value.O.t)
+        };
+        return base_value;
+    }
+}
+
+// FOREIGN TABLE 2: Historical Pattern Analysis (fills K)
+Pattern_Analysis_Table = {
+    lookup_key: [beat, offense_type, M.conditions],
+    depends_on: "M must be populated first",
+    provides: {
+        historical_patterns: "Previous crimes in area",
+        temporal_clustering: "Time-based patterns",
+        modus_operandi: "Method similarities"
+    },
+    
+    enhancement: function(base_value) {
+        // Uses the M value from previous enhancement
+        let history = query_historical(
+            base_value.O.id, 
+            base_value.P.type,
+            base_value.M.weather  // Uses enhanced M value
+        );
+        
+        base_value.K = classify_kinematic_pattern(history);
+        // Returns: "periodic", "reactive", "opportunistic", etc.
+        return base_value;
+    }
+}
+
+// FOREIGN TABLE 3: Cross-Reference Enhancement (enriches all)
+Cross_Reference_Table = {
+    lookup_key: [coord, time_window],
+    depends_on: "Both M and K populated",
+    provides: {
+        witness_reports: "911 calls, social media",
+        sensor_data: "Traffic cams, IoT devices",
+        related_incidents: "Linked cases"
+    },
+    
+    enhancement: function(base_value) {
+        // Can now use M and K values for smarter correlation
+        if (base_value.K === "periodic" && base_value.M.weather === "dry") {
+            // Different search strategy for pattern crimes in good weather
+            expand_search_radius = true;
+        }
+        
+        // Add corroborating observers
+        base_value.additional_observers = find_witnesses(
+            base_value.O.coord,
+            base_value.O.t,
+            base_value.K  // Use pattern to predict witness locations
+        );
+        
+        return base_value;
+    }
+}</div>
+                </div>
+            </div>
+
+            <!-- Domain-Specific Tables -->
+            <div class="nested-box">
+                <h3>Step 3: Domain-Specific Foreign Tables</h3>
+                <div class="code-container">
+                    <div class="code-header"><span class="code-title">Different Tables for Different Domains</span></div>
+                    <div class="code-content">// CRIME DOMAIN TABLES
+Crime_Foreign_Tables = {
+    tables: [
+        "Environmental_Context",
+        "Pattern_Analysis", 
+        "Gang_Territory_Map",
+        "Repeat_Offender_DB",
+        "Victim_Vulnerability_Index"
+    ],
+    substrate_specific: {
+        S_human: "Witness_Reliability_Score",
+        S_digital: "Camera_Coverage_Map",
+        S_forensic: "Evidence_Chain_Registry"
+    }
+}
+
+// UAP DOMAIN TABLES  
+UAP_Foreign_Tables = {
+    tables: [
+        "Atmospheric_Conditions",
+        "Aircraft_Registry",
+        "Satellite_Positions",
+        "Electromagnetic_Anomalies",
+        "Historical_Sighting_Patterns"
+    ],
+    substrate_specific: {
+        S_radar: "Frequency_Interference_Log",
+        S_visual: "Optical_Distortion_Index",
+        S_infrared: "Heat_Signature_Library"
+    }
+}
+
+// MEDICAL DOMAIN TABLES
+Medical_Foreign_Tables = {
+    tables: [
+        "Patient_History",
+        "Drug_Interaction_Matrix",
+        "Symptom_Disease_Correlation",
+        "Genetic_Markers",
+        "Environmental_Exposure"
+    ],
+    substrate_specific: {
+        S_patient: "Self_Report_Reliability",
+        S_lab: "Test_Accuracy_Coefficients",
+        S_imaging: "Resolution_Limitations"
+    }
+}</div>
+                </div>
+            </div>
+
+            <!-- Complete Example -->
+            <div class="nested-box highlight">
+                <h3>Complete Enhancement Example</h3>
+                <div class="code-container">
+                    <div class="code-header"><span class="code-title">Full Progressive Enhancement Chain</span></div>
+                    <div class="code-content">// Starting with minimal crime data
+Initial_Crime = {
+    case: "2024-0123456",
+    time: "2024-01-15T22:30:00",
+    location: [47.6062, -122.3321],
+    type: "BURGLARY"
+}
+
+// After normalization (Absolute Base)
+Stage_1 = {
+    S: "S_digital",
+    O: {id: "BEAT_U3", coord: [47.6062, -122.3321, 0], t: 1705360200},
+    M: "?",
+    K: "?", 
+    P: {type: "BURGLARY", subtype: "FORCE-RES"}
+}
+
+// After Environmental Context (Foreign Table 1)
+Stage_2 = {
+    S: "S_digital",
+    O: {id: "BEAT_U3", coord: [47.6062, -122.3321, 0], t: 1705360200},
+    M: {
+        weather: "rain",
+        temp: 45,
+        visibility: "poor", 
+        events: ["Seahawks game 3mi away"]
+    },
+    K: "?",
+    P: {type: "BURGLARY", subtype: "FORCE-RES"}
+}
+
+// After Pattern Analysis (Foreign Table 2)
+Stage_3 = {
+    S: "S_digital",
+    O: {id: "BEAT_U3", coord: [47.6062, -122.3321, 0], t: 1705360200},
+    M: {weather: "rain", temp: 45, visibility: "poor", events: ["Seahawks game"]},
+    K: "opportunistic",  // Determined: crimes spike during games
+    P: {type: "BURGLARY", subtype: "FORCE-RES"}
+}
+
+// After Cross-Reference Enhancement (Foreign Table 3)
+Final_Absolute_Record = {
+    S: ["S_digital", "S_human", "S_iot"],  // Added witness + doorbell cam
+    O: {
+        primary: {id: "BEAT_U3", coord: [47.6062, -122.3321, 0], t: 1705360200},
+        secondary: [
+            {id: "WITNESS_001", coord: [47.6063, -122.3320, 0], t: 1705360180},
+            {id: "RING_CAM_445", coord: [47.6061, -122.3322, 0], t: 1705360195}
+        ]
+    },
+    M: {
+        weather: "rain", 
+        visibility: "poor",
+        events: ["Seahawks game"],
+        social_dynamic: "low foot traffic due to game"
+    },
+    K: "opportunistic",
+    P: {
+        type: "BURGLARY",
+        subtype: "FORCE-RES", 
+        duration: 300,  // seconds, from cam footage
+        entry: "rear window",
+        suspects: 2  // from witness
+    },
+    confidence: 0.89,  // Based on corroboration
+    enhancement_chain: ["base", "environmental", "pattern", "cross_ref"]
+}</div>
+                </div>
+            </div>
+
+            <div class="nested-box">
+                <h3>Key Benefits of Progressive Enhancement</h3>
+                <ul>
+                    <li><strong>Dependency Management:</strong> Each table builds on previous values (M informs K, K informs search strategies)</li>
+                    <li><strong>Domain Flexibility:</strong> Different domains use different foreign tables while maintaining core structure</li>
+                    <li><strong>Substrate Awareness:</strong> Tables can be specific to observation types (radar vs visual)</li>
+                    <li><strong>Audit Trail:</strong> Enhancement chain tracks how conclusions were reached</li>
+                    <li><strong>Incremental Improvement:</strong> New foreign tables can be added without breaking existing ones</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Conclusion -->
+        <div class="cta-section">
+            <h2 class="academic-title">Unified Theory of Observation</h2>
+            <p class="academic-subtitle">The oMMP framework demonstrates that the fundamental mathematics of observation remain constant across all domains. By treating observers as equal participants in a substrate-agnostic system, we build consensus reality from multiple perspectives.</p>
+            <p class="academic-meta">Key capabilities include:</p>
+            <ul>
+                <li>Observer perspective switching for multi-dimensional analysis</li>
+                <li>Quantified classification enabling database correlation</li>
+                <li>Elevation-based visibility calculations explaining contradictory reports</li>
+                <li>Secure peer networks for domain-specific evolution</li>
+                <li>Secondary data integration for historical validation</li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,809 @@
+# How To
+
+MMP Layered Framework Model 
+ 
+/* ==========================================================================
+ MMP FRAMEWORK ACADEMIC DOCUMENTATION CSS
+ Three-Color Meta-Modal-Platform System with Scientific Rigor
+ For Joomla 5.3 Template Override
+ ========================================================================== */
+#sp-main-body {
+ padding: 10px !important;
+}
+/* ROOT COLOR VARIABLES - Semantic Primary Color System */
+:root {
+ /* META Colors (WHERE - Domain/Environment) - Blue for Atmospheric/Spatial */
+ --meta-primary: #1d4ed8; /* Pure blue - Atmosphere/space/domain */
+ --meta-secondary: #3b82f6; /* Standard blue - Environmental context */
+ --meta-light: #dbeafe; /* Light blue background */
+ --meta-dark: #1e3a8a; /* Navy blue for emphasis */
+ 
+ /* MODAL Colors (HOW - Movement/Motion) - Green for Go/Movement */
+ --modal-primary: #16a34a; /* Pure green - Motion/movement */
+ --modal-secondary: #22c55e; /* Standard green - Kinematic states */
+ --modal-light: #dcfce7; /* Light green background */
+ --modal-dark: #15803d; /* Dark green for emphasis */
+ 
+ /* PLATFORM Colors (WHAT - Observable Thing) - Red for Essential Object */
+ --platform-primary: #dc2626; /* Pure red - The observable thing/shape */
+ --platform-secondary: #ef4444; /* Standard red - Physical manifestation */
+ --platform-light: #fef2f2; /* Light red background */
+ --platform-dark: #991b1b; /* Dark red for emphasis */
+ 
+ /* Neutral Academic Colors */
+ --neutral-100: #f8fafc;
+ --neutral-200: #e2e8f0;
+ --neutral-300: #cbd5e1;
+ --neutral-400: #94a3b8;
+ --neutral-500: #64748b;
+ --neutral-600: #475569;
+ --neutral-700: #334155;
+ --neutral-800: #1e293b;
+ --neutral-900: #0f172a;
+ 
+ /* Academic Typography */
+ --font-academic: \"Times New Roman\", \"Liberation Serif\", Georgia, serif;
+ --font-technical: \"SF Mono\", \"Monaco\", \"Cascadia Code\", \"Courier New\", monospace;
+ --font-interface: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif;
+ 
+ /* Spacing Scale */
+ --space-xs: 0.25rem;
+ --space-sm: 0.5rem;
+ --space-md: 1rem;
+ --space-lg: 1.5rem;
+ --space-xl: 2rem;
+ --space-2xl: 3rem;
+}
+
+/* BASE STYLES */
+.mmp-framework {
+ font-family: var(--font-interface);
+ line-height: 1.7;
+ color: var(--neutral-800);
+}
+
+/* ACADEMIC CONTAINER SYSTEM */
+.mmp-framework .academic-container {
+ max-width: 1400px;
+ margin: 0 auto;
+ padding: var(--space-lg);
+ background: white;
+ box-shadow: 0 10px 50px rgba(0,0,0,0.1);
+ border-radius: 12px;
+}
+
+/* HERO SECTIONS */
+.mmp-framework .hero-section {
+ background: var(--meta-primary);
+ color: white;
+ padding: 80px 40px;
+ border-radius: 16px;
+ text-align: center;
+ margin-bottom: 60px;
+ position: relative;
+ overflow: hidden;
+}
+
+/* TITLES AND HEADINGS */
+.mmp-framework .academic-title {
+ font-family: var(--font-academic);
+ font-size: 2.5rem;
+ font-weight: 700;
+ color: white;
+ margin-bottom: var(--space-lg);
+ line-height: 1.2;
+}
+
+.mmp-framework .academic-subtitle {
+ font-size: 1.25rem;
+ color: rgba(255, 255, 255, 0.9);
+ font-style: italic;
+ margin-bottom: var(--space-md);
+}
+
+.mmp-framework .section-title {
+ font-family: var(--font-academic);
+ font-weight: 700;
+ color: var(--neutral-800);
+ margin-bottom: var(--space-lg);
+}
+
+/* THREE-COLOR KANBAN CARD SYSTEM */
+.mmp-framework .kanban-container {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+ gap: var(--space-lg);
+ margin: var(--space-xl) 0;
+}
+
+.mmp-framework .kanban-column {
+ background: var(--neutral-100);
+ border-radius: 12px;
+ padding: var(--space-lg);
+ min-height: 300px;
+}
+
+.mmp-framework .kanban-column.meta-column {
+ border-top: 4px solid var(--meta-primary);
+ background: var(--meta-light);
+}
+
+.mmp-framework .kanban-column.modal-column {
+ border-top: 4px solid var(--modal-primary);
+ background: var(--modal-light);
+}
+
+.mmp-framework .kanban-column.platform-column {
+ border-top: 4px solid var(--platform-primary);
+ background: var(--platform-light);
+}
+
+.mmp-framework .kanban-header {
+ font-weight: 700;
+ font-size: 1.1rem;
+ margin-bottom: var(--space-lg);
+ padding-bottom: var(--space-sm);
+ border-bottom: 2px solid currentColor;
+}
+
+.mmp-framework .meta-column .kanban-header { color: var(--meta-primary); }
+.mmp-framework .modal-column .kanban-header { color: var(--modal-primary); }
+.mmp-framework .platform-column .kanban-header { color: var(--platform-primary); }
+
+/* KANBAN CARDS */
+.mmp-framework .kanban-card {
+ background: white;
+ border-radius: 8px;
+ padding: var(--space-lg);
+ margin-bottom: var(--space-md);
+ box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+ border-left: 4px solid;
+ transition: all 0.3s ease;
+}
+
+.mmp-framework .kanban-card:hover {
+ transform: translateY(-2px);
+ box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.mmp-framework .kanban-card.meta-card { border-left-color: var(--meta-primary); }
+.mmp-framework .kanban-card.modal-card { border-left-color: var(--modal-primary); }
+.mmp-framework .kanban-card.platform-card { border-left-color: var(--platform-primary); }
+
+/* ACTION BUTTONS */
+.mmp-framework .action-button {
+ background: var(--modal-primary);
+ color: white;
+ border: none;
+ padding: var(--space-sm) var(--space-lg);
+ border-radius: 6px;
+ font-weight: 600;
+ cursor: pointer;
+ transition: all 0.2s ease;
+ display: inline-flex;
+ align-items: center;
+ gap: var(--space-sm);
+ text-decoration: none;
+}
+
+.mmp-framework .action-button:hover {
+ background: var(--modal-dark);
+ transform: translateY(-1px);
+ box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+ color: white;
+ text-decoration: none;
+}
+
+/* DARK MODE CODE EDITOR STYLING */
+.mmp-framework .code-container {
+ background: #212121;
+ border-radius: 8px;
+ overflow: hidden;
+ margin: var(--space-lg) 0;
+ box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.mmp-framework .code-header {
+ background: #1a1a1a;
+ color: #e0e0e0;
+ padding: var(--space-sm) var(--space-lg);
+ font-family: var(--font-technical);
+ font-size: 0.85rem;
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ border-bottom: 1px solid #333;
+}
+
+.mmp-framework .code-content {
+ background: #263238;
+ color: #eeffff;
+ padding: var(--space-lg);
+ font-family: var(--font-technical);
+ font-size: 0.9rem;
+ line-height: 1.6;
+ overflow-x: auto;
+}
+
+/* Custom styles for layer visualization */
+.layer-visualization {
+ position: relative;
+ min-height: 600px;
+ margin: 40px 0;
+}
+
+.layer {
+ position: relative;
+ margin-bottom: 20px;
+ padding: 30px;
+ border-radius: 12px;
+ transition: all 0.3s ease;
+ cursor: pointer;
+ background: white;
+ border: 2px solid transparent;
+}
+
+.layer:hover {
+ transform: translateX(10px);
+ box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+.layer.active {
+ transform: translateX(20px);
+ box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+}
+
+.layer-1 { 
+ background: var(--platform-light); 
+ border-color: var(--platform-primary);
+}
+.layer-2 { 
+ background: var(--modal-light); 
+ border-color: var(--modal-primary);
+}
+.layer-3 { 
+ background: var(--meta-light); 
+ border-color: var(--meta-primary);
+}
+.layer-4 { 
+ background: var(--neutral-100); 
+ border-color: var(--neutral-600);
+}
+
+.layer-number {
+ position: absolute;
+ left: -40px;
+ top: 50%;
+ transform: translateY(-50%);
+ width: 60px;
+ height: 60px;
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ font-weight: bold;
+ color: white;
+}
+
+.layer-1 .layer-number { background: var(--platform-primary); }
+.layer-2 .layer-number { background: var(--modal-primary); }
+.layer-3 .layer-number { background: var(--meta-primary); }
+.layer-4 .layer-number { background: var(--neutral-600); }
+
+.connection-line {
+ position: absolute;
+ width: 2px;
+ background: var(--neutral-400);
+ left: -10px;
+ opacity: 0;
+ transition: opacity 0.3s ease;
+}
+
+.connection-line.active {
+ opacity: 1;
+ background: var(--modal-primary);
+}
+
+.layer-title {
+ font-size: 1.5rem;
+ font-weight: 700;
+ margin-bottom: 10px;
+}
+
+.layer-focus {
+ color: var(--neutral-600);
+ font-style: italic;
+ margin-bottom: 15px;
+}
+
+.layer-details {
+ max-height: 0;
+ overflow: hidden;
+ transition: max-height 0.3s ease;
+}
+
+.layer.active .layer-details {
+ max-height: 500px;
+}
+
+.interaction-demo {
+ background: var(--neutral-100);
+ border-radius: 8px;
+ padding: 20px;
+ margin-top: 20px;
+}
+
+.flow-diagram {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ margin: 40px 0;
+ flex-wrap: wrap;
+}
+
+.flow-item {
+ flex: 1;
+ text-align: center;
+ padding: 20px;
+ margin: 10px;
+ border-radius: 8px;
+ transition: all 0.3s ease;
+}
+
+.flow-arrow {
+ font-size: 24px;
+ color: var(--modal-primary);
+ margin: 0 10px;
+}
+
+@media (max-width: 768px) {
+ .layer-number {
+ position: relative;
+ left: 0;
+ margin-bottom: 15px;
+ width: 40px;
+ height: 40px;
+ font-size: 18px;
+ }
+ 
+ .flow-diagram {
+ flex-direction: column;
+ }
+ 
+ .flow-arrow {
+ transform: rotate(90deg);
+ margin: 10px 0;
+ }
+}
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ MMP Layered Framework Model 
+ Understanding the Four-Layer Architecture for Observer-Prefixed Anomaly Classification 
+ Interactive Guide to Framework Implementation 
+ 
+ Start Interactive Tour
+ 
+ 
+
+ 
+ 
+ Framework Architecture Overview 
+ The MMP Framework operates through four interconnected layers, each building upon the previous to create a complete system for substrate-agnostic observation and classification. Click on each layer below to explore how they interact. 
+ 
+
+ 
+ 
+ 
+ 
+ 1 
+ Mathematical Foundation 
+ Equations, proofs, pure logic 
+ 
+ Core Components: 
+ 
+ Absolute Record Theory: Ω represents deterministic observation events 
+ State Space: Ψ = (S, O, M, K, P) defining all possible states 
+ Information Theory: Shannon entropy optimization H(X) = -Σ p_i log₂(p_i) 
+ Physics Constraints: Heisenberg uncertainty δx · δp ≥ ℏ/2 
+ 
+ 
+ 
+ Core Mathematical Axioms 
+ 
+ 
+∀ Ω ∈ Records: P(Ω occurred) = 1
+∀ O_i, O_j ∈ Observers: (x_i, y_i, z_i, t_i) = (x_j, y_j, z_j, t_j) ⟺ i = j
+Ω_id = Hash(S, O_spacetime, O_state, M, K, P, t) 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 2 
+ Guideline Framework 
+ Structural application rules 
+ 
+ Implementation Rules: 
+ 
+ Observer Protocols: Cryptographic identity and verification 
+ Discretization Functions: Converting continuous data to discrete categories 
+ Consensus Mechanisms: Byzantine fault tolerance (2f+1 rule) 
+ Gateway Transforms: Inter-substrate communication 
+ 
+ 
+ How Guidelines Apply Mathematics: 
+ The guidelines translate pure mathematics into implementable rules. For example, the spacetime uniqueness principle (Layer 1) becomes the observer registration protocol (Layer 2). 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 3 
+ Theoretical Application (oMMP) 
+ Coherent model or system theory 
+ 
+ oMMP Theory Components: 
+ 
+ Observer-Prefixed Records: Every observation starts with \'o\' metadata 
+ Progressive Refinement: Records improve over time: Ω(t+1) = Ω(t) ⊕ Δ 
+ Multi-Substrate Integration: Human, AI, and sensor observations unified 
+ Classification System: Five-character codes (e.g., \"EaARF\") 
+ 
+ 
+ 
+ META (Where) 
+ 
+ Domain Context 
+ Environmental characteristics, reference frames, observation conditions 
+ 
+ 
+ 
+ MODAL (How) 
+ 
+ Kinematic Patterns 
+ Movement classification: hovering, linear, curved, erratic, reactive 
+ 
+ 
+ 
+ PLATFORM (What) 
+ 
+ Physical Properties 
+ Observable characteristics: shape, size, temperature, emissions 
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 4 
+ Practical Implementation 
+ Databases, models, software, peer-review 
+ 
+ Real-World Applications: 
+ 
+ Smart Contracts: Automated observation validation 
+ Distributed Ledgers: Immutable record storage 
+ Cross-Domain Analysis: Crime, UAP, medical, financial applications 
+ Peer Networks: Domain-specific enhancements 
+ 
+ 
+ 
+ Implementation Example 
+ 
+ 
+// Submit observation to blockchain
+function submitObservation(data, signature) {
+ const ommp_record = {
+ \'o\': observer_header, // Layer 3: Observer prefix
+ \'MMP\': observation_data, // Layer 2: Structured data
+ \'hash\': sha256(data), // Layer 1: Mathematical hash
+ \'validated\': consensus() // Layer 4: Peer validation
+ };
+ return ledger.append(ommp_record);
+} 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ How Layers Work Together 
+ 
+ 
+ 
+ Foundation 
+ Pure Mathematics 
+ 
+ → 
+ 
+ Structure 
+ Application Rules 
+ 
+ → 
+ 
+ Theory 
+ Coherent Model 
+ 
+ → 
+ 
+ Practice 
+ Real Systems 
+ 
+ 
+
+ 
+ 
+ Example: UAP Observation 
+ 
+ Layer 1: Mathematics 
+ Spacetime coordinates: (x, y, z, t) 
+ Uncertainty: δx = 10m, δt = 0.1s 
+ 
+ 
+ Layer 2: Guidelines 
+ Observer: Pilot (S_human) 
+ Discretization: K = Erratic (λ > 2.0) 
+ 
+ 
+ Layer 3: oMMP Theory 
+ Classification: \"EaARF\" 
+ Progressive updates from radar 
+ 
+ 
+ Layer 4: Implementation 
+ Stored in blockchain 
+ Cross-referenced with FLIR data 
+ 
+ 
+
+ 
+ Example: Crime Analysis 
+ 
+ Layer 1: Mathematics 
+ Event hash: SHA256(location + time) 
+ Information entropy: H = 4.2 bits 
+ 
+ 
+ Layer 2: Guidelines 
+ Multiple observers: witness, CCTV 
+ Byzantine consensus required 
+ 
+ 
+ Layer 3: oMMP Theory 
+ Observer switching reveals bias 
+ Pattern: \"opportunistic\" (K) 
+ 
+ 
+ Layer 4: Implementation 
+ Police database integration 
+ Predictive pattern analysis 
+ 
+ 
+
+ 
+ Example: Medical Diagnosis 
+ 
+ Layer 1: Mathematics 
+ Symptom vector: n-dimensional 
+ Bayesian probability update 
+ 
+ 
+ Layer 2: Guidelines 
+ Substrates: patient, doctor, lab 
+ Privacy: zero-knowledge proofs 
+ 
+ 
+ Layer 3: oMMP Theory 
+ Multi-perspective diagnosis 
+ Consensus from all substrates 
+ 
+ 
+ Layer 4: Implementation 
+ Electronic health records 
+ AI-assisted pattern matching 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ Interactive Layer Dependencies 
+ Click the buttons below to see how changes in one layer affect others: 
+ 
+ 
+ 
+ Bottom-Up Flow
+ 
+ 
+ Top-Down Flow
+ 
+ 
+ Feedback Loops
+ 
+ 
+ 
+ 
+ 
+ Layer Interaction Demonstration 
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ Key Principles of Layer Interaction 
+ 
+ 
+ 
+ Foundation Enables Structure 
+ Mathematical axioms provide the unshakeable foundation. Without spacetime uniqueness (Layer 1), we couldn\'t have unique observer IDs (Layer 2). 
+ 
+ 
+ 
+ Structure Enables Theory 
+ Guidelines create the framework for theoretical models. Discretization rules (Layer 2) enable classification systems (Layer 3). 
+ 
+ 
+ 
+ Theory Enables Practice 
+ Coherent models guide implementation. The oMMP theory (Layer 3) directs how we build real systems (Layer 4). 
+ 
+ 
+ 
+ 
+ Ready to Implement? 
+ Each layer builds upon the previous, creating a complete system for substrate-agnostic observation and classification. 
+ 
+ View Implementation Guide
+ 
+ 
+ 
+ 
+ 
+
+ 
+// Layer interaction functions
+let activeLayer = null;
+let tourStep = 0;
+
+function toggleLayer(layerNum) {
+ const layers = document.querySelectorAll(\'.layer\');
+ const layer = document.querySelector(`.layer-${layerNum}`);
+ const lines = document.querySelectorAll(\'.connection-line\');
+ 
+ if (activeLayer === layerNum) {
+ // Deactivate
+ layer.classList.remove(\'active\');
+ lines.forEach(line => line.classList.remove(\'active\'));
+ activeLayer = null;
+ } else {
+ // Deactivate all
+ layers.forEach(l => l.classList.remove(\'active\'));
+ lines.forEach(line => line.classList.remove(\'active\'));
+ 
+ // Activate selected
+ layer.classList.add(\'active\');
+ activeLayer = layerNum;
+ 
+ // Show connections
+ if (layerNum > 1) {
+ for (let i = 0; i {
+ tourStep++;
+ if (tourStep // Bottom-Up Flow: Mathematics → Implementation 
+
+ // Layer 1: Mathematical Foundation 
+ const spacetime = { x: 47.6062, y: -122.3321, z: 0, t: Date.now() };
+ const uniqueId = hash (spacetime); // Guaranteed unique by axiom 
+
+ // Layer 2: Apply Guidelines 
+ const discretized = {
+ location: classifyLocation (spacetime), // Returns \"Earth\" 
+ kinematic: calculateLyapunov (trajectory) > 2.0 ? \"Erratic\" : \"Linear\" 
+};
+
+ // Layer 3: Build oMMP Record 
+ const ommpRecord = {
+ o: { id: uniqueId, substrate: \"S_human\" , ...spacetime },
+ MMP: { ...discretized, classification: \"EaARF\" }
+};
+
+ // Layer 4: Store in Implementation 
+ await blockchain. submit (ommpRecord);
+ await peerNetwork. validate (ommpRecord);`;
+}
+
+function demonstrateTopDown() {
+ const output = document.getElementById(\'demo-output\');
+ const content = document.getElementById(\'demo-content\');
+ output.style.display = \'block\';
+ 
+ content.innerHTML = `
+ // Top-Down Flow: Requirements → Mathematics 
+
+ // Layer 4: Practical Requirement 
+ const requirement = \"Track UAP across multiple sensors\" ;
+
+ // Layer 3: Apply oMMP Theory 
+ const observers = [
+ { substrate: \"S_human\" , type: \"pilot\" },
+ { substrate: \"S_digital\" , type: \"radar\" },
+ { substrate: \"S_digital\" , type: \"FLIR\" }
+];
+
+ // Layer 2: Use Guidelines for Consensus 
+ const byzantineRule = observers.length >= 2 * f + 1; // f = max faulty 
+ const consensusThreshold = 0.7;
+
+ // Layer 1: Mathematical Validation 
+ const validated = observations. every (obs => 
+ verifySpacetimeUniqueness (obs) && 
+ checkHeisenbergLimit (obs.uncertainty)
+);`;
+}
+
+function demonstrateFeedback() {
+ const output = document.getElementById(\'demo-output\');
+ const content = document.getElementById(\'demo-content\');
+ output.style.display = \'block\';
+ 
+ content.innerHTML = `
+ // Feedback Loops: Continuous Improvement 
+
+ // Implementation discovers edge case 
+ const edgeCase = {
+ issue: \"Quantum sensors violate classical assumptions\" ,
+ layer: 4
+};
+
+ // Feedback to Layer 3: Update Theory 
+ const theoryUpdate = {
+ addSubstrate: \"S_quantum\" ,
+ specialRules: [ \"measurement affects outcome\" ]
+};
+
+ // Feedback to Layer 2: New Guidelines 
+ const guidelineUpdate = {
+ quantumProtocol: \"Use superposition-aware consensus\" ,
+ uncertaintyHandling: \"Apply Heisenberg limits\" 
+};
+
+ // Feedback to Layer 1: Refined Mathematics 
+ const mathUpdate = {
+ axiom: \"Quantum observations follow |ψ⟩⟨ψ| → {eigenvalue, p}\" ,
+ constraint: \"δx · δp ≥ ℏ/2\" 
+};
+
+ // Result: Framework evolves while maintaining consistency 
+console.log( \"All layers updated coherently\" );`;
+}
+
+// Initialize on load
+document.addEventListener(\'DOMContentLoaded\', function() {
+ // Add smooth scrolling
+ document.querySelectorAll(\'a[href^=\"#\"]\').forEach(anchor => {
+ anchor.addEventListener(\'click\', function (e) {
+ e.preventDefault();
+ document.querySelector(this.getAttribute(\'href\')).scrollIntoView({
+ behavior: \'smooth\'
+ });
+ });
+ });
+});
