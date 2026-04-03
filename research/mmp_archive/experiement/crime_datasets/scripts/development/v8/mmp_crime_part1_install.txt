@@ -1,0 +1,214 @@
+#!/bin/bash
+# mmp_install_part1.sh - Core System Setup
+# Part 1: System preparation, user creation, MySQL installation
+
+# ============================================
+# CONFIGURATION AND FUNCTIONS
+# ============================================
+clear
+
+# Colors
+RED='\033[0;31m'
+ORANGE='\033[38;5;214m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[1;33m'
+PURPLE='\033[0;35m'
+WHITE='\033[1;37m'
+NC='\033[0m'
+
+# Animation elements
+SPINNER=('⠋' '⠙' '⠹' '⠸' '⠼' '⠴' '⠦' '⠧' '⠇' '⠏')
+PROGRESS_CHARS=('█' '▉' '▊' '▋' '▌' '▍' '▎' '▏')
+
+# Configuration
+SCRIPT_VERSION="08-CORRECTED"
+LOG_DIR="/root/mmp_logs"
+SESSION_TIME=$(date +%Y%m%d_%H%M%S)
+
+# Generate Installation ID
+get_cpu_info() {
+    local cpu_info=$(cat /proc/cpuinfo | grep "processor\|vendor_id\|model name" | head -6 | md5sum | cut -c1-8)
+    local mac_info=$(ip link | grep ether | head -1 | awk '{print $2}' | tr -d ':' | cut -c1-4)
+    echo "${cpu_info:0:4}${mac_info:0:4}" | tr '[:lower:]' '[:upper:]'
+}
+
+INSTALLATION_ID=$(get_cpu_info)
+SESSION_LOG="$LOG_DIR/mmp_install_${INSTALLATION_ID}_${SESSION_TIME}.log"
+
+# Create log directory
+mkdir -p "$LOG_DIR"
+chmod 700 "$LOG_DIR"
+
+# Progress tracking
+show_progress() {
+    local message="$1"
+    local duration="${2:-3}"
+    
+    for ((i=0; i<duration*4; i++)); do
+        local spinner_idx=$((i % 10))
+        printf "\r${BLUE}${SPINNER[spinner_idx]} %s${NC}" "$message"
+        sleep 0.25
+    done
+    printf "\r${GREEN}✓ %s${NC}\n" "$message"
+}
+
+# Password generation
+generate_stig_password() {
+    local length=${1:-18}
+    local charset="ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%^&*"
+    local password=""
+    
+    password+=$(echo "ABCDEFGHJKLMNPQRSTUVWXYZ" | fold -w1 | shuf | head -1)
+    password+=$(echo "abcdefghijkmnpqrstuvwxyz" | fold -w1 | shuf | head -1)
+    password+=$(echo "23456789" | fold -w1 | shuf | head -1)
+    password+=$(echo "!@#$%^&*" | fold -w1 | shuf | head -1)
+    
+    for ((i=4; i<length; i++)); do
+        password+=$(echo "$charset" | fold -w1 | shuf | head -1)
+    done
+    
+    echo "$password" | fold -w1 | shuf | tr -d '\n'
+}
+
+# Start logging
+exec > >(tee -a "$SESSION_LOG")
+exec 2>&1
+
+# ============================================
+# SYSTEM PREPARATION
+# ============================================
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${BLUE}                    MMP CRIME DATABASE INSTALLER V${SCRIPT_VERSION} - PART 1                    ${NC}"
+echo -e "${BLUE}                         [Installation ID: $INSTALLATION_ID]                         ${NC}"
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+
+# Clean and prepare system
+show_progress "Cleaning package cache" 2
+yum clean all &>/dev/null || dnf clean all &>/dev/null
+
+show_progress "Installing nano" 2
+yum install -y nano &>/dev/null || dnf install -y nano &>/dev/null
+
+# Create admin user
+ADMIN_PASSWORD=$(generate_stig_password 20)
+RECOVERY_PASSPHRASE="[Ocean47\$Mountain82@RT!]"
+
+show_progress "Creating maverick user" 3
+if ! id maverick &>/dev/null; then
+    useradd -m -s /bin/bash maverick
+    echo "$ADMIN_PASSWORD" | passwd maverick --stdin &>/dev/null
+    usermod -aG wheel maverick
+fi
+
+# Create credentials directory
+mkdir -p /home/maverick/.mmp
+chmod 700 /home/maverick/.mmp
+
+# Save credentials (encrypted)
+cat > /tmp/creds.txt << EOF
+Installation ID: $INSTALLATION_ID
+Admin User: maverick
+Admin Password: $ADMIN_PASSWORD
+Recovery: $RECOVERY_PASSPHRASE
+EOF
+
+openssl enc -aes-256-gcm -pbkdf2 -iter 600000 -salt \
+    -in /tmp/creds.txt \
+    -out /home/maverick/.mmp/credentials.enc \
+    -pass pass:"$RECOVERY_PASSPHRASE" 2>/dev/null
+
+shred -vfz -n 3 /tmp/creds.txt 2>/dev/null
+chown -R maverick:maverick /home/maverick/.mmp
+
+# Configure sudo
+cat > /etc/sudoers.d/maverick-restricted << 'EOF'
+maverick ALL=(root) NOPASSWD: /bin/systemctl start mysqld
+maverick ALL=(root) NOPASSWD: /bin/systemctl stop mysqld
+maverick ALL=(root) NOPASSWD: /bin/systemctl enable mysqld
+maverick ALL=(root) NOPASSWD: /bin/systemctl restart mysqld
+maverick ALL=(root) NOPASSWD: /usr/bin/yum install *
+maverick ALL=(root) NOPASSWD: /usr/bin/dnf install *
+maverick ALL=(root) NOPASSWD: /usr/bin/firewall-cmd *
+EOF
+
+# System updates
+show_progress "Updating system" 10
+yum update -y &>/dev/null || dnf update -y &>/dev/null
+yum install -y epel-release &>/dev/null || dnf install -y epel-release &>/dev/null
+
+# Install tools
+TOOLS="wget curl git htop tree net-tools bind-utils python3 python3-pip python3-devel gcc"
+for tool in $TOOLS; do
+    yum install -y "$tool" &>/dev/null || dnf install -y "$tool" &>/dev/null
+done
+
+# Install MySQL
+show_progress "Installing MySQL" 15
+systemctl stop mysqld mariadb &>/dev/null || true
+yum remove -y mysql* mariadb* &>/dev/null || true
+
+if grep -q "release 9" /etc/redhat-release 2>/dev/null; then
+    MYSQL_REPO="https://dev.mysql.com/get/mysql80-community-release-el9-1.noarch.rpm"
+elif grep -q "release 8" /etc/redhat-release 2>/dev/null; then
+    MYSQL_REPO="https://dev.mysql.com/get/mysql80-community-release-el8-1.noarch.rpm"
+else
+    MYSQL_REPO="https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm"
+fi
+
+yum install -y "$MYSQL_REPO" &>/dev/null || dnf install -y "$MYSQL_REPO" &>/dev/null
+yum install -y mysql-server mysql --nogpgcheck &>/dev/null || dnf install -y mysql-server mysql --nogpgcheck &>/dev/null
+
+# Configure MySQL
+cat > /etc/my.cnf.d/mmp_crime.cnf << 'EOF'
+[mysqld]
+bind-address = 127.0.0.1
+max_allowed_packet = 1G
+innodb_buffer_pool_size = 2G
+character-set-server = utf8mb4
+collation-server = utf8mb4_unicode_ci
+local_infile = 0
+log_error = /var/log/mysql/error.log
+
+[client]
+default-character-set = utf8mb4
+EOF
+
+mkdir -p /var/log/mysql
+chown mysql:mysql /var/log/mysql
+systemctl start mysqld
+systemctl enable mysqld
+
+# Secure MySQL
+TEMP_PASS=$(grep 'temporary password' /var/log/mysqld.log 2>/dev/null | tail -1 | awk '{print $NF}')
+MYSQL_ROOT_PASS=$(generate_stig_password 24)
+MYSQL_APP_PASS=$(generate_stig_password 24)
+
+if [ -n "$TEMP_PASS" ]; then
+    mysql --connect-expired-password -u root -p"$TEMP_PASS" << EOFMYSQL 2>/dev/null
+ALTER USER 'root'@'localhost' IDENTIFIED BY '$MYSQL_ROOT_PASS';
+DELETE FROM mysql.user WHERE User='';
+DROP DATABASE IF EXISTS test;
+FLUSH PRIVILEGES;
+EOFMYSQL
+fi
+
+# Save MySQL credentials
+echo "MySQL root: $MYSQL_ROOT_PASS" >> /home/maverick/.mmp/mysql_creds.txt
+echo "MySQL app: $MYSQL_APP_PASS" >> /home/maverick/.mmp/mysql_creds.txt
+chmod 600 /home/maverick/.mmp/mysql_creds.txt
+chown maverick:maverick /home/maverick/.mmp/mysql_creds.txt
+
+# Create success marker
+echo "PART1_COMPLETE" > /root/mmp_logs/part1.complete
+echo "MYSQL_ROOT_PASS=$MYSQL_ROOT_PASS" >> /root/mmp_logs/part1.complete
+echo "MYSQL_APP_PASS=$MYSQL_APP_PASS" >> /root/mmp_logs/part1.complete
+echo "ADMIN_PASSWORD=$ADMIN_PASSWORD" >> /root/mmp_logs/part1.complete
+echo "INSTALLATION_ID=$INSTALLATION_ID" >> /root/mmp_logs/part1.complete
+
+echo ""
+echo -e "${GREEN}✅ Part 1 Complete! Credentials saved.${NC}"
+echo -e "${YELLOW}Installation ID: $INSTALLATION_ID${NC}"
+echo -e "${YELLOW}Admin Password: $ADMIN_PASSWORD${NC}"
+echo ""
+echo -e "${BLUE}Run Part 2 to continue: ./mmp_install_part2.sh${NC}"

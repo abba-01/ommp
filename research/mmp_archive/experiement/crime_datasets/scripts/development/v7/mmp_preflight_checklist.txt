@@ -1,0 +1,41 @@
+#!/bin/bash
+# mmp_precheck_v05.sh - Pre-flight compatibility check
+
+echo "=== MMP v05 Pre-flight Check ==="
+echo ""
+
+# Check essential commands
+REQUIRED_COMMANDS="yum dnf systemctl openssl mysql wget curl"
+MISSING_COMMANDS=""
+
+for cmd in $REQUIRED_COMMANDS; do
+    if ! command -v $cmd >/dev/null 2>&1; then
+        MISSING_COMMANDS="$MISSING_COMMANDS $cmd"
+    fi
+done
+
+if [ -n "$MISSING_COMMANDS" ]; then
+    echo "❌ Missing required commands:$MISSING_COMMANDS"
+    exit 1
+else
+    echo "✅ All required commands available"
+fi
+
+# Check system compatibility
+if grep -q "Rocky\|Red Hat\|CentOS" /etc/os-release 2>/dev/null; then
+    echo "✅ Compatible OS detected"
+else
+    echo "⚠️  OS compatibility uncertain"
+fi
+
+# Check available space
+AVAILABLE_GB=$(df / | awk 'NR==2 {print int($4/1024/1024)}')
+if [ $AVAILABLE_GB -lt 10 ]; then
+    echo "❌ Insufficient disk space: ${AVAILABLE_GB}GB (need 10GB+)"
+    exit 1
+else
+    echo "✅ Sufficient disk space: ${AVAILABLE_GB}GB"
+fi
+
+echo ""
+echo "✅ Pre-flight check passed - v05 script should work"

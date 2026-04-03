@@ -1,0 +1,204 @@
+# Generic AI Session Management Template
+
+## 🎯 Project Configuration
+
+```yaml
+PROJECT_NAME: "[Your Project Name]"
+PROJECT_TYPE: "[code/writing/research/analysis/other]"
+PRIMARY_GOAL: "[Main objective in one sentence]"
+CONSTRAINTS: 
+  - "[Constraint 1]"
+  - "[Constraint 2]"
+```
+
+## 📌 Single Source of Truth (SSOT)
+
+### Master Tracking Document
+```markdown
+# [PROJECT_NAME]_tracker.md
+
+## Priority Levels
+### 🔴 Critical (P0)
+- [ ] [ID] | [Task description] | [Context/Location]
+
+### 🟠 High (P1)
+- [ ] [ID] | [Task description] | [Context/Location]
+
+### 🟡 Medium (P2)
+- [ ] [ID] | [Task description] | [Context/Location]
+
+### 🟢 Low (P3)
+- [ ] [ID] | [Task description] | [Context/Location]
+```
+
+## 🚀 Session Initialization Template
+
+```markdown
+=== SESSION START ===
+Date: [YYYY-MM-DD HH:MM]
+Session ID: [S###]
+
+CONTEXT_INJECTION_START
+↳ Current [PROJECT_NAME]_tracker (last [N] items):
+   [Paste relevant section]
+↳ Session objective: [Specific goal for this session]
+↳ Constraints: [Any session-specific limitations]
+CONTEXT_INJECTION_END
+
+Task: [Specific instruction for AI]
+Output format: [bullets/code/prose/artifact]
+```
+
+## 🏷️ Task Status System
+
+Choose your tracking style:
+
+### Option A: Simple Status
+- `[ ]` = Open
+- `[✓]` = Complete
+- `[→]` = In Progress
+- `[?]` = Blocked/Need Info
+
+### Option B: Detailed Status
+- `[✔]` Done → [completion reference]
+- `[🔄]` Active → [current status]
+- `[⏸️]` Parked → [reason/dependency]
+- `[❓]` Blocked → [what's needed]
+- `[🚫]` Cancelled → [reason]
+
+## 🔄 Work Cadence Framework
+
+### Sprint Pattern (customizable)
+```markdown
+1. START (5 min)
+   - AI echoes understanding of goals
+   - Reviews open items (max [N] lines)
+   - Proposes work order
+
+2. EXECUTE (main work)
+   - Deliver [deliverable type]
+   - Format: [preferred format]
+   - Scope: [scope limits]
+
+3. CLOSE (5 min)
+   - Update task statuses
+   - Delta summary: "Completed: X, Active: Y, New: Z"
+   - Next session prep notes
+```
+
+## 📊 Output Templates
+
+### For Code Projects
+```markdown
+Request: "Provide [patch/diff/full file] format only"
+- Use diff --git format for changes
+- Include line numbers for context
+- Minimal prose unless explaining complexity
+```
+
+### For Writing Projects
+```markdown
+Request: "Deliver in [format]: 
+- Outline only
+- Full draft with headers
+- Bullet summaries
+- Annotated revision
+```
+
+### For Analysis Projects
+```markdown
+Request: "Structure as:
+- Executive summary (3 bullets)
+- Data/findings (tables/charts)
+- Recommendations (numbered)
+- Next steps (checklist)
+```
+
+## 🔒 Variable Management
+
+### Placeholder System
+```markdown
+ALWAYS USE PLACEHOLDERS FOR:
+- $[SENSITIVE_VAR] → never hardcode
+- $[ENVIRONMENT_VAR] → config dependent
+- $[USER_INPUT] → requires validation
+- $[API_KEY] → security critical
+```
+
+## 💾 Progress Preservation
+
+### Token Management
+```markdown
+IF conversation_length > [LIMIT] tokens:
+  TRIGGER: "🔄 Checkpoint needed"
+  AI RESPONDS: Compressed state (max [N] lines)
+  FORMAT: 
+    - Active tasks: [list]
+    - Completed this session: [list]
+    - Carry forward: [critical context]
+```
+
+### Version Snapshots
+```markdown
+Weekly/Milestone checkpoint:
+# [PROJECT_NAME]_snapshot_[VERSION]
+Date: [YYYY-MM-DD]
+Progress: [X]% complete
+Key achievements: [bullets]
+Outstanding items: [count by priority]
+```
+
+## 🎛️ Customization Parameters
+
+```yaml
+# Adjust these for your workflow
+SESSION_DEFAULTS:
+  max_context_lines: 300
+  output_preference: "bullets"  # bullets/prose/code/mixed
+  detail_level: "concise"       # verbose/normal/concise
+  
+INTERACTION_STYLE:
+  confirmation_required: true   # Confirm before major changes
+  auto_summarize: true         # Auto-summary at intervals
+  progress_tracking: "delta"    # full/delta/none
+  
+SAFETY_RULES:
+  max_tokens_before_checkpoint: 2000
+  require_placeholder_vars: true
+  validate_before_execute: true
+```
+
+## 🚦 Quick Start Commands
+
+Copy and customize these starter prompts:
+
+### New Session Start
+```
+CONTEXT: [PROJECT_NAME] tracker attached
+Goal: Complete next [N] priority items
+Format: [preferred output format]
+Constraints: [time/scope/technical]
+BEGIN with status check of items [X-Y]
+```
+
+### Mid-Session Checkpoint
+```
+STATUS CHECK: Summarize progress on current tasks
+NEXT: Propose order for remaining items
+TIME: [X] minutes remaining
+```
+
+### Session Close
+```
+WRAP UP:
+1. Update all task statuses
+2. Create delta summary
+3. Note any blockers
+4. Prep notes for next session
+```
+
+## 📝 Notes Section
+<!-- Add project-specific notes, learnings, or patterns here -->
+
+---
+*Template Version: 1.0 | Customize all [bracketed] values for your needs*

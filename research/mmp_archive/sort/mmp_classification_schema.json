@@ -1,0 +1,87 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Meta Modal Platform Classification Schema",
+  "description": "Schema for classifying planetary observational phenomena using the MMP Framework.",
+  "type": "object",
+  "properties": {
+    "mmp_code": {
+      "type": "string",
+      "description": "Full MMP classification string, including domain, context, motion, shape, observation mode, and fidelity suffix."
+    },
+    "body_prefix": {
+      "type": "string",
+      "description": "Planetary or spatial domain prefix (e.g., (e), (m), (i), (a-16))"
+    },
+    "domain": {
+      "type": "string",
+      "description": "META domain (e.g., A, O, T, etc.)"
+    },
+    "observer_context": {
+      "type": "string",
+      "description": "Contextual elevation or position (e.g., (g), (f35000), (+g8540))"
+    },
+    "kinematic": {
+      "type": "string",
+      "description": "Kinematic code (e.g., Z, L, E, etc.)"
+    },
+    "shape": {
+      "type": "string",
+      "description": "Observed shape or morphology (e.g., L, V, T, S, etc.)"
+    },
+    "observation_mode": {
+      "type": "string",
+      "enum": [
+        "@v",
+        "@r",
+        "@ir",
+        "@mw",
+        "@uv",
+        "@x",
+        "@e",
+        "@s",
+        "@a"
+      ],
+      "description": "Sensor or detection method used"
+    },
+    "fidelity": {
+      "type": "string",
+      "enum": [
+        "n",
+        "m",
+        "s",
+        "a",
+        "u",
+        "v"
+      ],
+      "description": "Fidelity flag: native, machine, sensor, AI-enhanced, unverified, verified"
+    },
+    "coder_type": {
+      "type": "string",
+      "enum": [
+        "human",
+        "AI",
+        "parser"
+      ],
+      "description": "How the classification was created"
+    },
+    "timestamp_created": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of classification creation"
+    },
+    "source_doc": {
+      "type": "string",
+      "description": "Reference source for the classification (report, document, sensor log)"
+    },
+    "verified": {
+      "type": "boolean",
+      "description": "Whether this classification was human-reviewed"
+    }
+  },
+  "required": [
+    "mmp_code",
+    "body_prefix",
+    "domain",
+    "timestamp_created"
+  ]
+}

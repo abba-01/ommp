@@ -1,0 +1,600 @@
+#!/bin/bash
+# unified_crime_normalizer.sh
+# MMP Crime Database Unified Normalization Script
+# Creates a single normalized table from Chicago, LA, and Seattle crime data
+
+clear
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+WHITE='\033[1;37m'
+NC='\033[0m'
+
+echo -e "${BLUE}=============================================${NC}"
+echo -e "${BLUE}   MMP CRIME DATABASE NORMALIZATION${NC}"
+echo -e "${BLUE}   [Installation ID: 98A9B64B]${NC}"
+echo -e "${BLUE}=============================================${NC}"
+echo ""
+
+# Get database credentials
+echo -e "${WHITE}Retrieving database credentials...${NC}"
+MYSQL_PASS=$(mmp_decrypt 2>/dev/null | grep "MySQL app" | cut -d'/' -f2 | xargs || echo "Analyst2024!Pass")
+
+if [ -z "$MYSQL_PASS" ]; then
+    echo -e "${YELLOW}Enter MySQL crime_analyst password:${NC}"
+    read -s MYSQL_PASS
+fi
+
+# Test database connection
+echo -e "${WHITE}Testing database connection...${NC}"
+if ! mysql -u crime_analyst -p"$MYSQL_PASS" crime_data -e "SELECT 1;" &>/dev/null; then
+    echo -e "${RED}✗ Cannot connect to database${NC}"
+    exit 1
+fi
+echo -e "${GREEN}✓ Database connection successful${NC}"
+
+# Check current data
+echo ""
+echo -e "${WHITE}Current database status:${NC}"
+mysql -u crime_analyst -p"$MYSQL_PASS" crime_data -e "
+SELECT 
+    table_name AS 'Table',
+    table_rows AS 'Records'
+FROM information_schema.tables 
+WHERE table_schema='crime_data' AND table_name LIKE '%_crimes'
+ORDER BY table_rows DESC;"
+
+echo ""
+echo -e "${YELLOW}This script will:${NC}"
+echo -e "${WHITE}1. Create a unified normalized crime table${NC}"
+echo -e "${WHITE}2. Migrate all data from city-specific tables${NC}"
+echo -e "${WHITE}3. Create standardized analysis views${NC}"
+echo -e "${WHITE}4. Generate summary statistics${NC}"
+echo -e "${WHITE}5. Preserve original tables for reference${NC}"
+echo ""
+read -p "Continue with normalization? (y/n): " -n 1 -r
+echo ""
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    exit 0
+fi
+
+echo ""
+echo -e "${BLUE}=============================================${NC}"
+echo -e "${BLUE}STEP 1: CREATING UNIFIED TABLE SCHEMA${NC}"
+echo -e "${BLUE}=============================================${NC}"
+echo ""
+
+# Create unified crimes table
+echo -e "${WHITE}[DOING NOW]: Creating unified_crimes table...${NC}"
+mysql -u crime_analyst -p"$MYSQL_PASS" crime_data << 'EOF'
+-- Drop existing unified table if it exists
+DROP TABLE IF EXISTS unified_crimes;
+
+-- Create unified crime table with normalized schema
+CREATE TABLE unified_crimes (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    
+    -- Common identification
+    city VARCHAR(20) NOT NULL,
+    incident_id VARCHAR(50) NOT NULL,
+    
+    -- Temporal data (normalized)
+    incident_date DATETIME,
+    incident_time TIME,
+    report_date DATETIME,
+    incident_year INT,
+    incident_month TINYINT,
+    incident_day TINYINT,
+    incident_hour TINYINT,
+    
+    -- Crime classification (normalized)
+    crime_category VARCHAR(100),
+    crime_subcategory VARCHAR(100),
+    crime_description TEXT,
+    crime_code VARCHAR(20),
+    fbi_classification VARCHAR(10),
+    
+    -- Location data (normalized)
+    address_block VARCHAR(200),
+    full_address VARCHAR(300),
+    precinct_district VARCHAR(50),
+    beat_sector VARCHAR(50),
+    ward_area VARCHAR(50),
+    community_area VARCHAR(100),
+    latitude DECIMAL(10,8),
+    longitude DECIMAL(11,8),
+    
+    -- Additional attributes
+    arrest_made BOOLEAN DEFAULT FALSE,
+    domestic_violence BOOLEAN DEFAULT FALSE,
+    case_status VARCHAR(50),
+    victim_age INT,
+    victim_sex VARCHAR(10),
+    victim_descent VARCHAR(50),
+    weapon_used VARCHAR(100),
+    premises_type VARCHAR(100),
+    
+    -- Administrative fields
+    source_table VARCHAR(20) NOT NULL,
+    data_quality_score TINYINT DEFAULT 100,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    -- Indexes for performance
+    INDEX idx_city_date (city, incident_date),
+    INDEX idx_crime_category (crime_category),
+    INDEX idx_location (latitude, longitude),
+    INDEX idx_temporal (incident_year, incident_month),
+    INDEX idx_source (source_table),
+    INDEX idx_classification (crime_category, crime_subcategory),
+    
+    UNIQUE KEY unique_incident (city, incident_id, source_table)
+) ENGINE=InnoDB 
+COMMENT='Unified normalized crime data from Chicago, LA, and Seattle';
+
+SHOW CREATE TABLE unified_crimes;
+EOF
+
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}✓ Unified table created successfully${NC}"
+else
+    echo -e "${RED}✗ Failed to create unified table${NC}"
+    exit 1
+fi
+
+echo ""
+echo -e "${BLUE}=============================================${NC}"
+echo -e "${BLUE}STEP 2: MIGRATING CHICAGO DATA${NC}"
+echo -e "${BLUE}=============================================${NC}"
+echo ""
+
+echo -e "${WHITE}[DOING NOW]: Normalizing and migrating Chicago crimes...${NC}"
+mysql -u crime_analyst -p"$MYSQL_PASS" crime_data << 'EOF'
+INSERT INTO unified_crimes (
+    city, incident_id, incident_date, incident_time, incident_year, 
+    incident_month, incident_day, incident_hour,
+    crime_category, crime_subcategory, crime_description, crime_code, fbi_classification,
+    address_block, full_address, precinct_district, beat_sector, ward_area, community_area,
+    latitude, longitude, arrest_made, domestic_violence,
+    source_table, data_quality_score
+)
+SELECT 
+    'Chicago' as city,
+    case_number as incident_id,
+    date as incident_date,
+    TIME(date) as incident_time,
+    year as incident_year,
+    MONTH(date) as incident_month,
+    DAY(date) as incident_day,
+    HOUR(date) as incident_hour,
+    
+    -- Crime classification
+    primary_type as crime_category,
+    description as crime_subcategory,
+    description as crime_description,
+    iucr as crime_code,
+    fbi_code as fbi_classification,
+    
+    -- Location normalization
+    block as address_block,
+    location as full_address,
+    CONCAT('District ', district) as precinct_district,
+    CONCAT('Beat ', beat) as beat_sector,
+    CONCAT('Ward ', ward) as ward_area,
+    CONCAT('Community Area ', community_area) as community_area,
+    latitude,
+    longitude,
+    
+    -- Attributes
+    COALESCE(arrest, FALSE) as arrest_made,
+    COALESCE(domestic, FALSE) as domestic_violence,
+    
+    -- Administrative
+    'chicago_crimes' as source_table,
+    CASE 
+        WHEN latitude IS NOT NULL AND longitude IS NOT NULL AND date IS NOT NULL AND primary_type IS NOT NULL THEN 100
+        WHEN date IS NOT NULL AND primary_type IS NOT NULL THEN 85
+        WHEN primary_type IS NOT NULL THEN 70
+        ELSE 50
+    END as data_quality_score
+
+FROM chicago_crimes
+WHERE case_number IS NOT NULL 
+    AND case_number != ''
+    AND primary_type IS NOT NULL;
+
+SELECT 'Chicago migration completed' as status, ROW_COUNT() as records_inserted;
+EOF
+
+echo -e "${GREEN}✓ Chicago data migrated${NC}"
+
+echo ""
+echo -e "${BLUE}=============================================${NC}"
+echo -e "${BLUE}STEP 3: MIGRATING LOS ANGELES DATA${NC}"
+echo -e "${BLUE}=============================================${NC}"
+echo ""
+
+echo -e "${WHITE}[DOING NOW]: Normalizing and migrating LA crimes...${NC}"
+mysql -u crime_analyst -p"$MYSQL_PASS" crime_data << 'EOF'
+INSERT INTO unified_crimes (
+    city, incident_id, incident_date, report_date, incident_year, 
+    incident_month, incident_day, incident_hour,
+    crime_category, crime_subcategory, crime_description, crime_code,
+    address_block, full_address, precinct_district, ward_area,
+    latitude, longitude, victim_age, victim_sex, victim_descent,
+    weapon_used, premises_type, case_status,
+    source_table, data_quality_score
+)
+SELECT 
+    'Los Angeles' as city,
+    dr_no as incident_id,
+    date_occ as incident_date,
+    date_rptd as report_date,
+    YEAR(date_occ) as incident_year,
+    MONTH(date_occ) as incident_month,
+    DAY(date_occ) as incident_day,
+    HOUR(STR_TO_DATE(LPAD(time_occ, 4, '0'), '%H%i')) as incident_hour,
+    
+    -- Crime classification
+    crm_cd_desc as crime_category,
+    premis_desc as crime_subcategory,
+    crm_cd_desc as crime_description,
+    CAST(crm_cd AS CHAR) as crime_code,
+    
+    -- Location normalization  
+    location as address_block,
+    location as full_address,
+    CONCAT('Area ', area, ' - ', area_name) as precinct_district,
+    CONCAT('Reporting District ', rpt_dist_no) as ward_area,
+    lat as latitude,
+    lon as longitude,
+    
+    -- Victim information
+    CASE WHEN vict_age BETWEEN 0 AND 120 THEN vict_age END as victim_age,
+    CASE WHEN vict_sex IN ('M', 'F', 'X', 'H') THEN vict_sex END as victim_sex,
+    vict_descent as victim_descent,
+    weapon_desc as weapon_used,
+    premis_desc as premises_type,
+    status_desc as case_status,
+    
+    -- Administrative
+    'la_crimes' as source_table,
+    CASE 
+        WHEN lat IS NOT NULL AND lon IS NOT NULL AND date_occ IS NOT NULL AND crm_cd_desc IS NOT NULL THEN 100
+        WHEN date_occ IS NOT NULL AND crm_cd_desc IS NOT NULL THEN 85
+        WHEN crm_cd_desc IS NOT NULL THEN 70
+        ELSE 50
+    END as data_quality_score
+
+FROM la_crimes
+WHERE dr_no IS NOT NULL 
+    AND dr_no != ''
+    AND crm_cd_desc IS NOT NULL;
+
+SELECT 'Los Angeles migration completed' as status, ROW_COUNT() as records_inserted;
+EOF
+
+echo -e "${GREEN}✓ Los Angeles data migrated${NC}"
+
+echo ""
+echo -e "${BLUE}=============================================${NC}"
+echo -e "${BLUE}STEP 4: MIGRATING SEATTLE DATA${NC}"
+echo -e "${BLUE}=============================================${NC}"
+echo ""
+
+echo -e "${WHITE}[DOING NOW]: Normalizing and migrating Seattle crimes...${NC}"
+mysql -u crime_analyst -p"$MYSQL_PASS" crime_data << 'EOF'
+INSERT INTO unified_crimes (
+    city, incident_id, incident_date, report_date, incident_year, 
+    incident_month, incident_day, incident_hour,
+    crime_category, crime_subcategory, crime_description, crime_code,
+    address_block, precinct_district, beat_sector, community_area,
+    latitude, longitude,
+    source_table, data_quality_score
+)
+SELECT 
+    'Seattle' as city,
+    report_number as incident_id,
+    offense_start_datetime as incident_date,
+    report_datetime as report_date,
+    YEAR(offense_start_datetime) as incident_year,
+    MONTH(offense_start_datetime) as incident_month,
+    DAY(offense_start_datetime) as incident_day,
+    HOUR(offense_start_datetime) as incident_hour,
+    
+    -- Crime classification
+    COALESCE(offense_parent_group, offense, 'Unknown') as crime_category,
+    offense as crime_subcategory,
+    CONCAT(COALESCE(offense_parent_group, ''), ' - ', COALESCE(offense, '')) as crime_description,
+    offense_code as crime_code,
+    
+    -- Location normalization
+    _100_block_address as address_block,
+    CONCAT('Precinct ', precinct) as precinct_district,
+    CONCAT('Beat ', beat) as beat_sector,
+    mcpp as community_area,
+    latitude,
+    longitude,
+    
+    -- Administrative
+    'seattle_crimes' as source_table,
+    CASE 
+        WHEN latitude IS NOT NULL AND longitude IS NOT NULL AND offense_start_datetime IS NOT NULL AND offense_parent_group IS NOT NULL THEN 100
+        WHEN offense_start_datetime IS NOT NULL AND offense_parent_group IS NOT NULL THEN 85
+        WHEN offense_parent_group IS NOT NULL THEN 70
+        ELSE 50
+    END as data_quality_score
+
+FROM seattle_crimes
+WHERE report_number IS NOT NULL 
+    AND report_number != ''
+    AND (offense_parent_group IS NOT NULL OR offense IS NOT NULL);
+
+SELECT 'Seattle migration completed' as status, ROW_COUNT() as records_inserted;
+EOF
+
+echo -e "${GREEN}✓ Seattle data migrated${NC}"
+
+echo ""
+echo -e "${BLUE}=============================================${NC}"
+echo -e "${BLUE}STEP 5: CREATING ANALYSIS VIEWS${NC}"
+echo -e "${BLUE}=============================================${NC}"
+echo ""
+
+echo -e "${WHITE}[DOING NOW]: Creating standardized analysis views...${NC}"
+mysql -u crime_analyst -p"$MYSQL_PASS" crime_data << 'EOF'
+-- Crime statistics by city and year
+DROP VIEW IF EXISTS v_crime_stats_by_city_year;
+CREATE VIEW v_crime_stats_by_city_year AS
+SELECT 
+    city,
+    incident_year,
+    COUNT(*) as total_crimes,
+    COUNT(DISTINCT crime_category) as unique_crime_types,
+    AVG(data_quality_score) as avg_data_quality,
+    COUNT(CASE WHEN arrest_made = 1 THEN 1 END) as arrests,
+    ROUND(100.0 * COUNT(CASE WHEN arrest_made = 1 THEN 1 END) / COUNT(*), 2) as arrest_rate_pct,
+    COUNT(CASE WHEN domestic_violence = 1 THEN 1 END) as domestic_incidents,
+    COUNT(CASE WHEN latitude IS NOT NULL AND longitude IS NOT NULL THEN 1 END) as geocoded_incidents
+FROM unified_crimes
+WHERE incident_date IS NOT NULL
+GROUP BY city, incident_year
+ORDER BY city, incident_year DESC;
+
+-- Top crime categories by city
+DROP VIEW IF EXISTS v_top_crimes_by_city;
+CREATE VIEW v_top_crimes_by_city AS
+SELECT 
+    city,
+    crime_category,
+    COUNT(*) as occurrences,
+    ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (PARTITION BY city), 2) as percentage,
+    ROW_NUMBER() OVER (PARTITION BY city ORDER BY COUNT(*) DESC) as rank_in_city
+FROM unified_crimes
+WHERE crime_category IS NOT NULL
+GROUP BY city, crime_category
+HAVING COUNT(*) >= 10  -- Filter out very rare crimes
+ORDER BY city, occurrences DESC;
+
+-- Monthly crime trends
+DROP VIEW IF EXISTS v_monthly_crime_trends;
+CREATE VIEW v_monthly_crime_trends AS
+SELECT 
+    city,
+    incident_year,
+    incident_month,
+    CONCAT(incident_year, '-', LPAD(incident_month, 2, '0')) as year_month,
+    COUNT(*) as crime_count,
+    AVG(COUNT(*)) OVER (
+        PARTITION BY city 
+        ORDER BY incident_year, incident_month 
+        ROWS BETWEEN 2 PRECEDING AND 2 FOLLOWING
+    ) as rolling_avg
+FROM unified_crimes
+WHERE incident_date >= '2010-01-01'
+    AND incident_year IS NOT NULL 
+    AND incident_month IS NOT NULL
+GROUP BY city, incident_year, incident_month
+ORDER BY city, incident_year, incident_month;
+
+-- Crime hotspots (geographical analysis)
+DROP VIEW IF EXISTS v_crime_hotspots;
+CREATE VIEW v_crime_hotspots AS
+SELECT 
+    city,
+    ROUND(latitude, 3) as lat_zone,
+    ROUND(longitude, 3) as lon_zone,
+    COUNT(*) as incident_count,
+    COUNT(DISTINCT crime_category) as crime_variety,
+    GROUP_CONCAT(DISTINCT crime_category ORDER BY crime_category SEPARATOR ', ') as crime_types
+FROM unified_crimes
+WHERE latitude IS NOT NULL 
+    AND longitude IS NOT NULL
+    AND latitude BETWEEN -90 AND 90
+    AND longitude BETWEEN -180 AND 180
+GROUP BY city, ROUND(latitude, 3), ROUND(longitude, 3)
+HAVING incident_count >= 10
+ORDER BY city, incident_count DESC;
+
+-- Data quality summary
+DROP VIEW IF EXISTS v_data_quality_summary;
+CREATE VIEW v_data_quality_summary AS
+SELECT 
+    city,
+    source_table,
+    COUNT(*) as total_records,
+    AVG(data_quality_score) as avg_quality_score,
+    COUNT(CASE WHEN data_quality_score = 100 THEN 1 END) as perfect_records,
+    COUNT(CASE WHEN data_quality_score >= 85 THEN 1 END) as high_quality_records,
+    COUNT(CASE WHEN data_quality_score < 70 THEN 1 END) as low_quality_records,
+    ROUND(100.0 * COUNT(CASE WHEN latitude IS NOT NULL AND longitude IS NOT NULL THEN 1 END) / COUNT(*), 2) as geocoding_rate,
+    ROUND(100.0 * COUNT(CASE WHEN incident_date IS NOT NULL THEN 1 END) / COUNT(*), 2) as date_completeness
+FROM unified_crimes
+GROUP BY city, source_table
+ORDER BY city;
+
+SELECT 'Analysis views created successfully' as status;
+EOF
+
+echo -e "${GREEN}✓ Analysis views created${NC}"
+
+echo ""
+echo -e "${BLUE}=============================================${NC}"
+echo -e "${BLUE}STEP 6: GENERATING SUMMARY STATISTICS${NC}"
+echo -e "${BLUE}=============================================${NC}"
+echo ""
+
+echo -e "${WHITE}[DOING NOW]: Generating comprehensive summary...${NC}"
+
+# Final summary
+mysql -u crime_analyst -p"$MYSQL_PASS" crime_data << 'EOF'
+-- Overall summary
+SELECT 
+    '=== UNIFIED CRIME DATABASE SUMMARY ===' as report_section;
+
+SELECT 
+    city,
+    FORMAT(COUNT(*), 0) as total_records,
+    MIN(incident_date) as earliest_date,
+    MAX(incident_date) as latest_date,
+    COUNT(DISTINCT crime_category) as unique_crime_types,
+    ROUND(AVG(data_quality_score), 1) as avg_quality_score
+FROM unified_crimes 
+GROUP BY city
+UNION ALL
+SELECT 
+    'TOTAL' as city,
+    FORMAT(COUNT(*), 0) as total_records,
+    MIN(incident_date) as earliest_date,
+    MAX(incident_date) as latest_date,
+    COUNT(DISTINCT crime_category) as unique_crime_types,
+    ROUND(AVG(data_quality_score), 1) as avg_quality_score
+FROM unified_crimes;
+
+SELECT 
+    '=== DATA QUALITY BREAKDOWN ===' as report_section;
+
+SELECT * FROM v_data_quality_summary;
+
+SELECT 
+    '=== TOP 5 CRIME TYPES BY CITY ===' as report_section;
+
+SELECT 
+    city,
+    crime_category,
+    FORMAT(occurrences, 0) as count,
+    CONCAT(percentage, '%') as pct_of_city
+FROM v_top_crimes_by_city 
+WHERE rank_in_city <= 5
+ORDER BY city, rank_in_city;
+
+SELECT 
+    '=== RECENT TRENDS (2023-2024) ===' as report_section;
+
+SELECT 
+    city,
+    incident_year,
+    FORMAT(total_crimes, 0) as crimes,
+    CONCAT(arrest_rate_pct, '%') as arrest_rate,
+    CONCAT(ROUND(geocoded_incidents * 100.0 / total_crimes, 1), '%') as geocoded_pct
+FROM v_crime_stats_by_city_year
+WHERE incident_year IN (2023, 2024)
+ORDER BY city, incident_year DESC;
+EOF
+
+echo ""
+echo -e "${BLUE}=============================================${NC}"
+echo -e "${BLUE}STEP 7: CREATING UTILITY COMMANDS${NC}"
+echo -e "${BLUE}=============================================${NC}"
+echo ""
+
+echo -e "${WHITE}[DOING NOW]: Creating unified database utilities...${NC}"
+
+# Create unified query command
+cat > /usr/local/bin/mmp_unified << EOF
+#!/bin/bash
+# mmp_unified - Quick access to unified crime database
+
+case "\$1" in
+    "stats"|"status")
+        mysql -u crime_analyst -p'$MYSQL_PASS' crime_data -e "SELECT * FROM v_data_quality_summary;"
+        ;;
+    "trends")
+        mysql -u crime_analyst -p'$MYSQL_PASS' crime_data -e "
+        SELECT city, incident_year, FORMAT(total_crimes, 0) as crimes, 
+               CONCAT(arrest_rate_pct, '%') as arrest_rate 
+        FROM v_crime_stats_by_city_year 
+        WHERE incident_year >= 2020 
+        ORDER BY city, incident_year DESC LIMIT 20;"
+        ;;
+    "top")
+        mysql -u crime_analyst -p'$MYSQL_PASS' crime_data -e "
+        SELECT city, crime_category, FORMAT(occurrences, 0) as count, 
+               CONCAT(percentage, '%') as pct 
+        FROM v_top_crimes_by_city 
+        WHERE rank_in_city <= 5 
+        ORDER BY city, rank_in_city;"
+        ;;
+    "hotspots")
+        mysql -u crime_analyst -p'$MYSQL_PASS' crime_data -e "
+        SELECT city, lat_zone, lon_zone, incident_count, crime_variety 
+        FROM v_crime_hotspots 
+        ORDER BY city, incident_count DESC LIMIT 20;"
+        ;;
+    "query"|"sql")
+        mysql -u crime_analyst -p'$MYSQL_PASS' crime_data
+        ;;
+    *)
+        echo "Usage: mmp_unified [stats|trends|top|hotspots|query]"
+        echo ""
+        echo "Commands:"
+        echo "  stats    - Data quality summary"
+        echo "  trends   - Recent crime trends"
+        echo "  top      - Top crime types by city"
+        echo "  hotspots - Geographic crime concentrations"
+        echo "  query    - Interactive SQL console"
+        ;;
+esac
+EOF
+
+chmod +x /usr/local/bin/mmp_unified
+
+# Update help command
+cat >> /usr/local/bin/mmp_help << EOF
+
+echo "UNIFIED DATABASE:"
+echo "  mmp_unified stats   - Data quality summary"
+echo "  mmp_unified trends  - Crime trends analysis"
+echo "  mmp_unified top     - Top crime types"
+echo "  mmp_unified query   - SQL console"
+EOF
+
+echo -e "${GREEN}✓ Utility commands created${NC}"
+
+echo ""
+echo -e "${GREEN}=============================================${NC}"
+echo -e "${GREEN}  NORMALIZATION COMPLETE!${NC}"
+echo -e "${GREEN}=============================================${NC}"
+echo ""
+
+# Final verification
+TOTAL_RECORDS=$(mysql -u crime_analyst -p"$MYSQL_PASS" crime_data -e "SELECT COUNT(*) FROM unified_crimes;" -s -N 2>/dev/null)
+
+echo -e "${WHITE}Summary:${NC}"
+echo -e "${GREEN}✓ Unified table created with normalized schema${NC}"
+echo -e "${GREEN}✓ All city data migrated and standardized${NC}"
+echo -e "${GREEN}✓ Analysis views created for reporting${NC}"
+echo -e "${GREEN}✓ Utility commands installed${NC}"
+echo -e "${GREEN}✓ Total unified records: $(printf "%'d" $TOTAL_RECORDS)${NC}"
+echo ""
+echo -e "${BLUE}Available commands:${NC}"
+echo -e "${WHITE}• mmp_unified stats   - Data quality overview${NC}"
+echo -e "${WHITE}• mmp_unified trends  - Crime trend analysis${NC}"
+echo -e "${WHITE}• mmp_unified top     - Top crime categories${NC}"
+echo -e "${WHITE}• mmp_unified query   - SQL console access${NC}"
+echo ""
+echo -e "${YELLOW}Original city tables preserved for reference${NC}"
+echo -e "${YELLOW}All data accessible via 'unified_crimes' table${NC}"

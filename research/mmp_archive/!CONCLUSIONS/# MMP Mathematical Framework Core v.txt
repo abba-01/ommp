@@ -1,0 +1,250 @@
+# MMP Mathematical Framework Core v5.1
+## Abstract Observable Phenomena Classification System
+
+### 1. Mathematical Foundation
+
+#### 1.1 Core Definition
+The MMP Framework is a mathematical classification system for observable phenomena defined as a 4-tuple:
+
+**MMP := (O, M, K, P)**
+
+Where:
+- O ∈ **O** (Observer State Space)
+- M ∈ **M** (Medium State Space)
+- K ∈ **K** (Kinematic State Space)
+- P ∈ **P** (Physical Property Space)
+
+#### 1.2 State Spaces
+
+##### 1.2.1 Observer State Space **O**
+```
+O := {(g, r, v_o, t) | g ∈ ℝ⁺, r ∈ ℝ³, v_o ∈ ℝ³, t ∈ ℝ}
+```
+- g: Local gravitational field strength (m/s²)
+- r: Position vector in reference frame (m)
+- v_o: Observer velocity vector (m/s)
+- t: Temporal coordinate (s)
+
+##### 1.2.2 Medium State Space **M**
+```
+M := {(ρ, μ, T, P) | ρ ∈ ℝ⁺ ∪ {0}, μ ∈ ℝ⁺ ∪ {0}, T ∈ ℝ⁺, P ∈ ℝ⁺}
+```
+- ρ: Medium density (kg/m³)
+- μ: Dynamic viscosity (Pa·s)
+- T: Temperature (K)
+- P: Pressure (Pa)
+
+##### 1.2.3 Kinematic State Space **K**
+```
+K := {(x(t), ẋ(t), ẍ(t)) | x: ℝ → ℝ³, continuous}
+```
+- x(t): Position trajectory
+- ẋ(t): Velocity trajectory
+- ẍ(t): Acceleration trajectory
+
+##### 1.2.4 Physical Property Space **P**
+```
+P := {(I, S, E) | I ∈ ℝ⁷, S ∈ ℝ⁺, E ∈ ℝ⁺ ∪ {0}}
+```
+- I: Shape invariant moments (Hu moments)
+- S: Characteristic size (m)
+- E: Emitted/reflected energy spectrum
+
+### 2. Classification Functions
+
+#### 2.1 Observer Classification
+```
+f_O: O → C_O
+```
+Where C_O is partitioned by:
+- Gravitational regime: g ∈ [0, g₁), [g₁, g₂), ...
+- Altitude function: h(r, g) = |r| - R_ref(g)
+- Relative velocity: |v_o|
+
+#### 2.2 Medium Classification
+```
+f_M: M → C_M
+```
+Based on phase space regions:
+- Vacuum: ρ < ρ_vacuum (10⁻¹⁷ kg/m³)
+- Gas: ρ_vacuum ≤ ρ < ρ_liquid, compressible
+- Liquid: ρ ≥ ρ_liquid, incompressible
+- Plasma: Ionization fraction > 0.01
+
+#### 2.3 Kinematic Classification
+```
+f_K: K → C_K
+```
+Using trajectory analysis:
+- Lyapunov exponent: λ = lim(t→∞) (1/t)ln|δx(t)/δx(0)|
+- Curvature: κ(t) = |ẋ × ẍ|/|ẋ|³
+- Spectral density: S(ω) = |ℱ{x(t)}|²
+
+#### 2.4 Physical Classification
+```
+f_P: P → C_P
+```
+- Shape complexity: H = -Σp_i log(p_i) from moment distribution
+- Size regime: Knudsen/Reynolds number boundaries
+- Spectral classification: Peak wavelength and bandwidth
+
+### 3. Encoding Function
+
+#### 3.1 Hierarchical Encoding
+```
+encode: (O × M × K × P) → Σ*
+```
+Where Σ* is the set of strings over encoding alphabet Σ.
+
+#### 3.2 Encoding Structure
+```
+MMP_CODE := O_CODE.M_CODE.K_CODE.P_CODE
+```
+
+Each component encoded using:
+- Numerical quantization for continuous values
+- Huffman coding for common patterns
+- Error correction codes for transmission
+
+### 4. Mathematical Properties
+
+#### 4.1 Completeness Theorem
+**Theorem 1**: The MMP classification is complete over the observable space Ω.
+
+**Proof**: For any observable phenomenon ω ∈ Ω, there exists a unique MMP encoding...
+[Formal proof structure]
+
+#### 4.2 Uniqueness Theorem
+**Theorem 2**: The encoding function is injective up to measurement precision ε.
+
+#### 4.3 Continuity Theorem
+**Theorem 3**: Small perturbations in state space result in nearby classifications.
+
+### 5. Computational Complexity
+
+#### 5.1 Classification Complexity
+- Observer: O(1) - Direct calculation
+- Medium: O(1) - Phase space lookup
+- Kinematic: O(n log n) - FFT for spectral analysis
+- Physical: O(n²) - Moment calculation
+
+#### 5.2 Search Complexity
+- Exact match: O(log N) with indexed database
+- Range query: O(k + log N) where k is result size
+- Pattern match: O(N) worst case, O(√N) average with indices
+
+### 6. Validation Framework
+
+#### 6.1 Mathematical Constraints
+```python
+class MMPConstraints:
+    # Physical constraints
+    SPEED_OF_LIGHT = 299792458  # m/s
+    MIN_TEMPERATURE = 0  # K
+    
+    # Mathematical constraints
+    def validate_state(self, state):
+        assert all(np.isfinite(state)), "Non-finite values"
+        assert state.velocity_magnitude < self.SPEED_OF_LIGHT
+        assert state.temperature >= self.MIN_TEMPERATURE
+```
+
+#### 6.2 Classification Metrics
+- Entropy: H(C) = -Σ P(c_i)log P(c_i)
+- Mutual Information: I(C₁;C₂) = H(C₁) + H(C₂) - H(C₁,C₂)
+- Classification stability: δ(t) = ||C(t) - C(t+Δt)||
+
+### 7. Implementation Specification
+
+#### 7.1 Reference Implementation
+```python
+@dataclass
+class MMPState:
+    observer: ObserverState
+    medium: MediumState
+    kinematics: KinematicState
+    physical: PhysicalState
+    
+    def encode(self) -> str:
+        return f"{self.observer.encode()}.{self.medium.encode()}.{self.kinematics.encode()}.{self.physical.encode()}"
+```
+
+#### 7.2 Database Schema
+```sql
+-- Core observation table
+CREATE TABLE observations (
+    id UUID PRIMARY KEY,
+    -- State vectors
+    observer_state JSONB NOT NULL,
+    medium_state JSONB NOT NULL,
+    kinematic_state JSONB NOT NULL,
+    physical_state JSONB NOT NULL,
+    
+    -- Computed fields
+    mmp_encoding TEXT GENERATED ALWAYS AS (
+        encode_mmp(observer_state, medium_state, kinematic_state, physical_state)
+    ) STORED,
+    
+    -- Metadata
+    timestamp TIMESTAMPTZ NOT NULL,
+    uncertainty JSONB NOT NULL
+);
+
+-- Indices for efficient queries
+CREATE INDEX idx_mmp_encoding ON observations USING btree(mmp_encoding);
+CREATE INDEX idx_observer_gravity ON observations USING btree(((observer_state->>'gravity')::FLOAT));
+CREATE INDEX idx_kinematic_speed ON observations USING btree(((kinematic_state->>'speed')::FLOAT));
+```
+
+### 8. Error Analysis
+
+#### 8.1 Measurement Uncertainty
+- Position: σ_r ~ instrument resolution
+- Velocity: σ_v ~ σ_r/Δt + systematic errors
+- Shape: σ_shape ~ pixel resolution × distance²
+
+#### 8.2 Classification Uncertainty
+- Boundary regions: Use fuzzy membership functions
+- Propagation: Monte Carlo through classification pipeline
+- Reporting: Include confidence intervals
+
+### 9. Extension Mechanisms
+
+#### 9.1 Additional State Spaces
+New components can be added as:
+```
+MMP_Extended := (O, M, K, P, X₁, X₂, ...)
+```
+
+#### 9.2 Domain-Specific Refinements
+Subclasses can refine classifications while maintaining compatibility:
+```
+class AstronomicalMMP(MMP):
+    def classify_observer(self):
+        # Add orbital mechanics specifics
+        return super().classify_observer() + orbital_elements
+```
+
+### 10. References
+
+1. Hu, M.K. (1962). "Visual pattern recognition by moment invariants"
+2. Shannon, C.E. (1948). "A Mathematical Theory of Communication"
+3. Kolmogorov, A.N. (1965). "Three approaches to the definition of the concept 'quantity of information'"
+4. [Additional academic references]
+
+---
+
+## Appendix A: Physical Constants
+
+| Constant | Symbol | Value | Units |
+|----------|--------|-------|-------|
+| Speed of light | c | 299792458 | m/s |
+| Gravitational constant | G | 6.67430×10⁻¹¹ | m³/kg·s² |
+| Vacuum permeability | μ₀ | 1.25663706×10⁻⁶ | H/m |
+
+## Appendix B: Standard Thresholds
+
+Derived from fundamental physics:
+- Vacuum threshold: Mean free path > 1000 km
+- Reynolds number transitions: Laminar < 2300 < Turbulent
+- Knudsen number regimes: Continuum < 0.01 < Transition < 10 < Free molecular

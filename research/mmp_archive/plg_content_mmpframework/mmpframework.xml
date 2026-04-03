@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="content" method="upgrade">
+    <name>plg_content_mmpframework</name>
+    <author>MMP Framework Team</author>
+    <creationDate>December 2024</creationDate>
+    <copyright>Copyright (C) 2025 MMP Framework. All rights reserved.</copyright>
+    <license>GNU General Public License version 2 or later</license>
+    <authorEmail>admin@mmpframework.org</authorEmail>
+    <authorUrl>https://www.mmpframework.org</authorUrl>
+    <version>1.0.0</version>
+    <description>PLG_CONTENT_MMPFRAMEWORK_XML_DESCRIPTION</description>
+    
+    <files>
+        <filename plugin="mmpframework">mmpframework.php</filename>
+        <filename>index.html</filename>
+    </files>
+    
+    <languages folder="language">
+        <language tag="en-GB">en-GB/plg_content_mmpframework.ini</language>
+        <language tag="en-GB">en-GB/plg_content_mmpframework.sys.ini</language>
+    </languages>
+    
+    <config>
+        <fields name="params">
+            <fieldset name="basic" label="PLG_CONTENT_MMPFRAMEWORK_BASIC_LABEL">
+                <field name="auto_create" type="radio" 
+                       label="PLG_CONTENT_MMPFRAMEWORK_AUTO_CREATE_LABEL" 
+                       description="PLG_CONTENT_MMPFRAMEWORK_AUTO_CREATE_DESC" 
+                       default="1" 
+                       class="btn-group btn-group-yesno">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+                
+                <field name="category_title" type="text" 
+                       label="PLG_CONTENT_MMPFRAMEWORK_CATEGORY_TITLE_LABEL" 
+                       description="PLG_CONTENT_MMPFRAMEWORK_CATEGORY_TITLE_DESC" 
+                       default="MMP Framework" 
+                       size="30" />
+                       
+                <field name="menu_title" type="text" 
+                       label="PLG_CONTENT_MMPFRAMEWORK_MENU_TITLE_LABEL" 
+                       description="PLG_CONTENT_MMPFRAMEWORK_MENU_TITLE_DESC" 
+                       default="MMP Framework" 
+                       size="30" />
+                       
+                <field name="access_level" type="accesslevel" 
+                       label="PLG_CONTENT_MMPFRAMEWORK_ACCESS_LEVEL_LABEL" 
+                       description="PLG_CONTENT_MMPFRAMEWORK_ACCESS_LEVEL_DESC" 
+                       default="1" />
+            </fieldset>
+            
+            <fieldset name="advanced" label="PLG_CONTENT_MMPFRAMEWORK_ADVANCED_LABEL">
+                <field name="trigger_text" type="text" 
+                       label="PLG_CONTENT_MMPFRAMEWORK_TRIGGER_TEXT_LABEL" 
+                       description="PLG_CONTENT_MMPFRAMEWORK_TRIGGER_TEXT_DESC" 
+                       default="{mmpframework}" 
+                       size="20" />
+                       
+                <field name="update_existing" type="radio" 
+                       label="PLG_CONTENT_MMPFRAMEWORK_UPDATE_EXISTING_LABEL" 
+                       description="PLG_CONTENT_MMPFRAMEWORK_UPDATE_EXISTING_DESC" 
+                       default="0" 
+                       class="btn-group btn-group-yesno">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+            </fieldset>
+        </fields>
+    </config>
+    
+    <scriptfile>script.php</scriptfile>
+</extension>

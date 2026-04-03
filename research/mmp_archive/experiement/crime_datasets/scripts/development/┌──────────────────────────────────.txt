@@ -1,0 +1,410 @@
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                   MMP CRIME DATABASE SCRIPT V08 - LOGIC MAP                  │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                        │
+                                        ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          INITIALIZATION & FUNCTIONS                          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ • Clear screen                                                              │
+│ • Define color codes (RED, ORANGE, GREEN, BLUE, YELLOW, PURPLE, WHITE, NC) │
+│ • Define animation arrays (SPINNER, PROGRESS_CHARS)                         │
+│ • Set SCRIPT_VERSION="08-CORRECTED"                                        │
+│ • Set LOG_DIR="/root/mmp_logs"                                              │
+│ • Set SESSION_TIME=$(date +%Y%m%d_%H%M%S)                                  │
+│                                                                             │
+│ ┌──────────────── get_cpu_info() ──────────────┐                          │
+│ │ • Read /proc/cpuinfo                         │                          │
+│ │ • Extract processor/vendor_id/model          │                          │
+│ │ • Generate md5sum, take first 8 chars        │                          │
+│ │ • Get MAC address from ip link               │                          │
+│ │ • Combine CPU (4 chars) + MAC (4 chars)      │                          │
+│ │ • Convert to uppercase                       │                          │
+│ │ • Return INSTALLATION_ID                     │                          │
+│ └──────────────────────────────────────────────┘                          │
+│                                                                             │
+│ • INSTALLATION_ID=$(get_cpu_info)                                           │
+│ • SESSION_LOG="$LOG_DIR/mmp_install_${INSTALLATION_ID}_${SESSION_TIME}.log" │
+│ • Create log directory: mkdir -p "$LOG_DIR"                                 │
+│ • Set permissions: chmod 700 "$LOG_DIR"                                     │
+│                                                                             │
+│ ┌──────────── show_progress(message, duration) ──────────┐                │
+│ │ • Loop for duration*4 iterations                       │                │
+│ │ • Display spinner animation with message               │                │
+│ │ • Sleep 0.25 seconds per iteration                     │                │
+│ │ • Show green checkmark when complete                   │                │
+│ └────────────────────────────────────────────────────────┘                │
+│                                                                             │
+│ ┌───────── generate_stig_password(length=18) ──────────┐                  │
+│ │ • Define charset (A-Z, a-z, 2-9, !@#$%^&*)          │                  │
+│ │ • Ensure 1 uppercase letter                         │                  │
+│ │ • Ensure 1 lowercase letter                         │                  │
+│ │ • Ensure 1 number                                   │                  │
+│ │ • Ensure 1 special character                        │                  │
+│ │ • Fill remaining with random charset                │                  │
+│ │ • Shuffle all characters                            │                  │
+│ │ • Return password                                   │                  │
+│ └──────────────────────────────────────────────────────┘                  │
+│                                                                             │
+│ • Start logging: exec > >(tee -a "$SESSION_LOG")                           │
+│ • Redirect stderr to stdout: exec 2>&1                                      │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                        │
+                                        ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        PART 1: SYSTEM PREPARATION                           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ • Display installation header with version and Installation ID              │
+│ • Show feature list (mmp_check, mmp_decrypt, mmp_security, mmp_status)     │
+│ • Sleep 5 seconds                                                           │
+│                                                                             │
+│ ┌─────────── Clean and Prepare System ────────────┐                       │
+│ │ • show_progress("Cleaning package cache", 2)    │                       │
+│ │ • yum clean all || dnf clean all                │                       │
+│ │ • show_progress("Installing nano", 2)           │                       │
+│ │ • yum install -y nano || dnf install -y nano    │                       │
+│ └─────────────────────────────────────────────────┘                       │
+│                                                                             │
+│ ┌─────────── Create Admin User ────────────┐                              │
+│ │ • ADMIN_PASSWORD=$(generate_stig_password 20)                            │
+│ │ • RECOVERY_PASSPHRASE="[Ocean47\$Mountain82@RT!]"                        │
+│ │ • show_progress("Creating maverick user", 3)                             │
+│ │ • Check if maverick exists:                                              │
+│ │   ├─NO─→ • useradd -m -s /bin/bash maverick                            │
+│ │   │      • Set password with ADMIN_PASSWORD                             │
+│ │   │      • usermod -aG wheel maverick                                   │
+│ │   └─YES→ Skip user creation                                             │
+│ └─────────────────────────────────────────────────────────────────────────┘│
+│                                                                             │
+│ ┌─────────── Create Credentials Directory ────────────┐                   │
+│ │ • mkdir -p /home/maverick/.mmp                      │                   │
+│ │ • chmod 700 /home/maverick/.mmp                     │                   │
+│ │ • Create /tmp/creds.txt with:                       │                   │
+│ │   - Installation ID                                  │                   │
+│ │   - Admin User: maverick                            │                   │
+│ │   - Admin Password                                  │                   │
+│ │   - Recovery passphrase                             │                   │
+│ │ • Encrypt with openssl (AES-256-GCM, PBKDF2)        │                   │
+│ │ • Save to /home/maverick/.mmp/credentials.enc       │                   │
+│ │ • Shred original /tmp/creds.txt                     │                   │
+│ │ • chown -R maverick:maverick /home/maverick/.mmp    │                   │
+│ └──────────────────────────────────────────────────────┘                  │
+│                                                                             │
+│ ┌─────────── Configure Sudo ────────────┐                                 │
+│ │ • Create /etc/sudoers.d/maverick-restricted                             │
+│ │ • Allow NOPASSWD for:                                                   │
+│ │   - systemctl commands for mysqld                                       │
+│ │   - yum/dnf install commands                                            │
+│ │   - firewall-cmd commands                                               │
+│ └────────────────────────────────────────────────────────────────────────┘│
+│                                                                             │
+│ ┌─────────── System Updates ────────────┐                                 │
+│ │ • show_progress("Updating system", 10)                                  │
+│ │ • yum update -y || dnf update -y                                        │
+│ │ • yum install -y epel-release || dnf install -y epel-release            │
+│ └────────────────────────────────────────────────────────────────────────┘│
+│                                                                             │
+│ ┌─────────── Install Tools ────────────┐                                  │
+│ │ • TOOLS="wget curl git htop tree net-tools bind-utils                   │
+│ │          python3 python3-pip python3-devel gcc"                         │
+│ │ • For each tool:                                                        │
+│ │   └─→ yum install -y $tool || dnf install -y $tool                     │
+│ └────────────────────────────────────────────────────────────────────────┘│
+│                                                                             │
+│ ┌─────────── Install MySQL ────────────┐                                  │
+│ │ • show_progress("Installing MySQL", 15)                                 │
+│ │ • Stop existing MySQL/MariaDB services                                  │
+│ │ • Remove existing MySQL/MariaDB packages                                │
+│ │ • Detect OS version:                                                    │
+│ │   ├─RHEL 9─→ Use mysql80-community-release-el9-1                       │
+│ │   ├─RHEL 8─→ Use mysql80-community-release-el8-1                       │
+│ │   └─Other──→ Use mysql80-community-release-el7-1                       │
+│ │ • Install MySQL repository                                              │
+│ │ • Install mysql-server mysql --nogpgcheck                               │
+│ └────────────────────────────────────────────────────────────────────────┘│
+│                                                                             │
+│ ┌─────────── Configure MySQL ────────────┐                                │
+│ │ • Create /etc/my.cnf.d/mmp_crime.cnf with:                              │
+│ │   - bind-address = 127.0.0.1                                            │
+│ │   - max_allowed_packet = 1G                                             │
+│ │   - innodb_buffer_pool_size = 2G                                        │
+│ │   - character-set-server = utf8mb4                                      │
+│ │   - local_infile = 0                                                    │
+│ │   - log_error = /var/log/mysql/error.log                                │
+│ │ • mkdir -p /var/log/mysql                                               │
+│ │ • chown mysql:mysql /var/log/mysql                                      │
+│ │ • systemctl start mysqld                                                │
+│ │ • systemctl enable mysqld                                               │
+│ └────────────────────────────────────────────────────────────────────────┘│
+│                                                                             │
+│ ┌─────────── Secure MySQL ────────────┐                                   │
+│ │ • Extract temporary password from mysqld.log                            │
+│ │ • MYSQL_ROOT_PASS=$(generate_stig_password 24)                          │
+│ │ • MYSQL_APP_PASS=$(generate_stig_password 24)                           │
+│ │ • If temp password exists:                                              │
+│ │   └─→ • ALTER USER root with MYSQL_ROOT_PASS                           │
+│ │       • DELETE anonymous users                                          │
+│ │       • DROP test database                                              │
+│ │       • FLUSH PRIVILEGES                                                │
+│ │ • Save credentials to /home/maverick/.mmp/mysql_creds.txt               │
+│ │ • Set permissions 600 and ownership to maverick                         │
+│ └────────────────────────────────────────────────────────────────────────┘│
+└─────────────────────────────────────────────────────────────────────────────┘
+                                        │
+                                        ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                      PART 2: DATABASE AND DOWNLOADS                         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ • Display "Creating database and starting downloads..."                     │
+│                                                                             │
+│ ┌─────────── Create Database ────────────┐                                │
+│ │ • Connect as root with MYSQL_ROOT_PASS                                  │
+│ │ • CREATE DATABASE crime_data (utf8mb4)                                  │
+│ │ • CREATE USER crime_analyst@localhost                                   │
+│ │ • GRANT privileges to crime_analyst                                     │
+│ │ • Create tables:                                                        │
+│ │   ├─→ chicago_crimes (22 columns)                                       │
+│ │   ├─→ la_crimes (28 columns)                                           │
+│ │   ├─→ seattle_crimes (18 columns)                                       │
+│ │   └─→ unified_crimes (normalized)                                       │
+│ └────────────────────────────────────────────────────────────────────────┘│
+│                                                                             │
+│ ┌─────────── Create Data Directories ────────────┐                        │
+│ │ • mkdir -p /data/crime_data/{raw,scripts,logs,backups}                  │
+│ │ • chown -R maverick:maverick /data/crime_data                           │
+│ │ • chmod -R 755 /data/crime_data                                         │
+│ └────────────────────────────────────────────────────────────────────────┘│
+│                                                                             │
+│ ┌─────────── Start Downloads ────────────┐                                │
+│ │ • cd /data/crime_data/raw                                               │
+│ │ • wget -b -c chicago.csv from data.cityofchicago.org                    │
+│ │ • wget -b -c la_old.csv from data.lacity.org                           │
+│ │ • wget -b -c la_new.csv from data.lacity.org                           │
+│ │ • wget -b -c seattle.csv from data.seattle.gov                          │
+│ │ • Display "Downloads started in background"                             │
+│ └────────────────────────────────────────────────────────────────────────┘│
+└─────────────────────────────────────────────────────────────────────────────┘
+                                        │
+                                        ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                      PART 3: ALL UTILITY COMMANDS                           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ • Display "Creating utility commands..."                                    │
+│                                                                             │
+│ ┌─────────── Create /usr/local/bin/mmp_status ────────────┐               │
+│ │ When executed:                                           │               │
+│ │ • Clear screen and show header                           │               │
+│ │ • Display time and current user                          │               │
+│ │ • Show DATA FILES section:                               │               │
+│ │   └─→ For each CSV file: show size or "Not found"       │               │
+│ │ • Show DOWNLOADS section:                                │               │
+│ │   └─→ Count active wget processes                       │               │
+│ │ • Show DATABASE STATUS:                                  │               │
+│ │   └─→ Query table sizes and record counts               │               │
+│ │ • Show SERVICES:                                         │               │
+│ │   ├─→ Check MySQL status                                │               │
+│ │   └─→ Check firewall status (firewalld/CSF)             │               │
+│ │ • chmod +x /usr/local/bin/mmp_status                     │               │
+│ └──────────────────────────────────────────────────────────┘               │
+│                                                                             │
+│ ┌─────────── Create /usr/local/bin/mmp_check ────────────┐                │
+│ │ When executed:                                          │                │
+│ │ • Clear screen and show header                          │                │
+│ │ • Count active wget processes                           │                │
+│ │ • For each expected file:                               │                │
+│ │   ├─→ Check if file exists                             │                │
+│ │   ├─→ Get current size                                 │                │
+│ │   ├─→ Wait 2 seconds                                   │                │
+│ │   ├─→ Check if size changed (still downloading)        │                │
+│ │   └─→ Display status (Complete/Downloading/Not found)  │                │
+│ │ • If all complete and no active downloads:              │                │
+│ │   ├─YES→ Show "ALL DOWNLOADS COMPLETE!"                │                │
+│ │   └─NO─→ Show "Downloads still in progress"            │                │
+│ │ • chmod +x /usr/local/bin/mmp_check                     │                │
+│ └──────────────────────────────────────────────────────────┘               │
+│                                                                             │
+│ ┌─────────── Create /usr/local/bin/mmp_decrypt ────────────┐              │
+│ │ When executed:                                            │              │
+│ │ • Show header with Installation ID                        │              │
+│ │ • Prompt for recovery passphrase (hidden input)           │              │
+│ │ • Check if credentials.enc exists:                        │              │
+│ │   ├─YES→ • Decrypt with openssl                          │              │
+│ │   │      • If successful: display decrypted content      │              │
+│ │   │      • Also show mysql_creds.txt if exists           │              │
+│ │   │      • If failed: show error message                 │              │
+│ │   └─NO─→ Show "Encrypted credentials file not found"     │              │
+│ │ • chmod +x /usr/local/bin/mmp_decrypt                     │              │
+│ └───────────────────────────────────────────────────────────┘              │
+│                                                                             │
+│ ┌─────────── Create /usr/local/bin/mmp_security ────────────┐             │
+│ │ When executed:                                             │             │
+│ │ • Show FIREWALL STATUS:                                    │             │
+│ │   └─→ Check firewalld, list ports and services            │             │
+│ │ • Show FAIL2BAN STATUS:                                    │             │
+│ │   └─→ Check if active, show SSH jail status               │             │
+│ │ • Show CREDENTIALS:                                        │             │
+│ │   └─→ Check encryption file exists and permissions         │             │
+│ │ • Show SSH CONFIGURATION:                                  │             │
+│ │   └─→ Display port, root login, password auth settings    │             │
+│ │ • Show RECENT AUTH ATTEMPTS:                               │             │
+│ │   └─→ grep last 3 entries from /var/log/secure            │             │
+│ │ • chmod +x /usr/local/bin/mmp_security                     │             │
+│ └────────────────────────────────────────────────────────────┘             │
+│                                                                             │
+│ ┌─────────── Create /usr/local/bin/mmp_unified ────────────┐              │
+│ │ When executed with argument:                              │              │
+│ │ • Case "stats" or "status":                               │              │
+│ │   └─→ Query unified_crimes summary by city                │              │
+│ │ • Case "query" or "sql":                                  │              │
+│ │   └─→ Open MySQL client as crime_analyst                  │              │
+│ │ • Default:                                                 │              │
+│ │   └─→ Show usage message                                  │              │
+│ │ • chmod +x /usr/local/bin/mmp_unified                     │              │
+│ └────────────────────────────────────────────────────────────┘             │
+│                                                                             │
+│ ┌─────────── Create /usr/local/bin/mmp_db ────────────┐                   │
+│ │ When executed:                                       │                   │
+│ │ • Connect to MySQL as crime_analyst                  │                   │
+│ │ • chmod +x /usr/local/bin/mmp_db                     │                   │
+│ └──────────────────────────────────────────────────────┘                   │
+│                                                                             │
+│ ┌─────────── Create /usr/local/bin/mmp_help ────────────┐                 │
+│ │ When executed:                                         │                 │
+│ │ • Show categorized command list:                       │                 │
+│ │   ├─→ MONITORING: mmp_status, mmp_check, mmp_security  │                 │
+│ │   ├─→ DATABASE: mmp_db, mmp_unified, mmp_load          │                 │
+│ │   ├─→ SECURITY: mmp_decrypt                            │                 │
+│ │   └─→ SYSTEM INFO: Installation ID and recovery hint   │                 │
+│ │ • chmod +x /usr/local/bin/mmp_help                     │                 │
+│ └────────────────────────────────────────────────────────┘                 │
+│                                                                             │
+│ ┌─────────── Create /usr/local/bin/mmp_load ────────────┐                 │
+│ │ When executed:                                         │                 │
+│ │ • Check if downloads complete (run mmp_check):         │                 │
+│ │   ├─NO─→ Exit with error message                      │                 │
+│ │   └─YES→ Continue with loading                        │                 │
+│ │ • Get MySQL credentials from mysql_creds.txt           │                 │
+│ │ • Test database connection                             │                 │
+│ │ • Enable local_infile                                  │                 │
+│ │                                                        │                 │
+│ │ ┌──── load_chicago() ────┐                            │                 │
+│ │ │ • Check file exists     │                            │                 │
+│ │ │ • Get file size         │                            │                 │
+│ │ │ • Create load SQL script│                            │                 │
+│ │ │ • TRUNCATE chicago_crimes│                            │                 │
+│ │ │ • LOAD DATA LOCAL INFILE│                            │                 │
+│ │ │ • Map CSV columns       │                            │                 │
+│ │ │ • Execute load          │                            │                 │
+│ │ │ • Report record count   │                            │                 │
+│ │ └─────────────────────────┘                            │                 │
+│ │                                                        │                 │
+│ │ ┌──── load_la() ────┐                                 │                 │
+│ │ │ • Load la_old.csv  │                                 │                 │
+│ │ │   └─→ TRUNCATE table│                                 │                 │
+│ │ │ • Load la_new.csv  │                                 │                 │
+│ │ │   └─→ INSERT (append)│                                │                 │
+│ │ │ • Report total count│                                 │                 │
+│ │ └────────────────────┘                                 │                 │
+│ │                                                        │                 │
+│ │ ┌──── load_seattle() ────┐                            │                 │
+│ │ │ • Check file exists     │                            │                 │
+│ │ │ • Create load SQL script│                            │                 │
+│ │ │ • TRUNCATE seattle_crimes│                            │                 │
+│ │ │ • LOAD DATA LOCAL INFILE│                            │                 │
+│ │ │ • Execute load          │                            │                 │
+│ │ │ • Report record count   │                            │                 │
+│ │ └─────────────────────────┘                            │                 │
+│ │                                                        │                 │
+│ │ • If all loads successful:                             │                 │
+│ │   ├─→ Show summary table with counts                   │                 │
+│ │   └─→ Display next steps                               │                 │
+│ │ • If any load failed:                                  │                 │
+│ │   └─→ Show error message                               │                 │
+│ │ • chmod +x /usr/local/bin/mmp_load                     │                 │
+│ └────────────────────────────────────────────────────────┘                 │
+│                                                                             │
+│ ┌─────────── Install Python Packages ────────────┐                        │
+│ │ • python3 -m pip install --user:                                        │
+│ │   ├─→ pandas                                                            │
+│ │   ├─→ mysql-connector-python                                            │
+│ │   └─→ tqdm                                                              │
+│ └────────────────────────────────────────────────────────────────────────┘│
+│                                                                             │
+│ ┌─────────── Install and Configure Security ────────────┐                 │
+│ │ • Install fail2ban                                     │                 │
+│ │ • Create /etc/fail2ban/jail.local:                     │                 │
+│ │   ├─→ Set bantime=3600                                │                 │
+│ │   ├─→ Set findtime=600                                │                 │
+│ │   ├─→ Set maxretry=3                                  │                 │
+│ │   └─→ Enable sshd jail                                │                 │
+│ │ • systemctl enable/start fail2ban                      │                 │
+│ └────────────────────────────────────────────────────────┘                 │
+│                                                                             │
+│ ┌─────────── Configure Firewall ────────────┐                             │
+│ │ • systemctl start/enable firewalld        │                             │
+│ │ • Add SSH service                         │                             │
+│ │ • Add MySQL port (3306) for localhost only│                             │
+│ │ • firewall-cmd --reload                   │                             │
+│ └───────────────────────────────────────────┘                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                        │
+                                        ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                            FINAL SUMMARY                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ • Clear screen                                                              │
+│ • Display completion header                                                 │
+│ • Show installation summary checklist:                                      │
+│   ├─→ ✅ System prepared and updated                                        │
+│   ├─→ ✅ MySQL installed and secured                                        │
+│   ├─→ ✅ Database and tables created                                       │
+│   ├─→ ✅ Data downloads started                                            │
+│   ├─→ ✅ All utility commands installed                                    │
+│   └─→ ✅ Security configured                                               │
+│ • List new commands available                                               │
+│ • Display CRITICAL INFORMATION:                                             │
+│   ├─→ Installation ID                                                       │
+│   ├─→ Admin User: maverick                                                 │
+│   ├─→ Admin Password (generated)                                           │
+│   └─→ Recovery Passphrase                                                  │
+│ • Remind to save credentials                                                │
+│ • Explain background downloads                                              │
+│ • Suggest monitoring commands                                               │
+│ • Note download time estimate (30-90 minutes)                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                        │
+                                        ▼
+                                    [SCRIPT END]
+
+═══════════════════════════════════════════════════════════════════════════════
+                           EXECUTION FLOW SUMMARY
+═══════════════════════════════════════════════════════════════════════════════
+
+Main Script Flow:
+1. Initialize → 2. System Prep → 3. Database Setup → 4. Downloads → 5. Create Utils → 6. Security → 7. Summary
+
+Utility Commands Created (can be run after installation):
+• mmp_status   - Shows system/download/database status
+• mmp_check    - Monitors download completion
+• mmp_decrypt  - Decrypts stored credentials
+• mmp_security - Shows security configuration
+• mmp_unified  - Queries unified crime data
+• mmp_db       - Direct database access
+• mmp_help     - Shows command help
+• mmp_load     - Loads CSV data into database (has 3 sub-functions)
+
+Key Decision Points:
+1. OS Detection → Determines MySQL repo version
+2. User Exists Check → Skip/create maverick user
+3. Temp Password Check → MySQL root password setup
+4. Download Complete Check (in mmp_load) → Proceed/abort loading
+
+Error Handling:
+• All commands use || operators for yum/dnf fallback
+• MySQL operations wrapped in error checks
+• File operations check existence before processing
+• mmp_load validates downloads before proceeding
+
+Data Flow:
+Raw Downloads → CSV Files → MySQL Tables → Unified Analysis
+   (wget)        (/data)     (crime_data)    (queries)
