@@ -1,0 +1,204 @@
+<div class="mmp-framework joomla-article">
+<!-- Hero Section -->
+<div class="hero-section meta-hero">
+<h1 class="academic-title" id="mmp-mathematical-framework-core-v7.0">Mathematical Core v7.0</h1>
+<p class="academic-subtitle">Substrate-Agnostic Mathematical Foundation for Observable Anomaly Classification</p>
+<p class="academic-meta">Absolute Value Records with Shannon Entropy Optimization</p>
+</div>
+
+<div class="academic-container">
+<!-- Section 1: Absolute Value Record Theory -->
+<section>
+<h2 class="section-title" id="1.-absolute-value-record-theory">1. Absolute Value Record Theory</h2>
+<div class="nested-box">
+<h3 id="1.1-fundamental-axiom">1.1 Fundamental Axiom</h3>
+<p>Every recorded observation Ω represents an absolute truth:</p>
+<div class="equation-container">
+<div class="equation">∀ Ω ∈ Records: P(Ω occurred) = 1</div>
+<span class="equation-number">(1)</span></div>
+<p>No probabilistic interpretation needed. If recorded, it happened. This eliminates Bayesian priors and simplifies all mathematics to discrete counting.</p>
+</div>
+
+<div class="nested-box highlight">
+<h3 id="1.2-state-space-definition">1.2 State Space Definition</h3>
+<p>The universal observation space is defined as:</p>
+<div class="equation-container">
+<div class="equation">Ψ = (S, O, M, K, P)</div>
+<span class="equation-number">(2)</span></div>
+<p>Where:</p>
+<ul>
+<li><strong>S</strong> = Substrate space (observer type)</li>
+<li><strong>O</strong> = Observer state manifold</li>
+<li><strong>M</strong> = Medium/domain characteristics</li>
+<li><strong>K</strong> = Kinematic behavior space</li>
+<li><strong>P</strong> = Physical property space</li>
+</ul>
+</div>
+</section>
+
+<!-- Section 2: Substrate-Agnostic Observer Mathematics -->
+<section>
+<h2 class="section-title" id="2.-substrate-agnostic-observer-mathematics">2. Substrate-Agnostic Observer Mathematics</h2>
+<div class="nested-box">
+<h3 id="2.1-substrate-definition">2.1 Substrate Definition</h3>
+<p>Each substrate S_i has inherent observational constraints:</p>
+<div class="equation-container">
+<div class="equation">S_i = (Λ_i, Τ_i, Σ_i, Ε_i)</div>
+<span class="equation-number">(3)</span></div>
+<p>Where:</p>
+<ul>
+<li>Λ_i = Spectral range accessible</li>
+<li>Τ_i = Temporal resolution limits</li>
+<li>Σ_i = Spatial resolution limits</li>
+<li>Ε_i = Inherent uncertainty function</li>
+</ul>
+</div>
+
+<div class="nested-box highlight">
+<h3 id="2.2-gateway-transform">2.2 Gateway Transform</h3>
+<p>Inter-substrate communication via gateway functions:</p>
+<div class="equation-container">
+<div class="equation">G: S_i × Ω → S_j × Ω'</div>
+<span class="equation-number">(4)</span></div>
+<p>Where information preservation requires:</p>
+<div class="equation-container">
+<div class="equation">H(Ω') ≥ H(Ω) - H(S_i ∩ S_j)</div>
+<span class="equation-number">(5)</span></div>
+</div>
+</section>
+
+<!-- Section 3: Resolution Optimization via Shannon Entropy -->
+<section>
+<h2 class="section-title" id="3.-resolution-optimization-via-shannon-entropy">3. Resolution Optimization via Shannon Entropy</h2>
+<div class="nested-box">
+<h3 id="3.1-adaptive-binning-algorithm">3.1 Adaptive Binning Algorithm</h3>
+<p>For any continuous parameter p, find optimal discretization:</p>
+<div class="equation-container">
+<div class="equation">r_opt = argmax{H(p,r) · S(p,r) · R(p,r)}</div>
+<span class="equation-number">(6)</span></div>
+<p>Where:</p>
+<ul>
+<li>H(p,r) = -Σ n_i/N log₂(n_i/N) [Shannon entropy]</li>
+<li>S(p,r) = 1 - Var(∇²p)/⟨∇²p⟩ [Smoothness metric]</li>
+<li>R(p,r) = P(pattern reproduces) [Reproducibility score]</li>
+</ul>
+</div>
+
+<div class="nested-box process">
+<h3 id="3.2-progressive-refinement-operator">3.2 Progressive Refinement Operator</h3>
+<p>Records evolve through refinement without losing history:</p>
+<div class="equation-container">
+<div class="equation">Ω(t+1) = Ω(t) ⊕ Δ(source_anonymous)</div>
+<span class="equation-number">(7)</span></div>
+<p>With constraint:</p>
+<div class="equation-container">
+<div class="equation">I(Ω(t+1)) ≥ I(Ω(t))</div>
+<span class="equation-number">(8)</span></div>
+</div>
+</section>
+
+<!-- Section 4: Information-Theoretic Validation -->
+<section>
+<h2 class="section-title" id="4.-information-theoretic-validation">4. Information-Theoretic Validation</h2>
+<div class="nested-box">
+<h3 id="4.1-cross-source-consistency-metric">4.1 Cross-Source Consistency Metric</h3>
+<p>Without knowing sources, measure information consistency:</p>
+<div class="equation-container">
+<div class="equation">C(Ω_1, Ω_2) = 1 - D_KL(P(Ψ|Ω_1) || P(Ψ|Ω_2))</div>
+<span class="equation-number">(9)</span></div>
+<p>Where D_KL is Kullback-Leibler divergence</p>
+</div>
+
+<div class="nested-box highlight">
+<h3 id="4.2-progressive-truth-convergence">4.2 Progressive Truth Convergence</h3>
+<p>As observations accumulate:</p>
+<div class="equation-container">
+<div class="equation">Truth(t) = lim_{t→∞} Σ w_i · Ω_i</div>
+<span class="equation-number">(10)</span></div>
+<p>Where:</p>
+<div class="equation-container">
+<div class="equation">w_i = C(Ω_i, Ω_mean) / Σ C(Ω_j, Ω_mean)</div>
+<span class="equation-number">(11)</span></div>
+</div>
+</section>
+
+<!-- Section 5: Mathematical Guarantees -->
+<section>
+<h2 class="section-title" id="5.-mathematical-guarantees">5. Mathematical Guarantees</h2>
+<div class="nested-box">
+<h3 id="5.1-completeness-theorem">5.1 Completeness Theorem</h3>
+<p><strong>Theorem:</strong> Every possible observation maps to exactly one classification:</p>
+<div class="equation-container">
+<div class="equation">∀ ω ∈ Observable_Universe: ∃! (s,o,m,k,p) ∈ Ψ</div>
+<span class="equation-number">(12)</span></div>
+</div>
+
+<div class="nested-box">
+<h3 id="5.2-information-preservation">5.2 Information Preservation</h3>
+<p><strong>Theorem:</strong> Information loss is bounded by discretization resolution:</p>
+<div class="equation-container">
+<div class="equation">H(Original_observation) - H(MMP_encoding) ≤ log₂(bin_count)</div>
+<span class="equation-number">(13)</span></div>
+</div>
+
+<div class="nested-box">
+<h3 id="5.3-convergence-under-refinement">5.3 Convergence Under Refinement</h3>
+<p><strong>Theorem:</strong> Classification converges to ground truth as observations accumulate:</p>
+<div class="equation-container">
+<div class="equation">||Truth(∞) - Truth(n)|| ≤ K/√n</div>
+<span class="equation-number">(14)</span></div>
+</div>
+</section>
+
+<!-- Section 6: Discretization Functions -->
+<section>
+<h2 class="section-title" id="6.-discretization-functions">6. Discretization Functions</h2>
+<div class="nested-box highlight">
+<h3 id="6.1-observer-discretization">6.1 Observer Discretization</h3>
+<div class="code-container">
+<div class="code-header"><span class="code-title">Observer State Discretization</span></div>
+<div class="code-content">D_O: ℝ³ × ℝ → {E,M,V,L,J,S,I}
+
+Based on gravitational potential:
+If Φ ∈ [-62.5, -59.5] MJ/kg → E (Earth)
+If Φ ∈ [-12.8, -11.2] MJ/kg → M (Mars)</div>
+</div>
+</div>
+
+<div class="nested-box">
+<h3 id="6.2-kinematic-classification">6.2 Kinematic Classification</h3>
+<div class="code-container">
+<div class="code-header"><span class="code-title">Kinematic State Discretization</span></div>
+<div class="code-content">D_K: (trajectory) → {Z,L,C,E,R,P,U}
+
+Using Lyapunov exponent λ:
+If λ < 0.01 → Z (Zero/hovering)
+If λ ∈ [0.01, 0.1] → L (Linear)
+If λ ∈ [0.1, 2.0] → C (Curved)
+If λ > 2.0 → E (Erratic)
+If Cor(Δv, Δv_observer) > 0.7 → R (Reactive)</div>
+</div>
+</div>
+</section>
+
+<!-- Mathematical Summary -->
+<div class="cta-section">
+<h2 class="academic-title" id="mathematical-summary">Mathematical Summary</h2>
+<p class="academic-subtitle">MMP Framework v7.0 provides substrate-agnostic mathematical foundations for anomaly classification through absolute value records, Shannon entropy optimization, and progressive truth refinement.</p>
+</div>
+
+<!-- Changelog -->
+<div class="changelog-section">
+<h2 class="section-title" id="changelog">Changelog v6.0 → v7.0</h2>
+<ul>
+<li><strong>Added:</strong> Absolute Value Record Theory - treating all observations as discrete truths rather than probabilistic events</li>
+<li><strong>Added:</strong> Substrate-Agnostic Observer Mathematics - allowing different observer types (human, AI, sensor) to contribute equally</li>
+<li><strong>Added:</strong> Shannon Entropy Resolution Optimization - automatic discovery of optimal discretization granularity</li>
+<li><strong>Added:</strong> Gateway Transform Mathematics - formal inter-substrate communication theory</li>
+<li><strong>Modified:</strong> State space from Ω = O × M × K × P to Ψ = (S, O, M, K, P) including substrate dimension</li>
+<li><strong>Enhanced:</strong> Information-theoretic validation replacing subjective reliability metrics</li>
+<li><strong>New:</strong> Progressive truth convergence theorem for multi-source observations</li>
+</ul>
+</div>
+</div>
+</div>

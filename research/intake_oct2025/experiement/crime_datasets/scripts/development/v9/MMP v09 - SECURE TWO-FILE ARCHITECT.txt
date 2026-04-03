@@ -1,0 +1,117 @@
+MMP v09 - SECURE TWO-FILE ARCHITECTURE
+=====================================
+
+┌─────────────────────────────────────────────────────────────┐
+│                   mmp_bootstrap_v09.sh                      │
+│                  (Small, Auditable, ~150 lines)             │
+├─────────────────────────────────────────────────────────────┤
+│ PURPOSE: Handle ONLY security-critical operations           │
+│                                                             │
+│ 1. Check sentinel (prevent re-runs)                         │
+│ 2. Generate secure random credentials:                      │
+│    - Admin password (24 chars)                              │
+│    - Recovery passphrase (32 chars)                         │
+│    - MySQL passwords (24 chars each)                        │
+│    - Installation ID                                        │
+│                                                             │
+│ 3. Create maverick user with secure password                │
+│                                                             │
+│ 4. Encrypt and store credentials:                           │
+│    - Uses AES-256-GCM with PBKDF2                          │
+│    - 600,000 iterations                                     │
+│    - Shreds plaintext after encryption                      │
+│                                                             │
+│ 5. Export environment variables:                            │
+│    - MMP_INSTALLATION_ID                                    │
+│    - MMP_MYSQL_ROOT_PASS                                    │
+│    - MMP_MYSQL_APP_PASS                                     │
+│    - MMP_SECURE_MODE=true                                   │
+│                                                             │
+│ 6. Source/download main installer                           │
+│                                                             │
+│ 7. Display credentials ONCE after completion                │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              │ sources
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│                 mmp_main_installer_v09.sh                   │
+│               (Complex logic, ~1000+ lines)                 │
+├─────────────────────────────────────────────────────────────┤
+│ PURPOSE: All non-security installation tasks                │
+│                                                             │
+│ • Uses credentials from environment (no generation)         │
+│ • System package installation                               │
+│ • MySQL installation and configuration                      │
+│ • Database and table creation                               │
+│ • Data downloads                                            │
+│ • Utility command creation                                  │
+│ • Firewall and fail2ban setup                              │
+│                                                             │
+│ UNCHANGED FROM v08:                                         │
+│ • All complex logic remains the same                        │
+│ • Just uses env vars instead of generating passwords        │
+│ • No hardcoded passphrases                                  │
+└─────────────────────────────────────────────────────────────┘
+
+
+KEY BENEFITS
+============
+
+1. SECURITY ISOLATION
+   - All credential generation in one small file
+   - Easy to audit (150 lines vs 1000+)
+   - No hardcoded secrets anywhere
+
+2. MAINTAINABILITY  
+   - Complex logic separated from security
+   - Main installer barely changes from v08
+   - Security updates don't touch main code
+
+3. FLEXIBILITY
+   - Main installer can be remote (wget/curl)
+   - Can update main logic without touching security
+   - Bootstrap can verify integrity before running
+
+4. COMPLIANCE
+   - STIG requirements isolated in bootstrap
+   - Clear security boundary
+   - Credentials shown only once
+
+
+USAGE
+=====
+
+Method 1 - Both files local:
+```bash
+chmod +x mmp_bootstrap_v09.sh
+./mmp_bootstrap_v09.sh
+```
+
+Method 2 - Remote main installer:
+```bash
+# Edit bootstrap to set INSTALLER_URL
+chmod +x mmp_bootstrap_v09.sh
+./mmp_bootstrap_v09.sh
+```
+
+Method 3 - Verified download:
+```bash
+# Bootstrap can check SHA256 before running
+wget https://repo/mmp_bootstrap_v09.sh
+wget https://repo/mmp_bootstrap_v09.sh.sha256
+sha256sum -c mmp_bootstrap_v09.sh.sha256
+./mmp_bootstrap_v09.sh
+```
+
+
+SECURITY IMPROVEMENTS OVER v08
+==============================
+
+1. No hardcoded recovery passphrase
+2. Credentials displayed only once
+3. Clean separation of concerns
+4. Prevent accidental re-runs
+5. Secure credential generation
+6. Proper file shredding
+7. Environment variable isolation

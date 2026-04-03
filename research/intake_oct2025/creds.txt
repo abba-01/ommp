@@ -1,0 +1,101 @@
+=============================================
+   MMP CRIME DATABASE COMPLETE SETUP V04
+   [Installation ID: 98A99668]
+=============================================
+
+⚠️  CRITICAL SYSTEM SAFETY WARNING ⚠️
+
+This MMP Crime Database installation is designed for:
+✓ DigitalOcean droplets
+✓ Virtual machines (VMs)
+✓ Test/development systems
+✓ Scientific research environments
+
+🔴 RED ALERT: DO NOT install on production servers
+🔴 RED ALERT: DO NOT install on systems with important data
+🔴 RED ALERT: DO NOT install on shared hosting environments
+
+This system makes significant changes to:
+• MySQL configuration and security
+• User accounts and permissions
+• Firewall rules and network security
+• System packages and services
+
+=============================================
+    LEGAL & RECOVERY NOTICE
+=============================================
+This system implements compartmentalized security to:
+
+✓ Allow targeted data recovery without compromising entire systems
+✓ Enable legal compliance (law enforcement/civil litigation)
+✓ Protect proprietary/scientific materials outside scope of discovery
+✓ Maintain source anonymity while ensuring data integrity
+✓ Support GS17+ oversight without attribution requirements
+
+Recovery Methods Available:
+• User Self-Recovery: Installation ID + email request
+• Legal Process: Court order + Installation ID = targeted access
+• No drive decryption required - compartmentalized access only
+
+Philosophy: Share data without declaring source, under agreement
+that users will not spoil, undermine, or use for obfuscation.
+=============================================
+
+Press Ctrl+C to cancel, or wait 15 seconds to continue...
+
+Logging all operations to: /root/mmp_logs/mmp_complete_v04_98A99668_20250711_085959.log
+Installation ID: 98A99668 (save this for recovery)
+
+[STEP 1/10 - ID: 98A99668]: Minimal root operations and nano installation
+
+=============================================
+STEP 1: MINIMAL ROOT OPERATIONS
+[Installation ID: 98A99668]
+=============================================
+
+[DOING NOW]: Cleaning package cache
+[DOING NOW]: Installing nano as root
+[SUCCESS]: nano installed
+[STEP 2/10 - ID: 98A99668]: Creating secure admin user with STIG-compliant credentials
+
+=============================================
+STEP 2: CREATE SECURE ADMIN USER
+[Installation ID: 98A99668]
+=============================================
+
+[DOING NOW]: Creating user 'maverick' with STIG-compliant password
+[DOING NOW]: Creating encrypted credentials file
+chmod: cannot access '/home/maverick/.mmp/credentials.enc': No such file or directory
+[SUCCESS]: User 'maverick' created with encrypted credentials
+Password: Gd&8iaZyMTCjUzX2aQ#F
+Recovery Passphrase: [Crystal22$Ocean29@34!]
+Credentials encrypted and stored in /home/maverick/.mmp/
+[STEP 3/10 - ID: 98A99668]: Switching to wheel user for secure operations
+
+=============================================
+STEP 3: SWITCHING TO WHEEL USER OPERATIONS
+[Installation ID: 98A99668]
+=============================================
+
+[DOING NOW]: Configuring sudo for restricted operations
+[SUCCESS]: Restricted sudo configured for maverick
+[STEP 4/10 - ID: 98A99668]: System updates and tools installation as wheel user
+
+=============================================
+STEP 4: SYSTEM UPDATES (as maverick)
+[Installation ID: 98A99668]
+=============================================
+
+[DOING NOW]: Performing all operations as maverick user
+Running as user: maverick
+Installation continues as wheel user...
+
+[DOING NOW]: Updating system packages
+[DOING NOW]: Installing EPEL repository
+
+We trust you have received the usual lecture from the local System
+Administrator. It usually boils down to these three things:
+
+    #1) Respect the privacy of others.
+    #2) Think before you type.
+    #3) With great power comes great responsibility.

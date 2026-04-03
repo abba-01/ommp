@@ -1,0 +1,1001 @@
+=== COMPLETE COMMAND HISTORY ===
+ORDER BY city, year DESC;
+
+-- 2. Seasonal Crime Patterns
+SELECT 
+    city,
+    CASE 
+        WHEN month IN (12, 1, 2) THEN 'Winter'
+        WHEN month IN (3, 4, 5) THEN 'Spring'
+        WHEN month IN (6, 7, 8) THEN 'Summer'
+        ELSE 'Fall'
+    END as season,
+    FORMAT(AVG(crime_count), 0) as avg_crimes_per_month
+FROM crime_summary_stats
+WHERE year BETWEEN 2020 AND 2023
+GROUP BY city, season
+ORDER BY city, FIELD(season, 'Spring', 'Summer', 'Fall', 'Winter');
+
+-- 3. Most Common Crime Types
+SELECT 
+    city,
+    crime_type,
+    FORMAT(total_crimes, 0) as occurrences,
+    CONCAT(ROUND(pct_of_total, 1), '%') as pct_of_city_total
+FROM (
+    SELECT 
+        city,
+        crime_type,
+        SUM(crime_count) as total_crimes,
+        100.0 * SUM(crime_count) / SUM(SUM(crime_count)) OVER (PARTITION BY city) as pct_of_total,
+        ROW_NUMBER() OVER (PARTITION BY city ORDER BY SUM(crime_count) DESC) as rank
+    FROM crime_summary_stats
+    GROUP BY city, crime_type
+) ranked
+WHERE rank <= 5
+ORDER BY city, rank;
+EOF
+
+echo -e "\n=== Running Analysis Queries ==="
+mysql -u root -p'CrimeData2024!Strong' crime_data < useful_crime_queries.sql
+# Create analysis queries
+cat > useful_crime_queries.sql << 'EOF'
+-- 1. Year-over-Year Crime Changes
+SELECT 
+    city,
+    year,
+    FORMAT(total_crimes, 0) as crimes,
+    CASE 
+        WHEN prev_year_crimes IS NULL THEN 'N/A'
+        ELSE CONCAT(
+            CASE 
+                WHEN total_crimes > prev_year_crimes THEN '+'
+                ELSE ''
+            END,
+            ROUND((total_crimes - prev_year_crimes) / prev_year_crimes * 100, 1), '%'
+        )
+    END as yoy_change
+FROM (
+    SELECT 
+        city,
+        year,
+        SUM(crime_count) as total_crimes,
+        LAG(SUM(crime_count)) OVER (PARTITION BY city ORDER BY year) as prev_year_crimes
+    FROM crime_summary_stats
+    WHERE year BETWEEN 2019 AND 2024
+    GROUP BY city, year
+) yearly_data
+ORDER BY city, year DESC;
+
+-- 2. Seasonal Crime Patterns
+SELECT 
+    city,
+    CASE 
+        WHEN month IN (12, 1, 2) THEN 'Winter'
+        WHEN month IN (3, 4, 5) THEN 'Spring'
+        WHEN month IN (6, 7, 8) THEN 'Summer'
+        ELSE 'Fall'
+    END as season,
+    FORMAT(AVG(crime_count), 0) as avg_crimes_per_month
+FROM crime_summary_stats
+WHERE year BETWEEN 2020 AND 2023
+GROUP BY city, season
+ORDER BY city, FIELD(season, 'Spring', 'Summer', 'Fall', 'Winter');
+
+-- 3. Most Common Crime Types
+SELECT 
+    city,
+    crime_type,
+    FORMAT(total_crimes, 0) as occurrences,
+    CONCAT(ROUND(pct_of_total, 1), '%') as pct_of_city_total
+FROM (
+    SELECT 
+        city,
+        crime_type,
+        SUM(crime_count) as total_crimes,
+        100.0 * SUM(crime_count) / SUM(SUM(crime_count)) OVER (PARTITION BY city) as pct_of_total,
+        ROW_NUMBER() OVER (PARTITION BY city ORDER BY SUM(crime_count) DESC) as rank
+    FROM crime_summary_stats
+    GROUP BY city, crime_type
+) ranked
+WHERE rank <= 5
+ORDER BY city, rank;
+EOF
+
+echo -e "\n=== Running Analysis Queries ==="
+mysql -u root -p'CrimeData2024!Strong' crime_data < useful_crime_queries.sql
+# Create corrected analysis queries
+cat > crime_analysis_queries.sql << 'EOF'
+-- 3. Most Common Crime Types (Fixed)
+SELECT 
+    city,
+    crime_type,
+    FORMAT(total_crimes, 0) as occurrences,
+    CONCAT(ROUND(pct_of_total, 1), '%') as pct_of_city_total
+FROM (
+    SELECT 
+        city,
+        crime_type,
+        SUM(crime_count) as total_crimes,
+        100.0 * SUM(crime_count) / SUM(SUM(crime_count)) OVER (PARTITION BY city) as pct_of_total,
+        ROW_NUMBER() OVER (PARTITION BY city ORDER BY SUM(crime_count) DESC) as crime_rank
+    FROM crime_summary_stats
+    GROUP BY city, crime_type
+) ranked
+WHERE crime_rank <= 5
+ORDER BY city, crime_rank;
+
+-- 4. Crime Trends - Monthly Average Comparison
+SELECT 
+    city,
+    CONCAT(ROUND(AVG(CASE WHEN year = 2024 THEN monthly_total END), 0), ' (2024)') as avg_monthly_2024,
+    CONCAT(ROUND(AVG(CASE WHEN year = 2023 THEN monthly_total END), 0), ' (2023)') as avg_monthly_2023,
+    CONCAT(
+        CASE 
+            WHEN AVG(CASE WHEN year = 2024 THEN monthly_total END) > AVG(CASE WHEN year = 2023 THEN monthly_total END) THEN '+'
+            ELSE ''
+        END,
+        ROUND((AVG(CASE WHEN year = 2024 THEN monthly_total END) - AVG(CASE WHEN year = 2023 THEN monthly_total END)) / AVG(CASE WHEN year = 2023 THEN monthly_total END) * 100, 1), 
+        '%'
+    ) as change
+FROM (
+    SELECT city, year, month, SUM(crime_count) as monthly_total
+    FROM crime_summary_stats
+    WHERE year IN (2023, 2024)
+    GROUP BY city, year, month
+) monthly_data
+GROUP BY city;
+
+-- 5. Recent Month Breakdown (Last 3 months with data)
+SELECT 
+    city,
+    CONCAT(year, '-', LPAD(month, 2, '0')) as month,
+    FORMAT(SUM(crime_count), 0) as total_crimes,
+    COUNT(DISTINCT crime_type) as crime_types
+FROM crime_summary_stats
+WHERE CONCAT(year, '-', LPAD(month, 2, '0')) >= '2024-03'
+GROUP BY city, year, month
+ORDER BY city, year DESC, month DESC
+LIMIT 9;
+EOF
+
+mysql -u root -p'CrimeData2024!Strong' crime_data < crime_analysis_queries.sql
+# Create corrected analysis queries
+cat > crime_analysis_queries.sql << 'EOF'
+-- 3. Most Common Crime Types (Fixed)
+SELECT 
+    city,
+    crime_type,
+    FORMAT(total_crimes, 0) as occurrences,
+    CONCAT(ROUND(pct_of_total, 1), '%') as pct_of_city_total
+FROM (
+    SELECT 
+        city,
+        crime_type,
+        SUM(crime_count) as total_crimes,
+        100.0 * SUM(crime_count) / SUM(SUM(crime_count)) OVER (PARTITION BY city) as pct_of_total,
+        ROW_NUMBER() OVER (PARTITION BY city ORDER BY SUM(crime_count) DESC) as crime_rank
+    FROM crime_summary_stats
+    GROUP BY city, crime_type
+) ranked
+WHERE crime_rank <= 5
+ORDER BY city, crime_rank;
+
+-- 4. Crime Trends - Monthly Average Comparison
+SELECT 
+    city,
+    CONCAT(ROUND(AVG(CASE WHEN year = 2024 THEN monthly_total END), 0), ' (2024)') as avg_monthly_2024,
+    CONCAT(ROUND(AVG(CASE WHEN year = 2023 THEN monthly_total END), 0), ' (2023)') as avg_monthly_2023,
+    CONCAT(
+        CASE 
+            WHEN AVG(CASE WHEN year = 2024 THEN monthly_total END) > AVG(CASE WHEN year = 2023 THEN monthly_total END) THEN '+'
+            ELSE ''
+        END,
+        ROUND((AVG(CASE WHEN year = 2024 THEN monthly_total END) - AVG(CASE WHEN year = 2023 THEN monthly_total END)) / AVG(CASE WHEN year = 2023 THEN monthly_total END) * 100, 1), 
+        '%'
+    ) as change
+FROM (
+    SELECT city, year, month, SUM(crime_count) as monthly_total
+    FROM crime_summary_stats
+    WHERE year IN (2023, 2024)
+    GROUP BY city, year, month
+) monthly_data
+GROUP BY city;
+
+-- 5. Recent Month Breakdown (Last 3 months with data)
+SELECT 
+    city,
+    CONCAT(year, '-', LPAD(month, 2, '0')) as month,
+    FORMAT(SUM(crime_count), 0) as total_crimes,
+    COUNT(DISTINCT crime_type) as crime_types
+FROM crime_summary_stats
+WHERE CONCAT(year, '-', LPAD(month, 2, '0')) >= '2024-03'
+GROUP BY city, year, month
+ORDER BY city, year DESC, month DESC
+LIMIT 9;
+EOF
+
+mysql -u root -p'CrimeData2024!Strong' crime_data < crime_analysis_queries.sql
+# First, let's check what's in Seattle's offense_parent_group
+mysql -u root -p'CrimeData2024!Strong' crime_data << 'EOF'
+-- Check Seattle crime types
+SELECT 
+    offense_parent_group,
+    COUNT(*) as count
+FROM seattle_crimes
+WHERE offense_parent_group IS NOT NULL
+LIMIT 10;
+
+-- Check if we loaded the wrong column for Seattle
+SELECT 
+    COUNT(*) as total,
+    COUNT(offense_parent_group) as has_parent_group,
+    COUNT(offense) as has_offense,
+    COUNT(crime_against_category) as has_category
+FROM seattle_crimes;
+EOF
+
+# Check Seattle data properly
+mysql -u root -p'CrimeData2024!Strong' crime_data << 'EOF'
+-- Check Seattle crime types
+SELECT 
+    offense_parent_group,
+    COUNT(*) as count
+FROM seattle_crimes
+WHERE offense_parent_group IS NOT NULL
+GROUP BY offense_parent_group
+ORDER BY COUNT(*) DESC
+LIMIT 10;
+
+-- Check column completeness
+SELECT 
+    COUNT(*) as total,
+    COUNT(offense_parent_group) as has_parent_group,
+    COUNT(offense) as has_offense,
+    COUNT(crime_against_category) as has_category
+FROM seattle_crimes;
+
+-- Sample Seattle data
+SELECT 
+    offense_parent_group,
+    offense,
+    crime_against_category
+FROM seattle_crimes
+LIMIT 10;
+EOF
+
+# Check what data is actually in Seattle table
+mysql -u root -p'CrimeData2024!Strong' crime_data << 'EOF'
+-- Show all columns with sample data
+SELECT * FROM seattle_crimes LIMIT 1\G
+
+-- Check which columns have data
+SELECT 
+    SUM(CASE WHEN report_number IS NOT NULL THEN 1 ELSE 0 END) as has_report_number,
+    SUM(CASE WHEN offense_id IS NOT NULL THEN 1 ELSE 0 END) as has_offense_id,
+    SUM(CASE WHEN report_datetime IS NOT NULL THEN 1 ELSE 0 END) as has_report_datetime,
+    SUM(CASE WHEN group_a_b IS NOT NULL THEN 1 ELSE 0 END) as has_group_a_b,
+    SUM(CASE WHEN precinct IS NOT NULL THEN 1 ELSE 0 END) as has_precinct,
+    SUM(CASE WHEN _100_block_address IS NOT NULL THEN 1 ELSE 0 END) as has_address
+FROM seattle_crimes
+LIMIT 1;
+EOF
+
+# Check what data is actually in Seattle table
+mysql -u root -p'CrimeData2024!Strong' crime_data << 'EOF'
+-- Show all columns with sample data
+SELECT * FROM seattle_crimes LIMIT 1\G
+
+-- Check which columns have data
+SELECT 
+    SUM(CASE WHEN report_number IS NOT NULL THEN 1 ELSE 0 END) as has_report_number,
+    SUM(CASE WHEN offense_id IS NOT NULL THEN 1 ELSE 0 END) as has_offense_id,
+    SUM(CASE WHEN report_datetime IS NOT NULL THEN 1 ELSE 0 END) as has_report_datetime,
+    SUM(CASE WHEN group_a_b IS NOT NULL THEN 1 ELSE 0 END) as has_group_a_b,
+    SUM(CASE WHEN precinct IS NOT NULL THEN 1 ELSE 0 END) as has_precinct,
+    SUM(CASE WHEN _100_block_address IS NOT NULL THEN 1 ELSE 0 END) as has_address
+FROM seattle_crimes
+LIMIT 1;
+EOF
+
+# Check CSV columns and data
+echo "=== CSV Column Headers ==="
+head -n 1 /data/crime_data/raw/seattle/seattle_crimes_all.csv | tr ',' '\n' | nl -v0
+echo -e "\n=== Sample CSV Data ==="
+head -n 3 /data/crime_data/raw/seattle/seattle_crimes_all.csv
+# Fix Seattle summary with available data
+mysql -u root -p'CrimeData2024!Strong' crime_data << 'EOF'
+-- Delete existing Seattle summary
+DELETE FROM crime_summary_stats WHERE city = 'Seattle';
+
+-- Insert Seattle data grouped by precinct instead of crime type
+INSERT INTO crime_summary_stats (city, year, month, crime_type, crime_count)
+SELECT 
+    'Seattle',
+    YEAR(offense_start_datetime),
+    MONTH(offense_start_datetime),
+    COALESCE(CONCAT('Precinct: ', precinct), 'Unknown'),
+    COUNT(*)
+FROM seattle_crimes
+WHERE offense_start_datetime IS NOT NULL 
+    AND YEAR(offense_start_datetime) BETWEEN 2000 AND 2025
+GROUP BY YEAR(offense_start_datetime), MONTH(offense_start_datetime), precinct;
+
+-- Verify the fix
+SELECT 
+    'Seattle Summary by Precinct' as report;
+    
+SELECT 
+    crime_type as precinct,
+    FORMAT(SUM(crime_count), 0) as total_crimes,
+    ROUND(100.0 * SUM(crime_count) / (SELECT SUM(crime_count) FROM crime_summary_stats WHERE city = 'Seattle'), 1) as pct
+FROM crime_summary_stats
+WHERE city = 'Seattle'
+GROUP BY crime_type
+ORDER BY SUM(crime_count) DESC;
+
+-- Show all cities summary
+SELECT 
+    city,
+    COUNT(DISTINCT crime_type) as categories,
+    FORMAT(SUM(crime_count), 0) as total_crimes
+FROM crime_summary_stats
+GROUP BY city;
+EOF
+
+# Create a script to reload Seattle with correct columns
+cat > reload_seattle_correct.py << 'EOF'
+#!/usr/bin/env python3
+import pandas as pd
+import mysql.connector
+from datetime import datetime
+import warnings
+warnings.filterwarnings('ignore')
+
+print("=== Reloading Seattle Data with Correct Columns ===")
+
+# Database config
+DB_CONFIG = {
+    'host': 'localhost',
+    'user': 'crime_analyst',
+    'password': 'Analyst2024!Pass',
+    'database': 'crime_data'
+}
+
+# Read CSV headers
+seattle_df = pd.read_csv('/data/crime_data/raw/seattle/seattle_crimes_all.csv', nrows=5)
+print("\nCSV Columns found:")
+for i, col in enumerate(seattle_df.columns):
+    print(f"{i}: {col}")
+
+print("\nSample data:")
+print(seattle_df[['Offense Category', 'Offense Sub Category', 'NIBRS Crime Against Category']].head())
+
+# We'll update just the crime type columns without reloading everything
+conn = mysql.connector.connect(**DB_CONFIG)
+cursor = conn.cursor()
+
+print("\nUpdating Seattle crime categories...")
+
+# Read and update in chunks
+chunk_size = 50000
+total_updated = 0
+
+for chunk in pd.read_csv('/data/crime_data/raw/seattle/seattle_crimes_all.csv', chunksize=chunk_size):
+    for idx, row in chunk.iterrows():
+        try:
+            update_query = """
+            UPDATE seattle_crimes 
+            SET offense_parent_group = %s,
+                crime_against_category = %s,
+                offense = %s,
+                group_a_b = %s
+            WHERE report_number = %s
+            """
+            cursor.execute(update_query, (
+                row.get('Offense Category'),
+                row.get('NIBRS Crime Against Category'),
+                row.get('Offense Sub Category'),
+                row.get('NIBRS Group AB'),
+                row.get('Report Number')
+            ))
+            total_updated += cursor.rowcount
+        except:
+            continue
+    
+    conn.commit()
+    print(f"Updated {total_updated} records...", end='\r')
+
+print(f"\nTotal records updated: {total_updated}")
+cursor.close()
+conn.close()
+EOF
+
+python3 reload_seattle_correct.py
+ cd /data/crime_data/raw/
+./reload_seattle_correct.py
+python3 reload_seattle_correct.py
+# Install CSF firewall
+cd /tmp
+wget https://download.configserver.com/csf.tgz
+tar -xzf csf.tgz
+cd csf
+sh install.sh
+# Install required dependencies for CSF
+dnf install -y perl-libwww-perl perl-GDGraph perl-IO-Socket-SSL perl-Net-SSLeay perl-Net-LibIDN perl-IO-Socket-INET6 perl-Socket6
+# Test if CSF modules are working
+perl /usr/local/csf/bin/csftest.pl
+yum install perl
+yum update
+dnf install -y perl-libwww-perl perl-GDGraph perl-IO-Socket-SSL perl-Net-SSLeay perl-Net-LibIDN perl-IO-Socket-INET6 perl-Socket6
+yum install perl*
+cd /tmp
+wget https://download.configserver.com/csf.tgz
+tar -xzf csf.tgz
+cd csf
+sh install.sh
+# Backup original config
+cp /etc/csf/csf.conf /etc/csf/csf.conf.bak
+# Configure CSF
+cat > /etc/csf/csf.conf.custom << 'EOF'
+# Basic CSF Configuration for Crime Database Server
+
+# Testing mode - set to 0 after confirming everything works
+TESTING = "1"
+
+# Allow incoming TCP ports
+TCP_IN = "22,80,443,3306"
+
+# Allow outgoing TCP ports  
+TCP_OUT = "22,25,53,80,443,3306"
+
+# Allow incoming UDP ports
+UDP_IN = ""
+
+# Allow outgoing UDP ports
+UDP_OUT = "53"
+
+# Allow MySQL only from specific IPs (update with your IP)
+# Add your IP to /etc/csf/csf.allow
+
+# Connection tracking
+CONNLIMIT = "22;5,80;20,443;20,3306;5"
+
+# Port flood protection
+PORTFLOOD = "22;tcp;5;300,80;tcp;20;5,443;tcp;20;5"
+
+# SYN flood protection
+SYNFLOOD = "1"
+SYNFLOOD_RATE = "100/s"
+SYNFLOOD_BURST = "150"
+
+# Enable login failure daemon
+LF_DAEMON = "1"
+
+# Block IPs after 5 failed SSH login attempts for 1 hour
+LF_SSHD = "5"
+LF_SSHD_PERM = "3600"
+
+# Block IPs after 5 failed MySQL login attempts
+LF_MYSQLD = "5"
+LF_MYSQLD_PERM = "3600"
+
+# Enable distributed attack detection
+LF_DISTATTACK = "1"
+
+# Country code blocking (optional - uncomment to block countries)
+# CC_DENY = "CN,RU,KP"
+
+# Enable DYNDNS
+DYNDNS = "0"
+
+# Log file locations
+CUSTOM_LOG_FILES = "/var/log/mysql/error.log"
+EOF
+
+# Merge with original config
+grep -E "^[A-Z_]+ =" /etc/csf/csf.conf.custom | while read line; do     key=$(echo $line | cut -d'=' -f1 | xargs);     sed -i "s/^$key =.*/$line/" /etc/csf/csf.conf; done
+# Create MySQL security script
+cat > secure_mysql.sh << 'EOF'
+#!/bin/bash
+echo "=== Securing MySQL Installation ==="
+
+# 1. Restrict MySQL to localhost only (if not already)
+mysql -u root -p'CrimeData2024!Strong' << SQL
+-- Remove any remote root access
+DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
+
+-- Remove anonymous users
+DELETE FROM mysql.user WHERE User='';
+
+-- Remove test database
+DROP DATABASE IF EXISTS test;
+DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
+
+-- Ensure crime_analyst is localhost only
+UPDATE mysql.user SET Host='localhost' WHERE User='crime_analyst' AND Host='%';
+
+FLUSH PRIVILEGES;
+SQL
+
+# 2. Update MySQL config for security
+cat >> /etc/my.cnf.d/security.cnf << MYSQL
+[mysqld]
+# Disable remote connections (uncomment if you want local only)
+# bind-address = 127.0.0.1
+
+# Disable LOAD DATA LOCAL
+local_infile = 0
+
+# Enable logging
+log_error = /var/log/mysql/error.log
+slow_query_log = 1
+slow_query_log_file = /var/log/mysql/slow.log
+long_query_time = 2
+
+# Connection limits
+max_connections = 100
+max_connect_errors = 10
+
+# Disable symbolic links
+symbolic-links = 0
+MYSQL
+
+# Create log directory
+mkdir -p /var/log/mysql
+chown mysql:mysql /var/log/mysql
+
+# Restart MySQL
+systemctl restart mysqld
+EOF
+
+chmod +x secure_mysql.sh
+./secure_mysql.sh
+# Get your current IP
+echo "Your current IP is:"
+curl -s ifconfig.me
+echo ""
+# Add your IP to CSF whitelist (replace YOUR_IP with your actual IP)
+echo "YOUR_IP # Admin access" >> /etc/csf/csf.allow
+# Also create a backup admin user
+useradd -m -s /bin/bash -G wheel backupadmin
+echo "Set password for backup admin user:"
+passwd backupadmin
+# Install fail2ban
+dnf install -y epel-release
+dnf install -y fail2ban
+# Configure fail2ban for SSH and MySQL
+cat > /etc/fail2ban/jail.local << 'EOF'
+[DEFAULT]
+bantime = 3600
+findtime = 600
+maxretry = 5
+
+[sshd]
+enabled = true
+
+[mysqld-auth]
+enabled = true
+filter = mysqld-auth
+port = 3306
+logpath = /var/log/mysql/error.log
+EOF
+
+# Start fail2ban
+systemctl enable --now fail2ban
+cat > security_check.sh << 'EOF'
+#!/bin/bash
+echo "=== Security Status Check ==="
+echo ""
+
+# Check firewall
+echo "1. Firewall Status:"
+csf -l | head -20
+
+# Check SSH config
+echo -e "\n2. SSH Configuration:"
+grep -E "^(PermitRootLogin|PasswordAuthentication|Port)" /etc/ssh/sshd_config
+
+# Check MySQL users
+echo -e "\n3. MySQL Users:"
+mysql -u root -p'CrimeData2024!Strong' -e "SELECT User, Host FROM mysql.user;"
+
+# Check listening ports
+echo -e "\n4. Listening Ports:"
+ss -tlnp | grep LISTEN
+
+# Check recent login attempts
+echo -e "\n5. Recent Failed Login Attempts:"
+grep "Failed password" /var/log/secure | tail -5
+
+# Check CSF blocks
+echo -e "\n6. Currently Blocked IPs:"
+csf -t | head -10
+
+echo -e "\n=== Recommendations ==="
+echo "1. Change MySQL root password regularly"
+echo "2. Set up SSL certificates for HTTPS"
+echo "3. Configure backup strategy"
+echo "4. Set up monitoring alerts"
+echo "5. Disable root SSH login"
+echo "6. Use SSH keys instead of passwords"
+EOF
+
+chmod +x security_check.sh
+./security_check.sh
+# Start CSF in testing mode
+systemctl start csf
+systemctl enable csf
+# Test the configuration
+csf -t
+# If everything looks good, disable testing mode
+sed -i 's/TESTING = "1"/TESTING = "0"/' /etc/csf/csf.conf
+csf -r
+# Enable Cockpit
+systemctl enable --now cockpit.socket
+# Check if it's running
+systemctl status cockpit.socket
+# Configure firewall for Cockpit (port 9090)
+firewall-cmd --permanent --add-service=cockpit
+firewall-cmd --reload
+# If using CSF, add port 9090
+sed -i 's/TCP_IN = "/TCP_IN = "9090,/' /etc/csf/csf.conf
+csf -r
+# Install Netdata (excellent open-source monitoring)
+bash <(curl -Ss https://my-netdata.io/kickstart.sh) --dont-wait
+# Configure Netdata to bind to localhost only (we'll proxy through Cockpit)
+cat >> /etc/netdata/netdata.conf << 'EOF'
+[web]
+    bind to = 127.0.0.1
+EOF
+
+# Restart Netdata
+systemctl restart netdata
+# Add Netdata MySQL monitoring
+cat > /etc/netdata/python.d/mysql.conf << 'EOF'
+local:
+  name: 'local'
+  host: 'localhost'
+  user: 'netdata'
+  pass: 'NetdataPass2024!'
+EOF
+
+# Create MySQL user for Netdata
+mysql -u root -p'CrimeData2024!Strong' << 'EOF'
+CREATE USER 'netdata'@'localhost' IDENTIFIED BY 'NetdataPass2024!';
+GRANT USAGE, REPLICATION CLIENT, PROCESS ON *.* TO 'netdata'@'localhost';
+GRANT SELECT ON crime_data.* TO 'netdata'@'localhost';
+FLUSH PRIVILEGES;
+EOF
+
+# Install Prometheus
+cd /opt
+wget https://github.com/prometheus/prometheus/releases/download/v2.45.0/prometheus-2.45.0.linux-amd64.tar.gz
+tar xvf prometheus-2.45.0.linux-amd64.tar.gz
+mv prometheus-2.45.0.linux-amd64 prometheus
+# Create Prometheus user and directories
+useradd --no-create-home --shell /bin/false prometheus
+mkdir -p /etc/prometheus /var/lib/prometheus
+chown -R prometheus:prometheus /opt/prometheus /etc/prometheus /var/lib/prometheus
+# Install Grafana
+dnf install -y https://dl.grafana.com/enterprise/release/grafana-enterprise-10.0.0-1.x86_64.rpm
+# Enable services
+systemctl enable --now grafana-server
+# Configure MySQL exporter for Prometheus
+wget https://github.com/prometheus/mysqld_exporter/releases/download/v0.15.0/mysqld_exporter-0.15.0.linux-amd64.tar.gz
+tar xvf mysqld_exporter-0.15.0.linux-amd64.tar.gz
+cp mysqld_exporter-0.15.0.linux-amd64/mysqld_exporter /usr/local/bin/
+cat > /usr/local/bin/crime_db_monitor.sh << 'EOF'
+#!/bin/bash
+# Real-time Crime Database Monitor
+
+while true; do
+    clear
+    echo "=== CRIME DATABASE MONITOR ==="
+    echo "Time: $(date)"
+    echo "================================"
+    
+    # System Resources
+    echo -e "\n[SYSTEM RESOURCES]"
+    echo "CPU: $(top -bn1 | grep "Cpu(s)" | awk '{print $2}')%"
+    echo "Memory: $(free -h | awk 'NR==2{printf "%.1f%%", $3*100/$2}')"
+    echo "Disk: $(df -h / | awk 'NR==2{print $5}') used"
+    
+    # MySQL Status
+    echo -e "\n[MYSQL STATUS]"
+    mysql -u root -p'CrimeData2024!Strong' -e "
+    SELECT 'Active Connections:' as Metric, COUNT(*) as Value FROM information_schema.processlist
+    UNION ALL
+    SELECT 'Database Size:', CONCAT(ROUND(SUM(data_length + index_length)/1024/1024/1024, 2), ' GB') 
+    FROM information_schema.tables WHERE table_schema = 'crime_data'
+    UNION ALL
+    SELECT 'Queries/sec:', ROUND(questions/uptime, 2) 
+    FROM (SELECT MAX(VARIABLE_VALUE) questions FROM information_schema.SESSION_STATUS WHERE VARIABLE_NAME='Questions') q,
+    (SELECT VARIABLE_VALUE uptime FROM information_schema.SESSION_STATUS WHERE VARIABLE_NAME='Uptime') u;" 2>/dev/null | column -t
+    
+    # Recent Activity
+    echo -e "\n[RECENT CRIME DATA]"
+    mysql -u root -p'CrimeData2024!Strong' crime_data -e "
+    SELECT city, DATE(MAX(
+        CASE 
+            WHEN city = 'Chicago' THEN (SELECT MAX(date) FROM chicago_crimes)
+            WHEN city = 'LA' THEN (SELECT MAX(date_occ) FROM la_crimes)
+            WHEN city = 'Seattle' THEN (SELECT MAX(offense_start_datetime) FROM seattle_crimes)
+        END
+    )) as latest_record
+    FROM crime_summary_stats GROUP BY city;" 2>/dev/null | column -t
+    
+    # Network Connections
+    echo -e "\n[NETWORK CONNECTIONS]"
+    netstat -tn | grep :3306 | wc -l | xargs echo "MySQL connections:"
+    netstat -tn | grep :9090 | wc -l | xargs echo "Cockpit connections:"
+    
+    sleep 5
+done
+EOF
+
+chmod +x /usr/local/bin/crime_db_monitor.sh
+# Install Python Flask for simple web dashboard
+pip3 install flask flask-mysql-connector flask-cors
+# Create dashboard app
+mkdir -p /opt/crime-dashboard
+cat > /opt/crime-dashboard/app.py << 'EOF'
+#!/usr/bin/env python3
+from flask import Flask, jsonify, render_template_string
+import mysql.connector
+from datetime import datetime, timedelta
+
+app = Flask(__name__)
+
+DB_CONFIG = {
+    'host': 'localhost',
+    'user': 'crime_analyst',
+    'password': 'Analyst2024!Pass',
+    'database': 'crime_data'
+}
+
+DASHBOARD_HTML = '''
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Crime Database Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f0f0f0; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .stat-box { background: white; padding: 20px; margin: 10px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        h1 { color: #333; }
+        .big-number { font-size: 2em; font-weight: bold; color: #2196F3; }
+        .chart-container { position: relative; height: 400px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Crime Database Dashboard</h1>
+        <div id="stats" class="stat-grid"></div>
+        <div class="stat-box">
+            <h2>Crime Trends (Last 12 Months)</h2>
+            <div class="chart-container">
+                <canvas id="trendChart"></canvas>
+            </div>
+        </div>
+        <div class="stat-box">
+            <h2>Crime Distribution by City</h2>
+            <div class="chart-container">
+                <canvas id="cityChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <script>
+        async function loadDashboard() {
+            const response = await fetch('/api/stats');
+            const data = await response.json();
+            
+            // Display stats
+            const statsHtml = data.summary.map(stat => `
+                <div class="stat-box">
+                    <h3>${stat.metric}</h3>
+                    <div class="big-number">${stat.value}</div>
+                </div>
+            `).join('');
+            document.getElementById('stats').innerHTML = statsHtml;
+            
+            // Trend chart
+            new Chart(document.getElementById('trendChart'), {
+                type: 'line',
+                data: {
+                    labels: data.trends.map(t => t.month),
+                    datasets: data.cities.map((city, i) => ({
+                        label: city,
+                        data: data.trends.filter(t => t.city === city).map(t => t.crimes),
+                        borderColor: ['#2196F3', '#4CAF50', '#FF9800'][i],
+                        tension: 0.1
+                    }))
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+            
+            // City distribution
+            new Chart(document.getElementById('cityChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: data.city_totals.map(c => c.city),
+                    datasets: [{
+                        data: data.city_totals.map(c => c.total),
+                        backgroundColor: ['#2196F3', '#4CAF50', '#FF9800']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+        
+        loadDashboard();
+        setInterval(loadDashboard, 60000); // Refresh every minute
+    </script>
+</body>
+</html>
+'''
+
+@app.route('/')
+def dashboard():
+    return render_template_string(DASHBOARD_HTML)
+
+@app.route('/api/stats')
+def stats():
+    conn = mysql.connector.connect(**DB_CONFIG)
+    cursor = conn.cursor(dictionary=True)
+    
+    # Summary stats
+    cursor.execute("""
+        SELECT 'Total Crimes' as metric, FORMAT(SUM(crime_count), 0) as value
+        FROM crime_summary_stats
+        UNION ALL
+        SELECT 'Active Years', CONCAT(MIN(year), '-', MAX(year))
+        FROM crime_summary_stats
+        UNION ALL
+        SELECT 'Cities Tracked', COUNT(DISTINCT city)
+        FROM crime_summary_stats
+    """)
+    summary = cursor.fetchall()
+    
+    # Monthly trends (last 12 months)
+    cursor.execute("""
+        SELECT 
+            city,
+            CONCAT(year, '-', LPAD(month, 2, '0')) as month,
+            SUM(crime_count) as crimes
+        FROM crime_summary_stats
+        WHERE CONCAT(year, '-', LPAD(month, 2, '0')) >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 12 MONTH), '%Y-%m')
+        GROUP BY city, year, month
+        ORDER BY year, month
+    """)
+    trends = cursor.fetchall()
+    
+    # City totals
+    cursor.execute("""
+        SELECT city, SUM(crime_count) as total
+        FROM crime_summary_stats
+        GROUP BY city
+    """)
+    city_totals = cursor.fetchall()
+    
+    # Get unique cities
+    cities = list(set(t['city'] for t in trends))
+    
+    cursor.close()
+    conn.close()
+    
+    return jsonify({
+        'summary': summary,
+        'trends': trends,
+        'city_totals': city_totals,
+        'cities': cities
+    })
+
+if __name__ == '__main__':
+    app.run(host='127.0.0.1', port=5000, debug=False)
+EOF
+
+# Create systemd service for dashboard
+cat > /etc/systemd/system/crime-dashboard.service << 'EOF'
+[Unit]
+Description=Crime Dashboard Web Service
+After=network.target mysql.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/crime-dashboard
+ExecStart=/usr/bin/python3 /opt/crime-dashboard/app.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+systemctl enable --now crime-dashboard
+# Install nginx
+dnf install -y nginx
+# Configure nginx
+cat > /etc/nginx/conf.d/monitoring.conf << 'EOF'
+# Cockpit
+location /cockpit/ {
+    proxy_pass https://localhost:9090/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+}
+
+# Netdata
+location /netdata/ {
+    proxy_pass http://localhost:19999/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+}
+
+# Crime Dashboard
+location /dashboard/ {
+    proxy_pass http://localhost:5000/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+}
+
+# Grafana
+location /grafana/ {
+    proxy_pass http://localhost:3000/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+}
+EOF
+
+systemctl enable --now nginx
+mysql
+mysql -u [username] -p [database_name]
+mysql -u root
+# Stop MySQL
+systemctl stop mysqld
+# Start MySQL in safe mode
+mysqld_safe --skip-grant-tables &
+# Connect without password
+mysql -u root
+# In MySQL, reset the password
+USE mysql;
+UPDATE user SET authentication_string=PASSWORD('new_password') WHERE User='root';
+FLUSH PRIVILEGES;
+exit;
+mysql
+systemctl stop mysqld
+mysqld_safe --skip-grant-tables &
+# Check for MariaDB
+systemctl status mariadb
+# Or check what's installed
+rpm -qa | grep -i maria
+rpm -qa | grep -i mysql
+# See what database services exist
+systemctl list-units | grep -E 'mysql|maria'
+systemctl start mysql
+systemctl status mysql
+# Start MySQL with the correct service name
+systemctl start mysqld
+systemctl status mysqld
+mysql -u root -p
+# Press enter if no password set
+grep 'temporary password' /var/log/mysqld.log
+mysql -u root -p medllc:Hu8=h
+mysql -u root -p
+mysql root 
+mysql root -p
+mysql -u root -p
+systemctl stop mysqld
+sudo mysqld --skip-grant-tables --user=mysql &
+mysql -u root
+sudo killall mysqld
+systemctl start mysqld
+mysql -u root -p

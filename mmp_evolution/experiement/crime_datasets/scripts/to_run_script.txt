@@ -1,0 +1,2 @@
+chmod +x mmp_crime_complete_v04.sh
+./mmp_crime_complete_v04.sh

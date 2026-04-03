@@ -1,0 +1,314 @@
+#!/bin/bash
+# mmp_crime_complete_v05.sh - Enhanced with STIG Sideload System
+
+# ============================================
+# SIDELOAD SYSTEM FUNCTIONS
+# ============================================
+
+# Heartbeat monitoring system
+create_heartbeat_monitor() {
+    local sideload_pid="$1"
+    local heartbeat_file="$2"
+    local timeout_seconds="$3"
+    local script_name="$4"
+    
+    (
+        local count=0
+        while [ $count -lt $timeout_seconds ]; do
+            if [ -f "$heartbeat_file" ]; then
+                local last_beat=$(cat "$heartbeat_file" 2>/dev/null)
+                local current_time=$(date +%s)
+                
+                if [ -n "$last_beat" ] && [ $((current_time - last_beat)) -lt 30 ]; then
+                    # Heartbeat is fresh, reset counter
+                    count=0
+                else
+                    count=$((count + 1))
+                fi
+            else
+                count=$((count + 1))
+            fi
+            
+            sleep 1
+        done
+        
+        # Timeout reached - handle gracefully
+        handle_sideload_timeout "$sideload_pid" "$script_name"
+    ) &
+    
+    echo $!  # Return monitor PID
+}
+
+# Timeout handler
+handle_sideload_timeout() {
+    local sideload_pid="$1"
+    local script_name="$2"
+    
+    echo -e "${ORANGE}[TIMEOUT]: Sideload script '$script_name' timed out${NC}"
+    echo -e "${WHITE}Waiting additional 30 seconds for recovery...${NC}"
+    
+    sleep 30
+    
+    # Check if process still exists
+    if kill -0 "$sideload_pid" 2>/dev/null; then
+        echo -e "${ORANGE}Process still running, attempting graceful termination${NC}"
+        
+        # Try SIGTERM first
+        kill -TERM "$sideload_pid" 2>/dev/null
+        sleep 5
+        
+        # If still running, force kill
+        if kill -0 "$sideload_pid" 2>/dev/null; then
+            kill -KILL "$sideload_pid" 2>/dev/null
+        fi
+    fi
+    
+    # Log the timeout
+    log_sideload_error "$script_name" "TIMEOUT" "$sideload_pid"
+    
+    # Best effort notification
+    attempt_error_notification "$script_name" "TIMEOUT"
+    
+    # Clean up
+    cleanup_sideload_files "$script_name"
+}
+
+# Error logging
+log_sideload_error() {
+    local script_name="$1"
+    local error_type="$2"
+    local pid="$3"
+    
+    cat >> "$LOG_DIR/sideload_errors.log" << EOF
+========================================
+Sideload Error Report
+========================================
+Timestamp: $(date)
+Installation ID: $INSTALLATION_ID
+Script Name: $script_name
+Error Type: $error_type
+Process PID: $pid
+System Info: $(uname -a)
+Memory Usage: $(free -m | grep Mem)
+Disk Usage: $(df -h /)
+========================================
+EOF
+}
+
+# Best effort email notification
+attempt_error_notification() {
+    local script_name="$1"
+    local error_type="$2"
+    
+    # ====> HOOK: SMS/EMAIL NOTIFICATION SYSTEM <====
+    # This is where your SMS system would integrate
+    
+    # Create notification payload
+    local notification_data=$(cat << EOF
+{
+    "installation_id": "$INSTALLATION_ID",
+    "error_type": "$error_type",
+    "script_name": "$script_name",
+    "timestamp": "$(date -Iseconds)",
+    "server_ip": "$(hostname -I | awk '{print $1}')",
+    "hostname": "$(hostname)"
+}
+EOF
+)
+    
+    # Try multiple notification methods
+    echo "$notification_data" > "/tmp/mmp_error_${INSTALLATION_ID}.json"
+    
+    # Method 1: Try curl to notification endpoint (if available)
+    if command -v curl >/dev/null; then
+        curl -X POST -H "Content-Type: application/json" \
+             -d "$notification_data" \
+             "https://mmp.example.com/api/errors" \
+             --max-time 10 &>/dev/null || true
+    fi
+    
+    # Method 2: Try mail command (if configured)
+    if command -v mail >/dev/null; then
+        echo "MMP Error: Installation $INSTALLATION_ID - $error_type in $script_name" | \
+        mail -s "MMP Installation Error" admin@mmp.example.com &>/dev/null || true
+    fi
+    
+    # Method 3: Log for manual retrieval
+    echo "ERROR_NOTIFICATION: $notification_data" >> "$LOG_DIR/notification_queue.log"
+}
+
+# Cleanup function
+cleanup_sideload_files() {
+    local script_name="$1"
+    rm -f "/tmp/mmp_heartbeat_${script_name}_$$" 2>/dev/null
+    rm -f "/tmp/mmp_sideload_${script_name}_$$" 2>/dev/null
+}
+
+# Sideload execution wrapper
+execute_sideload_script() {
+    local script_path="$1"
+    local script_name=$(basename "$script_path")
+    local heartbeat_file="/tmp/mmp_heartbeat_${script_name}_$$"
+    
+    echo -e "${BLUE}[SIDELOAD]: Executing $script_name${NC}"
+    echo -e "${WHITE}Monitoring with 30-second heartbeat timeout${NC}"
+    
+    # Create heartbeat file
+    echo "$(date +%s)" > "$heartbeat_file"
+    
+    # Execute script with heartbeat wrapper
+    (
+        # Source the sideload script with heartbeat updates
+        while read -r line; do
+            # Update heartbeat every few lines
+            if [ $((RANDOM % 10)) -eq 0 ]; then
+                echo "$(date +%s)" > "$heartbeat_file"
+            fi
+            
+            # Execute the line
+            eval "$line"
+            
+        done < "$script_path"
+        
+        # Final heartbeat
+        echo "$(date +%s)" > "$heartbeat_file"
+        echo "SIDELOAD_COMPLETE" >> "$heartbeat_file"
+        
+    ) &
+    
+    local sideload_pid=$!
+    
+    # Start heartbeat monitor
+    local monitor_pid=$(create_heartbeat_monitor "$sideload_pid" "$heartbeat_file" 60 "$script_name")
+    
+    # Wait for completion or timeout
+    if wait "$sideload_pid" 2>/dev/null; then
+        # Success
+        kill "$monitor_pid" 2>/dev/null
+        echo -e "${GREEN}[SIDELOAD]: $script_name completed successfully${NC}"
+        cleanup_sideload_files "$script_name"
+        return 0
+    else
+        # Failed
+        kill "$monitor_pid" 2>/dev/null
+        echo -e "${ORANGE}[SIDELOAD]: $script_name failed or was terminated${NC}"
+        cleanup_sideload_files "$script_name"
+        return 1
+    fi
+}
+
+# ============================================
+# SIDELOAD DETECTION AND LOADING
+# ============================================
+
+check_for_sideload() {
+    echo ""
+    echo -e "${BLUE}=============================================${NC}"
+    echo -e "${BLUE}    STIG SIDELOAD DETECTION${NC}"
+    echo -e "${BLUE}=============================================${NC}"
+    echo ""
+    echo -e "${WHITE}Do you have a STIG compliance file to sideload? (y/n):${NC}"
+    read -n 1 -r
+    echo ""
+    
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        echo ""
+        echo -e "${GREEN}STIG sideload requested${NC}"
+        echo -e "${WHITE}Please provide the full path to your STIG file:${NC}"
+        read -r STIG_FILE_PATH
+        
+        # Validate file
+        if [ -f "$STIG_FILE_PATH" ]; then
+            echo -e "${GREEN}✓ STIG file found: $STIG_FILE_PATH${NC}"
+            echo -e "${WHITE}File size: $(ls -lh "$STIG_FILE_PATH" | awk '{print $5}')${NC}"
+            echo ""
+            echo -e "${BLUE}STIG sideload will be integrated at appropriate points${NC}"
+            echo -e "${ORANGE}Note: Sideload scripts have 60-second timeout with heartbeat monitoring${NC}"
+            echo -e "${ORANGE}If timeout occurs, main installation will continue gracefully${NC}"
+            echo ""
+            STIG_SIDELOAD_ENABLED=true
+            return 0
+        else
+            echo -e "${RED}✗ STIG file not found: $STIG_FILE_PATH${NC}"
+            echo -e "${WHITE}Continuing with standard installation${NC}"
+            STIG_SIDELOAD_ENABLED=false
+            return 1
+        fi
+    else
+        echo -e "${WHITE}No STIG sideload requested${NC}"
+        echo -e "${WHITE}Continuing with standard installation${NC}"
+        STIG_SIDELOAD_ENABLED=false
+        return 1
+    fi
+}
+
+# Sideload execution points
+execute_sideload_if_enabled() {
+    local phase="$1"
+    
+    if [ "$STIG_SIDELOAD_ENABLED" = true ] && [ -f "$STIG_FILE_PATH" ]; then
+        echo ""
+        echo -e "${BLUE}[SIDELOAD POINT]: Executing STIG compliance for $phase${NC}"
+        
+        # Show process explanation
+        cat << EOF
+
+${WHITE}=============================================${NC}
+${BLUE}SIDELOAD PROCESS EXPLANATION${NC}
+${WHITE}=============================================${NC}
+
+We're now executing your STIG compliance scripts for the $phase phase.
+
+${GREEN}Why we use sideloading:${NC}
+- Keeps main installation simple and reliable
+- Allows complex compliance without breaking core functionality  
+- Provides timeout protection with graceful recovery
+- Maintains audit trail for compliance verification
+
+${GREEN}What happens now:${NC}
+- Your STIG script executes with heartbeat monitoring
+- 30-second heartbeat timeout prevents hanging
+- If timeout occurs, we email our team and continue
+- Main installation remains unaffected by STIG issues
+
+${WHITE}Please wait while STIG compliance executes...${NC}
+
+EOF
+
+        # Execute with error handling
+        if execute_sideload_script "$STIG_FILE_PATH"; then
+            echo -e "${GREEN}✓ STIG sideload for $phase completed successfully${NC}"
+        else
+            echo ""
+            echo -e "${ORANGE}=============================================${NC}"
+            echo -e "${ORANGE}    SIDELOAD ERROR RECOVERY${NC}" 
+            echo -e "${ORANGE}=============================================${NC}"
+            echo ""
+            echo -e "${WHITE}We apologize - there was an error with your STIG script.${NC}"
+            echo ""
+            echo -e "${GREEN}What we did:${NC}"
+            echo -e "${WHITE}• Created detailed error log${NC}"
+            echo -e "${WHITE}• Attempted to notify our team${NC}"
+            echo -e "${WHITE}• Safely terminated problematic processes${NC}"
+            echo -e "${WHITE}• Preserved main installation integrity${NC}"
+            echo ""
+            echo -e "${GREEN}Impact assessment:${NC}"
+            if [ "$phase" = "security" ]; then
+                echo -e "${ORANGE}• Some STIG security settings may not be applied${NC}"
+                echo -e "${WHITE}• Core security (firewall, fail2ban) remains intact${NC}"
+                echo -e "${WHITE}• You can apply STIG settings manually later${NC}"
+            elif [ "$phase" = "mysql" ]; then
+                echo -e "${ORANGE}• STIG MySQL settings may not be applied${NC}"
+                echo -e "${WHITE}• Standard secure MySQL configuration is active${NC}"
+                echo -e "${WHITE}• Database functionality is unaffected${NC}"
+            else
+                echo -e "${WHITE}• Main installation functionality is preserved${NC}"
+                echo -e "${WHITE}• STIG compliance can be applied post-installation${NC}"
+            fi
+            echo ""
+            echo -e "${BLUE}Continuing with standard installation...${NC}"
+            echo ""
+            sleep 5
+        fi
+    fi
+}

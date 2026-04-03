@@ -1,0 +1,282 @@
+=============================================
+   MMP CRIME DATABASE COMPLETE SETUP V04
+   [Installation ID: 98A99668]
+=============================================
+
+⚠️  CRITICAL SYSTEM SAFETY WARNING ⚠️
+
+This MMP Crime Database installation is designed for:
+✓ DigitalOcean droplets
+✓ Virtual machines (VMs)
+✓ Test/development systems
+✓ Scientific research environments
+
+🔴 RED ALERT: DO NOT install on production servers
+🔴 RED ALERT: DO NOT install on systems with important data
+🔴 RED ALERT: DO NOT install on shared hosting environments
+
+This system makes significant changes to:
+• MySQL configuration and security
+• User accounts and permissions
+• Firewall rules and network security
+• System packages and services
+
+=============================================
+    LEGAL & RECOVERY NOTICE
+=============================================
+This system implements compartmentalized security to:
+
+✓ Allow targeted data recovery without compromising entire systems
+✓ Enable legal compliance (law enforcement/civil litigation)
+✓ Protect proprietary/scientific materials outside scope of discovery
+✓ Maintain source anonymity while ensuring data integrity
+✓ Support GS17+ oversight without attribution requirements
+
+Recovery Methods Available:
+• User Self-Recovery: Installation ID + email request
+• Legal Process: Court order + Installation ID = targeted access
+• No drive decryption required - compartmentalized access only
+
+Philosophy: Share data without declaring source, under agreement
+that users will not spoil, undermine, or use for obfuscation.
+=============================================
+
+Press Ctrl+C to cancel, or wait 15 seconds to continue...
+
+Logging all operations to: /root/mmp_logs/mmp_complete_v04_98A99668_20250711_085959.log
+Installation ID: 98A99668 (save this for recovery)
+
+[STEP 1/10 - ID: 98A99668]: Minimal root operations and nano installation
+
+=============================================
+STEP 1: MINIMAL ROOT OPERATIONS
+[Installation ID: 98A99668]
+=============================================
+
+[DOING NOW]: Cleaning package cache
+[DOING NOW]: Installing nano as root
+[SUCCESS]: nano installed
+[STEP 2/10 - ID: 98A99668]: Creating secure admin user with STIG-compliant credentials
+
+=============================================
+STEP 2: CREATE SECURE ADMIN USER
+[Installation ID: 98A99668]
+=============================================
+
+[DOING NOW]: Creating user 'maverick' with STIG-compliant password
+[DOING NOW]: Creating encrypted credentials file
+chmod: cannot access '/home/maverick/.mmp/credentials.enc': No such file or directory
+[SUCCESS]: User 'maverick' created with encrypted credentials
+Password: Gd&8iaZyMTCjUzX2aQ#F
+Recovery Passphrase: [Crystal22$Ocean29@34!]
+Credentials encrypted and stored in /home/maverick/.mmp/
+[STEP 3/10 - ID: 98A99668]: Switching to wheel user for secure operations
+
+=============================================
+STEP 3: SWITCHING TO WHEEL USER OPERATIONS
+[Installation ID: 98A99668]
+=============================================
+
+[DOING NOW]: Configuring sudo for restricted operations
+[SUCCESS]: Restricted sudo configured for maverick
+[STEP 4/10 - ID: 98A99668]: System updates and tools installation as wheel user
+
+=============================================
+STEP 4: SYSTEM UPDATES (as maverick)
+[Installation ID: 98A99668]
+=============================================
+
+[DOING NOW]: Performing all operations as maverick user
+Running as user: maverick
+Installation continues as wheel user...
+
+[DOING NOW]: Updating system packages
+[DOING NOW]: Installing EPEL repository
+
+We trust you have received the usual lecture from the local System
+Administrator. It usually boils down to these three things:
+
+    #1) Respect the privacy of others.
+    #2) Think before you type.
+    #3) With great power comes great responsibility.
+
+[sudo] password for maverick: 
+[DOING NOW]: Installing essential tools
+[DOING NOW]: Installing Cockpit
+[DOING NOW]: Upgrading pip
+✓ System updates completed as maverick
+[SUCCESS]: System updates completed as wheel user
+[STEP 5/10 - ID: 98A99668]: MySQL installation with security hardening
+
+=============================================
+STEP 5: MYSQL INSTALLATION
+[Installation ID: 98A99668]
+=============================================
+
+Installing MySQL as maverick...
+✓ MySQL packages installed
+[SUCCESS]: MySQL installation completed
+[DOING NOW]: Configuring MySQL for security
+[DOING NOW]: Securing MySQL installation
+[DOING NOW]: Adding MySQL credentials to encrypted storage
+chown: cannot access '/home/maverick/.mmp/credentials.enc': No such file or directory
+[SUCCESS]: MySQL secured with STIG-compliant passwords
+[STEP 6/10 - ID: 98A99668]: Creating crime database with proper structure
+
+=============================================
+STEP 6: DATABASE CREATION
+[Installation ID: 98A99668]
+=============================================
+
+[DOING NOW]: Creating crime database and tables
+Tables_in_crime_data
+chicago_crimes
+la_crimes
+seattle_crimes
+[SUCCESS]: Database and tables created successfully
+[STEP 7/10 - ID: 98A99668]: Setting up data download infrastructure
+
+=============================================
+STEP 7: DATA DOWNLOAD SETUP
+[Installation ID: 98A99668]
+=============================================
+
+[DOING NOW]: Creating data directories
+Starting crime data downloads as maverick...
+[DOWNLOADING]: Chicago crime data...
+Continuing in background, pid 88932.
+Output will be written to ‘wget-log’.
+[DOWNLOADING]: LA 2010-2019 crime data...
+Continuing in background, pid 88934.
+Output will be written to ‘wget-log.1’.
+[DOWNLOADING]: LA 2020-present crime data...
+Continuing in background, pid 88936.
+Output will be written to ‘wget-log.2’.
+[DOWNLOADING]: Seattle crime data...
+Continuing in background, pid 88938.
+Output will be written to ‘wget-log.3’.
+✓ All downloads started in background
+Use 'mmp_check' to monitor progress
+[SUCCESS]: Data downloads started as maverick user
+[STEP 8/10 - ID: 98A99668]: Creating management utilities with Installation ID integration
+
+=============================================
+STEP 8: UTILITY SCRIPTS CREATION
+[Installation ID: 98A99668]
+=============================================
+
+[DOING NOW]: Creating mmp_status command
+[DOING NOW]: Creating mmp_decrypt command
+[DOING NOW]: Creating additional utility commands
+[SUCCESS]: All utility scripts created with Installation ID integration
+[STEP 9/10 - ID: 98A99668]: Implementing security hardening and firewall
+
+=============================================
+STEP 9: SECURITY HARDENING
+[Installation ID: 98A99668]
+=============================================
+
+[DOING NOW]: Installing fail2ban
+Created symlink /etc/systemd/system/multi-user.target.wants/fail2ban.service → /usr/lib/systemd/system/fail2ban.service.
+[SUCCESS]: fail2ban configured and started
+[DOING NOW]: Attempting CSF firewall installation
+[DOING NOW]: Installing Perl modules for CSF
+[ERROR 1]: CSF requirements not met on this system
+[DOING NOW]: Configuring firewalld as backup
+[SUCCESS]: firewalld configured as backup firewall
+[STEP 10/10 - ID: 98A99668]: Installation completed with security verification
+
+=============================================
+STEP 10: INSTALLATION COMPLETE
+[Installation ID: 98A99668]
+=============================================
+
+=============================================
+     MMP CRIME DATABASE V04
+        INSTALLATION COMPLETE
+=============================================
+Installation ID: 98A99668
+Date: Fri Jul 11 09:06:57 AM UTC 2025
+Server: wow.itsfactup.com
+IP: 64.23.139.96
+
+=== INSTALLATION RESULTS ===
+Total Steps: 10
+Successful: 11  
+Errors: 1
+
+=== ACCESS INFORMATION ===
+SSH Users: root, maverick (wheel user)
+Cockpit: https://64.23.139.96:9090
+MySQL: localhost only
+
+=== SECURITY STATUS ===
+Firewall: firewalld
+fail2ban: Active
+Credentials: AES-256-GCM encrypted
+Password Standard: STIG-compliant
+File Ownership: maverick:maverick
+
+=== SYSTEM COMMANDS ===
+mmp_status   - Check system and database status
+mmp_db       - Connect to crime database
+mmp_check    - Check download completion
+mmp_decrypt  - Access encrypted credentials
+mmp_security - Security status overview
+mmp_load     - Load crime data (when downloads complete)
+mmp_help     - Show help information
+
+=== DATA MANAGEMENT ===
+Location: /data/crime_data/
+Owner: maverick
+Downloads: Background process (check with mmp_check)
+
+=== RECOVERY INFORMATION ===
+Installation ID: 98A99668
+Recovery Passphrase: [Crystal22$Ocean29@34!]
+Encrypted Credentials: /home/maverick/.mmp/credentials.enc
+
+For credential recovery, email MMP team with Installation ID.
+For legal access, provide court order + Installation ID.
+
+=== SECURITY COMPLIANCE ===
+✓ STIG-compliant password generation
+✓ DOD-level credential encryption  
+✓ Compartmentalized file access
+✓ Layered security (wheel user operations)
+✓ Audit trail maintenance
+✓ Legal compliance pathway
+
+=== IMPORTANT WARNINGS ===
+- This system is designed for VMs/droplets, not production
+- CSF may be in TESTING mode (auto-disables if locked out)
+- Save Installation ID and recovery passphrase securely
+- VPS destruction will permanently delete all data
+
+=== NEXT STEPS ===
+1. Run 'mmp_check' to monitor downloads
+2. Run 'mmp_load' when all downloads complete
+3. Access Cockpit for system monitoring
+4. Use 'mmp_security' to verify security status
+5. Save recovery information before VPS termination
+
+=== LOG FILES ===
+Installation Log: /root/mmp_logs/mmp_complete_v04_98A99668_20250711_085959.log
+Credentials: /home/maverick/.mmp/credentials.enc (encrypted)
+Progress: /root/mmp_logs/progress.txt
+
+=============================================
+
+⚠ Installation completed with 1 non-critical errors
+
+=============================================
+IMPORTANT REMINDERS:
+=============================================
+Installation ID: 98A99668
+Recovery Passphrase: [Crystal22$Ocean29@34!]
+Save these securely before terminating VPS!
+
+Next: Run 'mmp_check' to monitor downloads
+Then: Run 'mmp_load' when downloads complete
+=============================================
+[root@wow ~]# 

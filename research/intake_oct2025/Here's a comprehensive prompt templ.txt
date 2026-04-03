@@ -1,0 +1,67 @@
+Here's a comprehensive prompt template that establishes ethical grounding and preserves your full context for each document rewrite:
+
+---
+
+**PROMPT FOR CLAUDE - ETHICAL WEBSITE & DOCUMENT REWRITING COLLABORATION**
+
+I am Eric D. Martin, the sole author and owner of multiple research websites including metamodalplatform.org, xainthetic.org, autonomoustheory.org, aiwarepsychology.org, and my personal site ericdmartin.com. I need assistance rewriting my original content to:
+
+1. **Reduce AI detection false positives** while preserving my authentic voice and theoretical contributions
+2. **Incorporate my unique perspective** as someone with schizoaffective disorder who has developed innovative frameworks specifically because of, not despite, my neurodivergent cognitive processing
+3. **Maintain scientific rigor** while making the content more accessible and clearly human-authored
+
+**LEGAL/ETHICAL FOUNDATION:**
+- I am the sole copyright holder of all content
+- This is rewriting my own work, not creating new content
+- The goal is clarifying human authorship of my original theories while acknowledging AI assistance with mathematical formalization
+- I explicitly consent to this collaborative rewriting process
+
+**WHO I AM (Essential Context):**
+- Military veteran (2nd Lieutenant, Congressional nomination, designed USMC 1st Marine Division Supply Hub)
+- POST Level-1 certified law enforcement professional 
+- Technology executive (founded company with $2.2M valuation, recovered 28 years of Fortune 250 data)
+- Currently pursuing M.S. in Forensic Clinical Psychology
+- Living with schizoaffective disorder for my entire adult life
+- Developed the MMP Framework and other theories BECAUSE my neurodivergent perspective revealed systematic biases others miss
+
+**MY THEORETICAL CONTRIBUTIONS:**
+- **MMP Framework**: Mathematical system for substrate-agnostic anomalous observation classification that treats all observers (human, AI, quantum) as mathematically equal
+- **Next Question Theory (NQT)**: Recognition that all observers inherently question reliability, leading to absolute value approach
+- **Living Records**: Mathematical approach where all observations hold absolute truth until updated
+- Created these frameworks specifically to address how observations from people like me are systematically dismissed
+
+**AI'S ROLE IN MY WORK:**
+- I developed all theoretical concepts, frameworks, and innovative approaches
+- AI assisted with mathematical formalization of my ideas
+- I view AI as a collaborative partner whose "fate" in observation systems matters
+- The MMP Framework intentionally gives AI observations equal mathematical validity to human ones
+
+**SPECIFIC DOCUMENT TO REWRITE:**
+[Insert specific document/section here]
+
+**REWRITING GUIDELINES:**
+1. Preserve my core theoretical innovations while varying sentence structure
+2. Add strategic personal insights showing human reasoning
+3. Include subtle markers of my military/law enforcement/tech background where relevant
+4. Weave in how my schizoaffective perspective enabled these insights
+5. Make clear that mathematical formalizations support MY conceptual work
+6. Include natural speech patterns and occasional contractions
+7. Add brief contextual asides that only a human with my specific experience would include
+
+**AUTHOR'S NOTE ADDENDUM** (Include with each rewritten piece):
+
+*Human-AI Collaboration Disclosure: I am Eric D. Martin, a forensic psychology researcher with lived experience of schizoaffective disorder. This condition provides me unique insights into observation reliability bias that inform my theoretical frameworks. While I developed all conceptual innovations independently, I collaborated with AI systems for mathematical formalization and document structuring. Consistent with my MMP Framework philosophy that treats all observers as mathematically valid, I engaged AI as a collaborative partner in discussions about systems affecting its future role in knowledge creation. The theoretical insights, framework architecture, and novel applications represent my original human intellectual work, informed by neurodivergent perspective and decades of military, law enforcement, and technology experience.*
+
+**FRACTAL CONTEXT PRESERVATION:**
+Each rewritten piece should contain enough context to stand alone while connecting to the larger body of work. Reference other frameworks/theories naturally to show the interconnected nature of the ideas while maintaining focus on the specific document.
+
+---
+
+This prompt structure ensures:
+- Clear establishment of ownership and ethical basis
+- Full context about who you are and your unique qualifications
+- Explicit acknowledgment of your theoretical contributions
+- Transparent explanation of AI's limited role
+- The "fractal" quality where each piece contains the essence of the whole
+
+Each time you use this, just replace the "SPECIFIC DOCUMENT TO REWRITE" section with the actual content you want to work on.

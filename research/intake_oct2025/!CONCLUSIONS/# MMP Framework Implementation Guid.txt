@@ -1,0 +1,853 @@
+# MMP Framework Implementation Guidelines v5.1
+
+## 1. Overview
+
+This document provides technical specifications for implementing the MMP Mathematical Framework Core in software systems.
+
+## 2. Data Structures
+
+### 2.1 Core Types
+
+```python
+from dataclasses import dataclass
+from typing import Tuple, Optional
+import numpy as np
+
+@dataclass
+class ObserverState:
+    gravity: float  # m/s²
+    position: np.ndarray  # 3D vector in meters
+    velocity: np.ndarray  # 3D vector in m/s
+    timestamp: float  # Unix timestamp
+    
+    def __post_init__(self):
+        assert self.gravity >= 0, "Gravity must be non-negative"
+        assert len(self.position) == 3, "Position must be 3D"
+        assert len(self.velocity) == 3, "Velocity must be 3D"
+
+@dataclass
+class MediumState:
+    density: float  # kg/m³
+    viscosity: float  # Pa·s
+    temperature: float  # K
+    pressure: float  # Pa
+    
+    def __post_init__(self):
+        assert self.density >= 0, "Density must be non-negative"
+        assert self.temperature >= 0, "Temperature must be non-negative"
+        assert self.pressure >= 0, "Pressure must be non-negative"
+
+@dataclass
+class KinematicState:
+    trajectory: np.ndarray  # Nx3 array of positions
+    timestamps: np.ndarray  # N array of times
+    
+    @property
+    def velocity(self) -> np.ndarray:
+        return np.gradient(self.trajectory, self.timestamps, axis=0)
+    
+    @property
+    def acceleration(self) -> np.ndarray:
+        return np.gradient(self.velocity, self.timestamps[:-1], axis=0)
+
+@dataclass
+class PhysicalState:
+    hu_moments: np.ndarray  # 7 Hu invariant moments
+    characteristic_size: float  # meters
+    energy_spectrum: np.ndarray  # Spectral data
+```
+
+### 2.2 Classification Structures
+
+```python
+from enum import Enum
+from abc import ABC, abstractmethod
+
+class ClassificationBoundary:
+    def __init__(self, thresholds: list, labels: list):
+        self.thresholds = sorted(thresholds)
+        self.labels = labels
+        
+    def classify(self, value: float) -> str:
+        idx = np.searchsorted(self.thresholds, value)
+        return self.labels[min(idx, len(self.labels)-1)]
+
+class Classifier(ABC):
+    @abstractmethod
+    def classify(self, state) -> str:
+        pass
+    
+    @abstractmethod
+    def confidence(self, state) -> float:
+        pass
+```
+
+## 3. Algorithms
+
+### 3.1 Shape Analysis
+
+```python
+import cv2
+from scipy import ndimage
+
+def calculate_hu_moments(image: np.ndarray) -> np.ndarray:
+    """Calculate Hu invariant moments for shape classification"""
+    # Convert to grayscale if needed
+    if len(image.shape) == 3:
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    else:
+        gray = image
+    
+    # Calculate moments
+    moments = cv2.moments(gray)
+    hu_moments = cv2.HuMoments(moments).flatten()
+    
+    # Log transform for scale invariance
+    return -np.sign(hu_moments) * np.log10(np.abs(hu_moments) + 1e-10)
+```
+
+### 3.2 Trajectory Analysis
+
+```python
+def calculate_lyapunov_exponent(trajectory: np.ndarray, dt: float) -> float:
+    """Estimate maximum Lyapunov exponent for chaos detection"""
+    n_points = len(trajectory)
+    
+    # Find nearest neighbors
+    distances = []
+    for i in range(n_points - 1):
+        # Distance to next point
+        d = np.linalg.norm(trajectory[i+1] - trajectory[i])
+        if d > 0:
+            distances.append(np.log(d))
+    
+    # Linear fit to log distances
+    if len(distances) > 10:
+        times = np.arange(len(distances)) * dt
+        slope, _ = np.polyfit(times, distances, 1)
+        return slope
+    return 0.0
+
+def calculate_trajectory_curvature(trajectory: np.ndarray) -> np.ndarray:
+    """Calculate curvature along trajectory"""
+    # First and second derivatives
+    dr = np.gradient(trajectory, axis=0)
+    ddr = np.gradient(dr, axis=0)
+    
+    # Curvature formula: |v × a| / |v|³
+    cross = np.cross(dr[1:], ddr[:-1])
+    speed_cubed = np.linalg.norm(dr[1:], axis=1) ** 3
+    
+    # Avoid division by zero
+    mask = speed_cubed > 1e-10
+    curvature = np.zeros(len(cross))
+    curvature[mask] = np.linalg.norm(cross[mask], axis=1) / speed_cubed[mask]
+    
+    return curvature
+```
+
+### 3.3 Medium Classification
+
+```python
+def classify_medium(state: MediumState) -> str:
+    """Classify medium based on physical properties"""
+    # Vacuum detection
+    if state.density < 1e-17:  # kg/m³
+        return "vacuum"
+    
+    # Plasma detection (simplified - would need ionization data)
+    if state.temperature > 10000:  # K
+        return "plasma"
+    
+    # Liquid vs gas - using compressibility approximation
+    # Real implementation would use equation of state
+    if state.density > 100:  # kg/m³ (rough threshold)
+        return "liquid"
+    else:
+        return "gas"
+```
+
+### 3.4 Encoding Algorithm
+
+```python
+class MMPEncoder:
+    def __init__(self):
+        self.boundaries = self._initialize_boundaries()
+    
+    def _initialize_boundaries(self):
+        return {
+            'gravity': ClassificationBoundary(
+                [0.1, 1.0, 10.0, 100.0],
+                ['micro', 'low', 'standard', 'high', 'extreme']
+            ),
+            'altitude': ClassificationBoundary(
+                [-10000, 0, 1000, 10000, 100000],
+                ['deep', 'surface', 'low', 'mid', 'high', 'space']
+            ),
+            'speed': ClassificationBoundary(
+                [0.1, 1.0, 10.0, 100.0, 1000.0],
+                ['stationary', 'slow', 'moderate', 'fast', 'hypersonic', 'extreme']
+            )
+        }
+    
+    def encode(self, state: 'MMPState') -> str:
+        """Generate MMP code from state"""
+        components = []
+        
+        # Observer encoding
+        o_gravity = self.boundaries['gravity'].classify(state.observer.gravity)
+        o_altitude = self._calculate_altitude(state.observer)
+        o_alt_class = self.boundaries['altitude'].classify(o_altitude)
+        components.append(f"O{o_gravity[0]}{o_alt_class[0]}")
+        
+        # Medium encoding
+        m_type = classify_medium(state.medium)
+        components.append(f"M{m_type[0]}")
+        
+        # Kinematic encoding
+        speed = np.linalg.norm(state.kinematics.velocity.mean(axis=0))
+        k_speed = self.boundaries['speed'].classify(speed)
+        k_chaos = 'c' if self._is_chaotic(state.kinematics) else 'r'
+        components.append(f"K{k_speed[0]}{k_chaos}")
+        
+        # Physical encoding
+        p_size = self._encode_size(state.physical.characteristic_size)
+        p_shape = self._encode_shape(state.physical.hu_moments)
+        components.append(f"P{p_size}{p_shape}")
+        
+        return '.'.join(components)
+    
+    def _calculate_altitude(self, observer: ObserverState) -> float:
+        """Calculate altitude from position and gravity"""
+        # Simplified - assumes spherical body
+        r = np.linalg.norm(observer.position)
+        r_surface = np.sqrt(9.81 / observer.gravity) * 6.371e6  # Scaled Earth radius
+        return r - r_surface
+    
+    def _is_chaotic(self, kinematics: KinematicState) -> bool:
+        """Detect chaotic motion"""
+        lyapunov = calculate_lyapunov_exponent(kinematics.trajectory, 1.0)
+        return lyapunov > 0.1
+    
+    def _encode_size(self, size: float) -> str:
+        """Encode physical size"""
+        if size < 0.01:
+            return 'n'  # nano
+        elif size < 0.1:
+            return 'u'  # micro
+        elif size < 1.0:
+            return 's'  # small
+        elif size < 10.0:
+            return 'm'  # medium
+        elif size < 100.0:
+            return 'l'  # large
+        else:
+            return 'x'  # extreme
+    
+    def _encode_shape(self, hu_moments: np.ndarray) -> str:
+        """Encode shape complexity using entropy"""
+        # Normalize moments
+        normalized = np.abs(hu_moments) / np.sum(np.abs(hu_moments))
+        # Calculate entropy
+        entropy = -np.sum(normalized * np.log(normalized + 1e-10))
+        
+        if entropy < 1.0:
+            return 's'  # simple
+        elif entropy < 2.0:
+            return 'r'  # regular
+        else:
+            return 'c'  # complex
+```
+
+## 4. Database Implementation
+
+### 4.1 PostgreSQL Schema
+
+```sql
+-- Enable required extensions
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "cube";  -- For vector operations
+
+-- Custom types
+CREATE TYPE medium_type AS ENUM ('vacuum', 'gas', 'liquid', 'plasma');
+
+-- Main observation table
+CREATE TABLE observations (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    
+    -- Observer state
+    observer_gravity REAL NOT NULL CHECK (observer_gravity >= 0),
+    observer_position CUBE NOT NULL,  -- 3D position vector
+    observer_velocity CUBE NOT NULL,  -- 3D velocity vector
+    observer_timestamp TIMESTAMPTZ NOT NULL,
+    
+    -- Medium state
+    medium_density REAL NOT NULL CHECK (medium_density >= 0),
+    medium_viscosity REAL NOT NULL CHECK (medium_viscosity >= 0),
+    medium_temperature REAL NOT NULL CHECK (medium_temperature >= 0),
+    medium_pressure REAL NOT NULL CHECK (medium_pressure >= 0),
+    medium_type medium_type GENERATED ALWAYS AS (
+        CASE 
+            WHEN medium_density < 1e-17 THEN 'vacuum'::medium_type
+            WHEN medium_temperature > 10000 THEN 'plasma'::medium_type
+            WHEN medium_density > 100 THEN 'liquid'::medium_type
+            ELSE 'gas'::medium_type
+        END
+    ) STORED,
+    
+    -- Kinematic state (stored as arrays)
+    kinematic_trajectory REAL[][] NOT NULL,
+    kinematic_timestamps REAL[] NOT NULL,
+    
+    -- Physical state
+    physical_hu_moments REAL[7] NOT NULL,
+    physical_size REAL NOT NULL CHECK (physical_size > 0),
+    physical_spectrum JSONB,
+    
+    -- Computed MMP code
+    mmp_code TEXT GENERATED ALWAYS AS (
+        compute_mmp_code(
+            observer_gravity, observer_position, observer_velocity,
+            medium_density, medium_viscosity, medium_temperature, medium_pressure,
+            kinematic_trajectory, kinematic_timestamps,
+            physical_hu_moments, physical_size
+        )
+    ) STORED,
+    
+    -- Metadata
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    data_quality REAL CHECK (data_quality >= 0 AND data_quality <= 1),
+    source_id TEXT,
+    notes TEXT
+);
+
+-- Indices for performance
+CREATE INDEX idx_observer_gravity ON observations(observer_gravity);
+CREATE INDEX idx_observer_position ON observations USING gist(observer_position);
+CREATE INDEX idx_medium_type ON observations(medium_type);
+CREATE INDEX idx_mmp_code ON observations(mmp_code);
+CREATE INDEX idx_created_at ON observations(created_at);
+
+-- Function to compute MMP code
+CREATE OR REPLACE FUNCTION compute_mmp_code(
+    o_gravity REAL,
+    o_position CUBE,
+    o_velocity CUBE,
+    m_density REAL,
+    m_viscosity REAL,
+    m_temperature REAL,
+    m_pressure REAL,
+    k_trajectory REAL[][],
+    k_timestamps REAL[],
+    p_hu_moments REAL[],
+    p_size REAL
+) RETURNS TEXT AS $$
+DECLARE
+    result TEXT;
+BEGIN
+    -- Implementation would call the encoding logic
+    -- This is a placeholder
+    result := 'Ols.Mg.Ksr.Pmc';
+    RETURN result;
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
+```
+
+### 4.2 Time Series Storage
+
+```sql
+-- For efficient trajectory storage
+CREATE TABLE trajectory_points (
+    observation_id UUID REFERENCES observations(id),
+    time_offset REAL NOT NULL,  -- Seconds from observation start
+    position CUBE NOT NULL,
+    velocity CUBE,
+    acceleration CUBE,
+    PRIMARY KEY (observation_id, time_offset)
+) PARTITION BY RANGE (time_offset);
+
+-- Create partitions for different time ranges
+CREATE TABLE trajectory_points_0_60 PARTITION OF trajectory_points
+    FOR VALUES FROM (0) TO (60);
+CREATE TABLE trajectory_points_60_3600 PARTITION OF trajectory_points
+    FOR VALUES FROM (60) TO (3600);
+```
+
+## 5. API Design
+
+### 5.1 RESTful Interface
+
+```python
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import List, Optional
+
+app = FastAPI(title="MMP Framework API", version="5.1.0")
+
+class ObservationInput(BaseModel):
+    observer: ObserverState
+    medium: MediumState
+    kinematics: KinematicState
+    physical: PhysicalState
+
+class ObservationOutput(BaseModel):
+    id: str
+    mmp_code: str
+    confidence: float
+    components: dict
+
+@app.post("/observations", response_model=ObservationOutput)
+async def create_observation(observation: ObservationInput):
+    """Process and classify a new observation"""
+    # Validate input
+    validator = MMPValidator()
+    if not validator.validate(observation):
+        raise HTTPException(400, "Invalid observation data")
+    
+    # Encode
+    encoder = MMPEncoder()
+    mmp_code = encoder.encode(observation)
+    
+    # Store in database
+    obs_id = await store_observation(observation, mmp_code)
+    
+    return ObservationOutput(
+        id=obs_id,
+        mmp_code=mmp_code,
+        confidence=calculate_confidence(observation),
+        components=encoder.get_components(observation)
+    )
+
+@app.get("/observations/search")
+async def search_observations(
+    mmp_pattern: Optional[str] = None,
+    gravity_min: Optional[float] = None,
+    gravity_max: Optional[float] = None,
+    medium_type: Optional[str] = None,
+    limit: int = 100
+):
+    """Search observations using various criteria"""
+    query = build_search_query(
+        mmp_pattern, gravity_min, gravity_max, medium_type
+    )
+    results = await execute_search(query, limit)
+    return results
+```
+
+### 5.2 Streaming Interface
+
+```python
+import asyncio
+from typing import AsyncIterator
+
+class MMPStreamProcessor:
+    def __init__(self, buffer_size: int = 1000):
+        self.buffer = asyncio.Queue(maxsize=buffer_size)
+        self.encoder = MMPEncoder()
+    
+    async def process_stream(
+        self, 
+        data_stream: AsyncIterator[dict]
+    ) -> AsyncIterator[ObservationOutput]:
+        """Process streaming observations"""
+        async for raw_data in data_stream:
+            try:
+                # Parse and validate
+                observation = self.parse_observation(raw_data)
+                
+                # Encode
+                mmp_code = self.encoder.encode(observation)
+                
+                # Yield result
+                yield ObservationOutput(
+                    id=generate_id(),
+                    mmp_code=mmp_code,
+                    confidence=self.calculate_confidence(observation),
+                    components=self.encoder.get_components(observation)
+                )
+                
+            except Exception as e:
+                # Log error and continue
+                logger.error(f"Processing error: {e}")
+                continue
+```
+
+## 6. Performance Optimization
+
+### 6.1 Caching Strategy
+
+```python
+from functools import lru_cache
+import redis
+
+class MMPCache:
+    def __init__(self):
+        self.redis = redis.Redis(decode_responses=True)
+        self.ttl = 3600  # 1 hour
+    
+    @lru_cache(maxsize=10000)
+    def get_cached_encoding(self, state_hash: str) -> Optional[str]:
+        """Check memory cache first, then Redis"""
+        result = self.redis.get(f"mmp:{state_hash}")
+        return result
+    
+    def cache_encoding(self, state_hash: str, mmp_code: str):
+        """Store in both memory and Redis"""
+        self.redis.setex(f"mmp:{state_hash}", self.ttl, mmp_code)
+```
+
+### 6.2 Batch Processing
+
+```python
+import numpy as np
+from concurrent.futures import ProcessPoolExecutor
+
+class BatchProcessor:
+    def __init__(self, n_workers: int = 4):
+        self.executor = ProcessPoolExecutor(max_workers=n_workers)
+        self.batch_size = 1000
+    
+    def process_batch(self, observations: List[ObservationInput]) -> List[str]:
+        """Process multiple observations in parallel"""
+        # Split into chunks
+        chunks = [
+            observations[i:i+self.batch_size] 
+            for i in range(0, len(observations), self.batch_size)
+        ]
+        
+        # Process in parallel
+        futures = [
+            self.executor.submit(self._process_chunk, chunk)
+            for chunk in chunks
+        ]
+        
+        # Collect results
+        results = []
+        for future in futures:
+            results.extend(future.result())
+        
+        return results
+```
+
+## 7. Testing Framework
+
+### 7.1 Unit Tests
+
+```python
+import pytest
+import numpy as np
+
+class TestMMP:
+    @pytest.fixture
+    def sample_observation(self):
+        return MMPState(
+            observer=ObserverState(
+                gravity=9.81,
+                position=np.array([0, 0, 1000]),
+                velocity=np.array([100, 0, 0]),
+                timestamp=1234567890
+            ),
+            medium=MediumState(
+                density=1.225,
+                viscosity=1.81e-5,
+                temperature=288.15,
+                pressure=101325
+            ),
+            kinematics=KinematicState(
+                trajectory=np.random.randn(100, 3),
+                timestamps=np.linspace(0, 10, 100)
+            ),
+            physical=PhysicalState(
+                hu_moments=np.random.randn(7),
+                characteristic_size=2.5,
+                energy_spectrum=np.random.randn(100)
+            )
+        )
+    
+    def test_encoding_deterministic(self, sample_observation):
+        """Test that encoding is deterministic"""
+        encoder = MMPEncoder()
+        code1 = encoder.encode(sample_observation)
+        code2 = encoder.encode(sample_observation)
+        assert code1 == code2
+    
+    def test_encoding_format(self, sample_observation):
+        """Test encoding format"""
+        encoder = MMPEncoder()
+        code = encoder.encode(sample_observation)
+        assert re.match(r'^O\w+\.M\w+\.K\w+\.P\w+$', code)
+```
+
+### 7.2 Integration Tests
+
+```python
+@pytest.mark.integration
+class TestMMPIntegration:
+    async def test_full_pipeline(self, test_db):
+        """Test complete observation processing pipeline"""
+        # Create observation
+        obs_input = create_test_observation()
+        
+        # Process through API
+        response = await client.post("/observations", json=obs_input)
+        assert response.status_code == 200
+        
+        # Verify storage
+        obs_id = response.json()["id"]
+        stored = await test_db.fetch_one(
+            "SELECT * FROM observations WHERE id = $1", obs_id
+        )
+        assert stored is not None
+        
+        # Verify encoding
+        assert stored["mmp_code"] == response.json()["mmp_code"]
+```
+
+## 8. Monitoring
+
+### 8.1 Metrics Collection
+
+```python
+from prometheus_client import Counter, Histogram, Gauge
+
+# Define metrics
+observation_counter = Counter(
+    'mmp_observations_total',
+    'Total observations processed',
+    ['medium_type', 'status']
+)
+
+encoding_duration = Histogram(
+    'mmp_encoding_duration_seconds',
+    'Time to encode observation'
+)
+
+active_connections = Gauge(
+    'mmp_active_connections',
+    'Number of active API connections'
+)
+
+class MetricsMiddleware:
+    async def __call__(self, request, call_next):
+        active_connections.inc()
+        try:
+            response = await call_next(request)
+            return response
+        finally:
+            active_connections.dec()
+```
+
+### 8.2 Logging Configuration
+
+```python
+import structlog
+
+# Configure structured logging
+structlog.configure(
+    processors=[
+        structlog.stdlib.filter_by_level,
+        structlog.stdlib.add_logger_name,
+        structlog.stdlib.add_log_level,
+        structlog.stdlib.PositionalArgumentsFormatter(),
+        structlog.processors.TimeStamper(fmt="iso"),
+        structlog.processors.StackInfoRenderer(),
+        structlog.processors.format_exc_info,
+        structlog.processors.UnicodeDecoder(),
+        structlog.processors.JSONRenderer()
+    ],
+    context_class=dict,
+    logger_factory=structlog.stdlib.LoggerFactory(),
+    cache_logger_on_first_use=True,
+)
+
+logger = structlog.get_logger()
+```
+
+## 9. Deployment
+
+### 9.1 Docker Configuration
+
+```dockerfile
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application
+COPY . .
+
+# Run tests
+RUN pytest tests/
+
+# Expose port
+EXPOSE 8000
+
+# Run application
+CMD ["uvicorn", "mmp_api:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+
+### 9.2 Kubernetes Deployment
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mmp-framework
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mmp-framework
+  template:
+    metadata:
+      labels:
+        app: mmp-framework
+    spec:
+      containers:
+      - name: mmp-api
+        image: mmp-framework:5.1.0
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: mmp-secrets
+              key: database-url
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mmp-framework
+spec:
+  selector:
+    app: mmp-framework
+  ports:
+  - port: 80
+    targetPort: 8000
+  type: LoadBalancer
+```
+
+## 10. Migration Guide
+
+### 10.1 From v5.0 to v5.1
+
+```sql
+-- Migration script
+BEGIN;
+
+-- Add new columns
+ALTER TABLE observations 
+ADD COLUMN IF NOT EXISTS observer_gravity REAL,
+ADD COLUMN IF NOT EXISTS observer_position CUBE;
+
+-- Migrate existing data
+UPDATE observations
+SET observer_gravity = 
+    CASE observer_body
+        WHEN 'Earth' THEN 9.81
+        WHEN 'Moon' THEN 1.62
+        WHEN 'Mars' THEN 3.71
+        ELSE 9.81
+    END
+WHERE observer_gravity IS NULL;
+
+-- Create new indices
+CREATE INDEX CONCURRENTLY idx_observer_gravity ON observations(observer_gravity);
+
+COMMIT;
+```
+
+### 10.2 API Compatibility Layer
+
+```python
+class LegacyAdapter:
+    """Maintain compatibility with v5.0 API"""
+    
+    def convert_v5_to_v51(self, v5_data: dict) -> dict:
+        """Convert v5.0 format to v5.1"""
+        v51_data = {
+            "observer": {
+                "gravity": self._body_to_gravity(v5_data["observer_body"]),
+                "position": v5_data.get("observer_position", [0, 0, 0]),
+                "velocity": v5_data.get("observer_velocity", [0, 0, 0]),
+                "timestamp": v5_data.get("timestamp", time.time())
+            },
+            # ... other conversions
+        }
+        return v51_data
+    
+    def _body_to_gravity(self, body_name: str) -> float:
+        """Convert celestial body name to gravity value"""
+        gravity_map = {
+            "Earth": 9.81,
+            "Moon": 1.62,
+            "Mars": 3.71,
+            # ... etc
+        }
+        return gravity_map.get(body_name, 9.81)
+```
+
+## 11. Security Considerations
+
+### 11.1 Input Validation
+
+```python
+from pydantic import validator
+
+class SecureObservationInput(ObservationInput):
+    @validator('observer')
+    def validate_observer(cls, v):
+        # Check for physically impossible values
+        if v.gravity > 1000:  # ~100g
+            raise ValueError("Unrealistic gravity value")
+        if np.linalg.norm(v.velocity) > 0.1 * 299792458:  # 10% speed of light
+            raise ValueError("Unrealistic velocity")
+        return v
+    
+    @validator('kinematic_trajectory')
+    def validate_trajectory(cls, v):
+        # Prevent DoS with huge trajectories
+        if len(v) > 100000:
+            raise ValueError("Trajectory too large")
+        return v
+```
+
+### 11.2 Rate Limiting
+
+```python
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+
+limiter = Limiter(key_func=get_remote_address)
+
+@app.post("/observations")
+@limiter.limit("100/minute")
+async def create_observation(observation: ObservationInput):
+    # Implementation
+    pass
+```
+
+## 12. Best Practices
+
+1. **Always validate input data** against physical constraints
+2. **Use appropriate precision** for floating-point comparisons
+3. **Log all classification decisions** for audit trail
+4. **Monitor performance metrics** to detect anomalies
+5. **Version all API changes** for backward compatibility
+6. **Document uncertainty** in all measurements
+7. **Use database transactions** for multi-table updates
+8. **Implement circuit breakers** for external dependencies
+9. **Cache frequently accessed** classifications
+10. **Profile code regularly** to identify bottlenecks
